@@ -78,7 +78,7 @@
 		                    			<div class="form-group">
 			                    			<label class="col-md-4">Division</label>
 			                    			<label class="col-md-1">:</label>
-			                    			<label class="col-md-7"></label>
+			                    			<label class="col-md-7">{{ $detail->divisions->division_name }}</label>
 		                    			</div>
 		                    			<div class="form-group">
 			                    			<label class="col-md-4">Department</label>

@@ -34,9 +34,4 @@ class Ticket extends Model
     {
         return $this->hasOne('App\Models\Ticket_erf','ticket_id');
     }
-
-    // public function divisions()
-    // {
-    //     return $this->hasMany('App\Models\Ticket_erf','ticket_id');
-    // }
 }

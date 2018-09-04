@@ -12,4 +12,9 @@ class Division extends Model
     	'groups_id','division_name'
     ];
 
+    public function ticket_erf_details()
+    {
+        return $this->hasMany('App\Models\Ticket_erf','id');
+    }
+
 }

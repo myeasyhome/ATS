@@ -58,6 +58,7 @@ class ApprovalController extends Controller
     public function detail($id)
     {
         $detail = Ticket::findOrFail($id);
+        dd($detail->ticket_erf_details->divisions->division_name);
         $scope_area = json_decode($detail->ticket_jd_details->scope_area);
         $scope_activities = json_decode($detail->ticket_jd_details->scope_activities);
         $soft = json_decode($detail->ticket_jd_details->soft_competency);

@@ -35,8 +35,8 @@ class Ticket_erf extends Model
         return $this->hasOne('App\Models\Division','id');
     }
 
-    // public function divisions()
-    // {
-    //     return $this->hasOne('App\Models\Division','id');
-    // }
+    public function divisions()
+    {
+        return $this->belongsTo('App\Models\Division','division');
+    }
 }
