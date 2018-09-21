@@ -17,12 +17,11 @@ class Ticket_erf extends Model
         'reporting_to',
     	'headcount_type',
     	'employee_status',
-    	'contract_from',
-    	'contract_to',
+    	'contract_duration',
     	'type_hiring',
-    	'advertisement',
-    	'bussiness_impact',
-    	'request_background'
+    	'confidentiality',
+    	'request_background',
+        'reason'
     ];
 
     public function tickets()
@@ -35,8 +34,23 @@ class Ticket_erf extends Model
         return $this->hasOne('App\Models\Division','id');
     }
 
+    public function directorates()
+    {
+        return $this->belongsTo('App\Models\Directorate','directorate');
+    }
+
     public function divisions()
     {
         return $this->belongsTo('App\Models\Division','division');
+    }
+
+    public function groups()
+    {
+        return $this->belongsTo('App\Models\Group','group');
+    }
+
+    public function departments()
+    {
+        return $this->belongsTo('App\Models\Department','department');
     }
 }

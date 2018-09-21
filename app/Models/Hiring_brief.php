@@ -9,6 +9,22 @@ class Hiring_brief extends Model
     protected $table = 'hiring_briefs';
 
     protected $fillable = [
-    	'date_schedule','time_schedule','interviewer_user','interviewer_hrbp','job_function','general_information','characteristic'
+    	'ticket_id',
+    	'approval_hiring_by_hrbp',
+    	'reason_reject',
+    	'date_schedule',
+    	'time_schedule',
+    	'place_schedule',
+    	'interviewer_user',
+    	'interviewer_hrbp',
+    	'job_function',
+    	'general_information',
+    	'characteristic',
+    	'date_result_hiring'
     ];
+
+    public function tickets()
+    {
+    	return $this->belongsTo('App\Models\Ticket','ticket_id');
+    }
 }

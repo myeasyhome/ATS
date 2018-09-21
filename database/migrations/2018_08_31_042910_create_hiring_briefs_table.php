@@ -15,8 +15,13 @@ class CreateHiringBriefsTable extends Migration
     {
         Schema::create('hiring_briefs', function (Blueprint $table) {
             $table->increments('id');
-            $table->date('date_schedule');
-            $table->time('time_schedule');
+            $table->unsignedInteger('ticket_id');
+            $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
+            $table->enum('approval_hiring_by_hrbp',['0','1','2'])->nullable();
+            $table->text('reason_reject')->nullable();
+            $table->date('date_schedule')->nullable();
+            $table->time('time_schedule')->nullable();
+            $table->string('place_schedule')->nullable();
             $table->string('interviewer_user')->nullable();
             $table->string('interviewer_hrbp')->nullable();
             $table->text('job_function')->nullable();

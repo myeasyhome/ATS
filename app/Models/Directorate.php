@@ -4,17 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Division extends Model
+class Directorate extends Model
 {
-    protected $table = 'divisions';
+    protected $table = 'directorates';
 
     protected $fillable = [
-    	'groups_id','division_name'
+    	'directorate_name'
     ];
 
     public function ticket_erf_details()
     {
         return $this->hasMany('App\Models\Ticket_erf');
     }
-
 }

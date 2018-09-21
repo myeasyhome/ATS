@@ -18,17 +18,15 @@ class CreateTicketErvesTable extends Migration
             $table->unsignedInteger('ticket_id');
             $table->foreign('ticket_id')->references('id')->on('tickets')->onUpdate('cascade')->onDelete('cascade');
             $table->string('reporting_to')->nullable();
-            $table->string('directorate')->nullable();
             $table->string('headcount_type')->nullable();
 
             $table->string('employee_status')->nullable();
-            $table->date('contract_from')->nullable();
-            $table->date('contract_to')->nullable();
+            $table->string('contract_duration')->nullable();
 
             $table->string('type_hiring')->nullable();
-            $table->string('advertisement')->nullable();
-            $table->string('bussiness_impact')->nullable();
+            $table->string('confidentiality')->nullable();
             $table->string('request_background')->nullable();
+            $table->text('reason')->nullable();
             $table->timestamps();
         });
     }

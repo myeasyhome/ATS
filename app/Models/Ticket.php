@@ -13,7 +13,6 @@ class Ticket extends Model
     	'position_name',
         'location',
         'position_grade',
-    	'reason',
         'approval_lm2',
         'approval_hrbp',
         'reason_reject_lm2',
@@ -22,7 +21,7 @@ class Ticket extends Model
 
     public function user()
     {
-    	return $this->hasOne('App\User','user_id');
+    	return $this->hasMany('App\User','user_id');
     }
 
     public function ticket_jd_details()
@@ -33,5 +32,10 @@ class Ticket extends Model
     public function ticket_erf_details()
     {
         return $this->hasOne('App\Models\Ticket_erf','ticket_id');
+    }
+
+    public function hiring_briefs()
+    {
+        return $this->hasOne('App\Models\Hiring_brief','ticket_id');
     }
 }

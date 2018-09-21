@@ -49,14 +49,13 @@
             Need Approval List
         </h3>
         <div class="example-box-wrapper">
-            <table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap dataTable collapsed dtr-inline" cellspacing="0" width="100%">
+            <table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap" cellspacing="0" width="100%">
                 <thead>
                     <tr>
                         <th>No.</th>
                         <th>Position Name</th>
-                        {{-- <th>JD File</th> --}}
-                        <th>Date</th>
-                        <th>Option</th>
+                        <th>Create Date</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
 
@@ -65,8 +64,7 @@
                     @forelse($ticket as $ticket)
                     <tr>
                         <td class="text-center">{{ $no++ }}</td>
-                        <td>{{ $ticket->position_name }}</td>
-                        {{-- <td><a href="" style="color: #0066cc; text-decoration: underline;">Download JD File</a></td> --}}
+                        <td><a href="{{ route('lm2.detail.ticket',$ticket->id) }}">{{ $ticket->position_name }}</a></td>
                         <td>{{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y') }}</td>
                         <td>
                             <a href="#modal_approval" type="button" data-url="{{ route('approved.ticket',$ticket->id) }}" data-toggle="modal" class="btn btn-round btn-success btn_modal_approved" title="Approved">
@@ -75,10 +73,6 @@
                             &nbsp;
                             <a href="#modal_reject" type="button" data-url="{{ route('reject.ticket',$ticket->id) }}" data-toggle="modal" class="btn btn-round btn-danger btn_modal_reject" title="Reject">
                                 <span class="glyph-icon icon-remove"></span>
-                            </a>
-                            &nbsp;
-                            <a href="{{ route('detail.ticket',$ticket->id) }}" type="button" data-toggle="modal" class="btn btn-round btn-info" title="Detail">
-                                <span class="glyph-icon icon-eye"></span>
                             </a>
                         </td>
                     </tr>
@@ -145,37 +139,6 @@
                     <button type="submit" class="btn btn-danger">Reject</button>
                 </div>
             </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Detail -->
-<div class="modal fade" tabindex="1" id="modal_detail" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="modal_title"></h4>
-            </div>
-            {{-- <form role="form" method="post" class="form-horizontal" id="form_modal_reject"> --}}
-                <div class="modal-body body_content">
-                    <div id="modal_content">
-                        <h3>ERF</h3>
-                        <section id="detail_modal_erf">
-                            <p>pke</p>
-                        </section>
-
-                        <h3>JD</h3>
-                        <section id="detail_modal_jd">
-                            <p>JD</p>
-                        </section>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    {{-- <button type="submit" class="btn btn-danger">Reject</button> --}}
-                </div>
-            {{-- </form> --}}
         </div>
     </div>
 </div>

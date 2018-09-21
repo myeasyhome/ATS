@@ -1,10 +1,11 @@
 @extends('layouts.default')
-@section('title','Approval List')
+@section('title','Approval Result Of The Brief')
+
 @section('js')
 <script type="text/javascript" src="{{ asset('assets/widgets/datatable/datatable.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/widgets/datatable/datatable-bootstrap.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/widgets/datatable/datatable-responsive.js') }}"></script>
-<script>
+<script type="text/javascript">
     /* Datatables responsive */
     $(function() {
         $('#datatable-responsive').DataTable( {
@@ -17,18 +18,19 @@
     });
 </script>
 
+
 <script type="text/javascript">
 	/* Modal Reject */
-	$(document).ready(function (e) {
-        $(document).on("click", ".btn_modal_reject", function (e) {
+	$(document).ready(function () {
+        $(document).on("click", ".btn_modal_reject", function () {
             var url = $(this).attr('data-url'); 
             $('#form_modal_reject').attr('action',url);
         });
     });
 
     /* Modal Approved */
-	$(document).ready(function (e) {
-        $(document).on("click", ".btn_modal_approved", function (e) {
+	$(document).ready(function () {
+        $(document).on("click", ".btn_modal_approved", function () {
             var url = $(this).attr('data-url'); 
             $('#form_modal_approved').attr('action',url);
         });
@@ -39,8 +41,7 @@
 @section('content')
 <div class="panel">
 	<div class="panel-body">
-
-		<!-- akan muncul jika HRT sudah input hasil briefing, waiting => 0 -->
+		<!-- akan muncul jika HRT sudah input hasil briefing, waiting=>0 -->
 		@if($hiring->contains('approval_hiring_by_hrbp','0') == true)
 			@component('notice_message.notice', [ 
 							'msg'=> 'There is an approval that must be completed as soon as possible because it will affect duration of the SLA', 
@@ -48,60 +49,59 @@
 						])
 			@endcomponent
 		@endif
-
-		<h3 class="title-hero">Approval List</h3>
+		<h3 class="title-hero">approval result of the brief list</h3>
 		<div class="example-box-wrapper">
-			<!-- notif -->
-	        @if(session('success'))
-	        	<div class="alert alert-success" role="alert">
-	                <strong>{{ session('success') }}</strong>
-	            </div>
-	        @elseif(session('error'))
-	        	<div class="alert alert-danger" role="alert">
-	                <strong>{{ session('error') }}</strong>
-	            </div>
-	        @endif
+
 			<table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 					    <th>No.</th>
 					    <th>Position Name</th>
-					    <th>Created Date</th>
-					    <th>Status</th>
+					    <th>Input Date Result of Brief</th>
+					    {{-- <th>Result Brief</th> --}}
+					    <th>Option</th>
 					</tr>
 				</thead>
 
 				<tbody>
 				    @php $no=1; @endphp
-				    @forelse($ticket as $ticket)
+				    @forelse($hiring as $hiring)
 				    <tr>
 					    <td class="text-center">{{ $no++ }}</td>
-					    <td><a href="{{ route('hrbp.detail',$ticket->id) }}">{{ $ticket->position_name }}</a></td>
-					    <td>{{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y') }}</td>
-					    <td>
-					    	@if($ticket->approval_hrbp > 0)
-					    		@if ( $ticket->approval_hrbp == 1 )
-					    			<span class="bs-label label-success"><strong>Approved</strong></span>
-					    		@elseif ( $ticket->approval_hrbp == 2 )
-					    			<span class="bs-label label-danger"><strong>Rejected</strong></span>
-					    		@endif
+					    <td><a href="">{{ $hiring->tickets->position_name }}</a></td>
+					    <td class="text-center">
+					    	{{ $hiring->date_result_hiring == Null ? '-' : \Carbon\Carbon::parse($hiring->date_result_hiring)->format('d/m/Y') }}
+					    </td>
+					    <td class="text-center">
+					    	@if ( $hiring->job_function == null || $hiring->general_information == null || $hiring->characteristic && $hiring->approval_hiring_by_hrbp == null )
+					    		<span class="bs-label label-yellow"><strong>HR Talent Hasn't Input the result of brief yet</strong></span>
 					    	@else
-					    		<a href="#modal_approval" type="button" data-url="{{ route('hrbp.approved',$ticket->id) }}" data-toggle="modal" class="btn btn-round btn-success btn_modal_approved" title="Approved">
+					    		@if ( $hiring->approval_hiring_by_hrbp == 0 )
+					    			<a class="btn btn-round btn-blue-alt" href="{{ route('hrbp.detail.result',$hiring->id) }}">
+				                        <i class="glyph-icon icon-eye"></i>
+				                    </a>
+					    		@elseif ( $hiring->approval_hiring_by_hrbp == 1 )
+					    			<span class="bs-label label-success"><strong>You Have Been Approved</strong></span>
+					    		@elseif ( $hiring->approval_hiring_by_hrbp == 2 )
+					    			<span class="bs-label label-danger"><strong>You Have Been Rejected</strong></span>
+					    		@endif
+					    	@endif
+					    </td>
+					    {{-- <td>
+					    	@if ( $hiring->approval_hiring_by_hrbp == 0 )
+						        <a href="#modal_approval" type="button" data-url="{{ route('hrbp.approved.result',$hiring->id) }}" data-toggle="modal" class="btn btn-round btn-success btn_modal_approved" title="Approved">
 						            <span class="glyph-icon icon-check"></span>
 						        </a>
 						        &nbsp;
-						        <a href="#modal_reject" type="button" data-url="{{ route('hrbp.reject',$ticket->id) }}" data-toggle="modal" class="btn btn-round btn-danger btn_modal_reject" title="Reject">
+						        <a href="#modal_reject" type="button" data-url="{{ route('hrbp.reject.result',$hiring->id) }}" data-toggle="modal" class="btn btn-round btn-danger btn_modal_reject" title="Reject">
 						            <span class="glyph-icon icon-remove"></span>
 						        </a>
-					    	@endif
-					    	{{-- @if($ticket->approval_hrbp == 0)
-					    		<span class="bs-label label-yellow"><strong>Waiting Approval</strong></span>
-					    	@elseif($ticket->approval_hrbp == 1)
-					    		<span class="bs-label label-success"><strong>Approved</strong></span>
-					    	@elseif($ticket->approval_hrbp == 2)
-					    		<span class="bs-label label-danger"><strong>Rejected</strong></span>
-					    	@endif --}}
-					    </td>
+					        @elseif ( $hiring->approval_hiring_by_hrbp == 1 )
+					        	<span class="bs-label label-success"><strong>This Result Has Been Approved</strong></span>
+					        @elseif ( $hiring->approval_hiring_by_hrbp == 2 )
+					        	<span class="bs-label label-danger"><strong>This Result Has Been Rejected</strong></span>
+					        @endif
+					    </td> --}}
 				    </tr>
 				    @empty
 				    	<td valign="top" colspan="5" class="dataTables_empty">No data available in table</td>
@@ -109,9 +109,8 @@
 				    	<td id="hidden"></td>
 				    	<td id="hidden"></td>
 				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
 				    @endforelse
+				    
 				</tbody>
 
 			</table>
@@ -131,7 +130,7 @@
             @csrf
             @method('PATCH')
             	<div class="modal-body">
-                	<p class="text-center"><strong>Are you sure to Approve this position ?</strong></p>
+                	<p class="text-center"><strong>Are you sure to Approve The Result of Brief ?</strong></p>
 	            </div>
 	            <div class="modal-footer">
 	                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

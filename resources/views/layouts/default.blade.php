@@ -154,7 +154,6 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/applications/mailbox.css') }}">
 
 <!-- Admin theme -->
-
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/themes/admin/layout.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/themes/admin/color-schemes/default.css') }}">
 
@@ -169,6 +168,10 @@
 
 <!-- STEP -->
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/steps/jquery.steps.css') }}">
+
+<!-- Select 2 -->
+<link rel="stylesheet" href="{{ asset('assets/select2/select2.min.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/select2/select2-bootstrap.css') }}">
 
 <!-- JS Core -->
 <script type="text/javascript" src="{{ asset('assets/js-core/jquery-core.js') }}"></script>
@@ -189,11 +192,11 @@
     });
 
     /* set timout close alert */
-    $(document).ready(function() {
-        setTimeout(function() {
-            $(".alert").fadeOut('close');
-        }, 5000);
-    });
+    // $(document).ready(function() {
+    //     setTimeout(function() {
+    //         $(".alert").fadeOut('close');
+    //     }, 5000);
+    // });
 </script>
 
 <style type="text/css">
@@ -203,14 +206,12 @@
     #hidden {
         display: none;
     }
-    /**/
 </style>
 
 </head>
 
-<body class="fixed fixed-sidebar fixed-header">
+<body class="fixed fixed-sidebar {{-- fixed-header --}}">
 <div id="">
-
 
 <!-- loading -->
 <div id="loading">
@@ -299,6 +300,14 @@
                     </a>
                 </li>
                 <li class="divider"></li>
+
+                {{-- <li>
+                    <a href="" title="Change Password">
+                        <i class="glyph-icon icon-key"></i>
+                        <span>Change Password</span>
+                    </a>
+                </li>
+                <li class="divider"></li> --}}
                 
                 {{-- <li>
                     <a href="{{ route('create.ticket') }}" title="Create New Ticket">
@@ -328,29 +337,36 @@
                 </li>
                 <li class="divider"></li>
                 
-                <li>
+                {{-- <li>
                     <a href="{{ route('lm2.approval') }}" title="Approval Ticket">
                         <i class="glyph-icon icon-check"></i>
                         <span>Approval Ticket</span>
                     </a>
                 </li>
-                <li class="divider"></li>
+                <li class="divider"></li> --}}
             @endif
 
             <!-- HR Bussiness Partner -->
-            @if ( Auth::user()->role_id ==3 )
-                <li class="header"><span>Process</span></li>
+            @if ( Auth::user()->role_id == 3 )
+                {{-- <li class="header"><span>Process</span></li>
                 <li>
                     <a href="{{ route('hrbp.approval') }}" title="Approval Ticket">
                         <i class="glyph-icon icon-check"></i>
                         <span>Approval Ticket</span>
                     </a>
                 </li>
-                <li class="divider"></li>
+                <li class="divider"></li> --}}
                 <li>
                     <a href="{{ route('hrbp.list') }}" title="Approval List">
                         <i class="glyph-icon icon-linecons-note"></i>
                         <span>Approval List</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="{{ route('hrbp.approval.hiring') }}" title="Approval Hiring Brief">
+                        <i class="glyph-icon icon-check"></i>
+                        <span>Approval Hiring Brief</span>
                     </a>
                 </li>
                 <li class="divider"></li>
@@ -384,7 +400,7 @@
                 </li>
                 <li class="divider"></li>
                 <li class="no-menu">
-                    <a href="" title="Frontend template">
+                    <a href="{{ route('sourcing') }}" title="CV & Sourcing">
                         <i class="glyph-icon icon-leaf"></i>
                         <span>CV & Sourcing</span>
                     </a>
@@ -439,7 +455,7 @@
             <div class="container">
                 <div id="page-title" style="font-family: 'ooredoo';">
                     <div id="theme-options" class="admin-options">
-                    dsasa
+                    hay
                     </div>
                 </div>
                 @yield('content')

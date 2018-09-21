@@ -12,6 +12,8 @@ use App\Models\Ticket_erf;
 use App\Models\Group;
 use App\Models\Division;
 use App\Models\Department;
+use App\Models\Directorate;
+use Validator;
 
 use App\Mail\Request_approval;
 use Illuminate\Support\Facades\Mail;
@@ -32,8 +34,25 @@ class TicketController extends Controller
 
     public function create()
     {
-        $group = Group::all();
-    	return view('Line_Manager1.create',compact('group'));
+        $directorate = Directorate::all();
+    	return view('Line_Manager1.create',compact('directorate'));
+    }
+
+    public function checkPosition(Request $request)
+    {
+        $position = $request->position_name;
+        $exist = Ticket::where('position_name',$position)->first();
+        if ($exist) {
+            return response()->json(array("msg" => true));
+        } else {
+             return response()->json(array("msg" => false));
+        }
+    }
+
+    public function group_dropdown($id) 
+    {
+        $group = Group::where('directorates_id',$id)->get();
+        return json_encode($group);
     }
 
     public function division_dropdown($id)
@@ -52,12 +71,20 @@ class TicketController extends Controller
 
     public function store(Request $request)
     {
+        /* validasi if position exist */
+        $validator = Validator::make($request->all(), [
+            'position_name' => 'unique:tickets',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error','Position Name Already Exist!');
+        }
+
         $ticket = Ticket::create([
             'user_id' => Auth::user()->id,
             'position_name' => ucwords($request->position_name),
             'location' => ucwords($request->location),
             'position_grade' => $request->grade,
-            'reason' => ucfirst($request->reason)
         ]);
 
         /*take ticket id*/
@@ -70,18 +97,20 @@ class TicketController extends Controller
         $ticket_erf = Ticket_erf::create([
             'ticket_id' => $ticket_id->id,
             'reporting_to' => ucwords($request->reporting_to),
-            'directorate' => ucwords($request->directorate),
+            'directorate' => $request->directorate,
             'group' => $request->group,
             'division' => $request->division,
             'department' => $request->department,
             'headcount_type' => $request->headcount_type,
             'employee_status' => $request->employee_status,
-            'contract_from' => $request->from !== null ? Carbon::parse($request->from)->toDateString() : NULL,
-            'contract_to' => $request->to !== null ? Carbon::parse($request->to)->toDateString() : NULL,
-            'type_hiring' => $request->type_hiring,
-            'advertisement' => $request->advertisement,
-            'bussiness_impact' => $request->bussiness_impact,
-            'request_background' => $request->request_background
+            // 'contract_from' => $request->from !== null ? Carbon::createFromFormat('d/m/Y',$request->from)->toDateString() : NULL,
+            // 'contract_to' => $request->to !== null ? Carbon::createFromFormat('d/m/Y',$request->to)->toDateString() : NULL,
+            'contract_duration' => $request->contract_duration,
+            'type_hiring' => json_encode($request->type_hiring),
+            'confidentiality' => $request->confidentiality,
+            // 'bussiness_impact' => $request->bussiness_impact,
+            'request_background' => $request->request_background,
+            'reason' => ucfirst($request->reason)
         ]);
         
         /* form JD */
@@ -90,17 +119,15 @@ class TicketController extends Controller
             'supervisor' => ucwords($request->supervisor_title),
             'incumbent_name' => ucwords($request->incumbent),
             'supervisor_name' => ucwords($request->supervisor_name),
+            'role_purpose' => ucfirst($request->role_purpose),
             'direct_sub' => ucwords($request->direct_sub),
             'indirect_sub' => ucwords($request->indirect_sub),
-            'role_purpose' => ucfirst($request->role_purpose),
-            'internal_within' => $request->within,
-            'internal_outside' => $request->outside,
-            'external' => $request->external,
+            'job_level' => $request->job_level,
+            'min_education' => $request->min_education,
             'qualification' => $request->qualification,
-            'experience' => $request->experience,
-            'skill' => $request->skill,
-            'scope_area' => json_encode($request->scope_area),
-            'scope_activities' => json_encode($request->scope_activities),
+            // 'scope_area' => json_encode($request->scope_area),
+            // 'scope_activities' => json_encode($request->scope_activities),
+            'responsibility' => $request->responsibility,
             'soft_competency' => json_encode($request->soft),
             'hard_index' => json_encode($request->hard),
             'hard_value' => json_encode($request->value)
@@ -112,17 +139,19 @@ class TicketController extends Controller
         return redirect()->route('ticket')->with('success','Successfully Create Ticket For '.ucwords($request->position_name));
     }
 
+    /* Show Edit data */
     public function edit($id)
     {
+        $directorate = Directorate::all();
         $group = Group::all();
-        $edit = Ticket::findOrFail($id);
-        $scope_area = json_decode($edit->ticket_jd_details->scope_area);
-        $scope_activities = json_decode($edit->ticket_jd_details->scope_activities);
-        $soft = json_decode($edit->ticket_jd_details->soft_competency);
-        $hard = json_decode($edit->ticket_jd_details->hard_index);
-        $hard_value = json_decode($edit->ticket_jd_details->hard_value);
+        $division = Division::all();
+        $department = Department::all();
+        $data = Ticket::findOrFail($id);
+        $soft = json_decode($data->ticket_jd_details->soft_competency);
+        $hard = json_decode($data->ticket_jd_details->hard_index);
+        $hard_value = json_decode($data->ticket_jd_details->hard_value);
 
-        return view('Line_Manager1.create',compact('group','edit','soft','hard','hard_value','scope_area','scope_activities','id'));
+        return view('Line_Manager1.create',compact('group','division','department','directorate','data','soft','hard','hard_value','id'));
     }
 
     public function update($id,Request $request)
@@ -130,40 +159,39 @@ class TicketController extends Controller
         Ticket::findOrFail($id)->update([
             'location' => ucwords($request->location),
             'position_grade' => $request->grade,
-            'reason' => ucfirst($request->reason)
         ]);
 
         Ticket_erf::where('ticket_id',$id)->update([
             'reporting_to' => ucwords($request->reporting_to),
-            'directorate' => ucwords($request->directorate),
+            'directorate' => $request->directorate,
             'group' => $request->group,
             'division' => $request->division,
             'department' => $request->department,
             'headcount_type' => $request->headcount_type,
             'employee_status' => $request->employee_status,
-            'contract_from' => $request->from !== null ? Carbon::parse($request->from)->toDateString() : NULL,
-            'contract_to' => $request->to !== null ? Carbon::parse($request->to)->toDateString() : NULL,
-            'type_hiring' => $request->type_hiring,
-            'advertisement' => $request->advertisement,
-            'bussiness_impact' => $request->bussiness_impact,
-            'request_background' => $request->request_background
+            // 'contract_from' => $request->from !== null ? Carbon::createFromFormat('d/m/Y',$request->from)->toDateString() : NULL,
+            // 'contract_to' => $request->to !== null ? Carbon::createFromFormat('d/m/Y',$request->to)->toDateString() : NULL,
+            'contract_duration' => $request->contract_duration,
+            'type_hiring' => json_encode($request->type_hiring),
+            'confidentiality' => $request->confidentiality,
+            // 'bussiness_impact' => $request->bussiness_impact,
+            'request_background' => $request->request_background,
+            'reason' => ucfirst($request->reason)
         ]);
 
         Ticket_jd::where('ticket_id',$id)->update([
             'supervisor' => ucwords($request->supervisor_title),
             'incumbent_name' => ucwords($request->incumbent),
             'supervisor_name' => ucwords($request->supervisor_name),
+            'role_purpose' => ucfirst($request->role_purpose),
             'direct_sub' => ucwords($request->direct_sub),
             'indirect_sub' => ucwords($request->indirect_sub),
-            'role_purpose' => ucfirst($request->role_purpose),
-            'internal_within' => $request->within,
-            'internal_outside' => $request->outside,
-            'external' => $request->external,
+            'job_level' => $request->job_level,
+            'min_education' => $request->min_education,
             'qualification' => $request->qualification,
-            'experience' => $request->experience,
-            'skill' => $request->skill,
-            'scope_area' => json_encode($request->scope_area),
-            'scope_activities' => json_encode($request->scope_activities),
+            // 'scope_area' => json_encode($request->scope_area),
+            // 'scope_activities' => json_encode($request->scope_activities),
+            'responsibility' => $request->responsibility,
             'soft_competency' => json_encode($request->soft),
             'hard_index' => json_encode($request->hard),
             'hard_value' => json_encode($request->value)
@@ -183,41 +211,40 @@ class TicketController extends Controller
         Ticket::findOrFail($id)->update([
             'location' => ucwords($request->location),
             'position_grade' => $request->grade,
-            'reason' => ucfirst($request->reason),
-            'approval_lm2' => '0'
+            'approval_lm2' => '0',
         ]);
 
         Ticket_erf::where('ticket_id',$id)->update([
             'reporting_to' => ucwords($request->reporting_to),
-            'directorate' => ucwords($request->directorate),
+            'directorate' => $request->directorate,
             'group' => $request->group,
             'division' => $request->division,
             'department' => $request->department,
             'headcount_type' => $request->headcount_type,
             'employee_status' => $request->employee_status,
-            'contract_from' => $request->from !== null ? Carbon::parse($request->from)->toDateString() : NULL,
-            'contract_to' => $request->to !== null ? Carbon::parse($request->to)->toDateString() : NULL,
-            'type_hiring' => $request->type_hiring,
-            'advertisement' => $request->advertisement,
-            'bussiness_impact' => $request->bussiness_impact,
-            'request_background' => $request->request_background
+            // 'contract_from' => $request->from !== null ? Carbon::createFromFormat('d/m/Y',$request->from)->toDateString() : NULL,
+            // 'contract_to' => $request->to !== null ? Carbon::createFromFormat('d/m/Y',$request->to)->toDateString() : NULL,
+            'contract_duration' => $request->contract_duration,
+            'type_hiring' => json_encode($request->type_hiring),
+            'confidentiality' => $request->confidentiality,
+            // 'bussiness_impact' => $request->bussiness_impact,
+            'request_background' => $request->request_background,
+            'reason' => ucfirst($request->reason)
         ]);
 
         Ticket_jd::where('ticket_id',$id)->update([
             'supervisor' => ucwords($request->supervisor_title),
             'incumbent_name' => ucwords($request->incumbent),
             'supervisor_name' => ucwords($request->supervisor_name),
+            'role_purpose' => ucfirst($request->role_purpose),
             'direct_sub' => ucwords($request->direct_sub),
             'indirect_sub' => ucwords($request->indirect_sub),
-            'role_purpose' => ucfirst($request->role_purpose),
-            'internal_within' => $request->within,
-            'internal_outside' => $request->outside,
-            'external' => $request->external,
+            'job_level' => $request->job_level,
+            'min_education' => $request->min_education,
             'qualification' => $request->qualification,
-            'experience' => $request->experience,
-            'skill' => $request->skill,
-            'scope_area' => json_encode($request->scope_area),
-            'scope_activities' => json_encode($request->scope_activities),
+            // 'scope_area' => json_encode($request->scope_area),
+            // 'scope_activities' => json_encode($request->scope_activities),
+            'responsibility' => $request->responsibility,
             'soft_competency' => json_encode($request->soft),
             'hard_index' => json_encode($request->hard),
             'hard_value' => json_encode($request->value)

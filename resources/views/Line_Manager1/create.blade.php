@@ -1,44 +1,94 @@
 @extends('layouts.default')
-@section('title',ucwords(Request::segment(2)))
+@section('title',ucwords(Request::segment(2).' ticket'))
 @section('js')
 
 <!-- show/hide form contract -->
 <script type="text/javascript">
+	if ($("#employee_status").val() == "Contract") {
+		$("#edit_contract_form").show();
+	} else {
+		$("#edit_contract_form").hide();
+	}
+
 	$("#contract_form").hide();
 	function contract_form(){
 		if (document.getElementById("employee_status").value != "Contract") {
 			$("#contract_form").hide();
+			$("#edit_contract_form").hide();
 		} else {
 			$("#contract_form").show();
+			$("#edit_contract_form").show();
 		}
 	};
+</script>
+
+<script src="{{ asset('assets/select2/select2.js') }}"></script>
+<script>
+	/* Dropdown select 2 */
+	$(document).ready(function() {
+		$( ".select2-directorate" ).select2( {
+			placeholder: "Select Directorate",
+			theme: "bootstrap",
+		});
+
+		$( ".select2-group" ).select2( {
+			placeholder: "Select Group",
+			theme: "bootstrap",
+		});
+
+		$( ".select2-division" ).select2( {
+			placeholder: "Select Division",
+			theme: "bootstrap",
+		});
+
+		$( ".select2-department" ).select2( {
+			placeholder: "Select Deparment",
+			theme: "bootstrap",
+		});
+	});
 </script>
 
 <!-- Add field in textarea -->
 <script>
 	/* Textarea on keyactivites */
-	$(document).ready(function() {
-		var i=1;
-		$('#add_field').click(function() {
-			i++;
-			$('#table_custom').append('<tr id="row'+i+'"><td><textarea class="form-control" cols="27" rows="3" name="scope_area[]"></textarea></td><td><textarea class="form-control" id="addLine" cols="77" rows="4" name="scope_activities[]"></textarea></td><td><button type="button" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
-		});
-	});
+	// $(document).ready(function() {
+	// 	var i=1;
+	// 	$('#add_field').click(function() {
+	// 		i++;
+	// 		$('#table_custom').append('<tr id="row'+i+'"><td><textarea class="form-control" cols="27" rows="3" name="scope_area[]"></textarea></td><td><textarea class="form-control" id="addLine" cols="77" rows="4" name="scope_activities[]"></textarea></td><td><button type="button" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+	// 	});
+	// });
 
-	$(document).on('click', '.btn_remove', function(){  
-       var button_id = $(this).attr("id");
-       $('#row'+button_id+'').remove();  
-    }); 
+	// $(document).on('click', '.btn_remove', function(){  
+ //       var button_id = $(this).attr("id");
+ //       $('#row'+button_id+'').remove();  
+ //    }); 
 
     /* Field on Hard Competencies */
-    $(document).ready(function() {
-		var i=1;
-		$('#add_hard_competencies').click(function() {
-			i++;
-			$('#table_hard_competencies').append('<tr id="row'+i+'"><td class="text-center">'+i+'</td><td><input class="form-control" type="text" name="hard[]" required></td><td><input class="form-control" type="number" name="value[]" min="1" max="5" required></td><td><button type="button" id="'+i+'" class="btn btn-danger btn_remove_hard">X</button></td></tr>');
-		});
-	});
+ //    $(document).ready(function() {
+	// 	var i=1;
+	// 	var btn = $('#add_hard_competencies');
+	// 	btn.click(function() {
+	// 		btn.remove();
+	// 		i++;
+	// 		$('#table_hard_competencies').append('<tr><td class="text-center">'+i+'</td><td><input class="form-control" type="text" name="hard[]" required></td><td><input class="form-control" type="number" name="value[]" min="1" max="5" required></td><td><button type="button" id="add_hard_competencies" class="btn btn-primary">+</button></td></tr>');
+	// 	});
+	// });
+	var no = 1;
+	$(document).on('click', '#add_hard_competencies', function(){
+		$('#add_hard_competencies').remove();
+		no++;  
+    	$('#table_hard_competencies').append('<tr><td class="text-center">'+ no +'</td><td><input class="form-control" type="text" name="hard[]" required></td><td><input class="form-control" type="number" name="value[]" min="1" max="5" required></td><td><button type="button" id="add_hard_competencies" class="btn btn-primary">+</button></td></tr>');
+    });
 
+	var no_edit = $('#no').data('no');
+    $(document).on('click', '#edit_hard_competencies', function(){
+		$('#edit_hard_competencies').remove();
+		no_edit++;  
+    	$('#table_hard_competencies').append('<tr><td class="text-center">'+ no_edit +'</td><td><input class="form-control" type="text" name="hard[]" required></td><td><input class="form-control" type="number" name="value[]" min="1" max="5" required></td><td><button type="button" id="edit_hard_competencies" class="btn btn-primary">+</button></td></tr>');
+    });
+
+	/*btn remove*/
 	$(document).on('click', '.btn_remove_hard', function(){  
        var button_id = $(this).attr("id");
        $('#row'+button_id+'').remove();  
@@ -53,7 +103,7 @@
 	        defaultDate: "+1w",
 	        changeMonth: true,
 	        numberOfMonths: 3,
-	        dateFormat: 'dd-mm-yy',
+	        dateFormat: 'dd/mm/yy',
 	        onClose: function(selectedDate) {
 	            $("#toDate").datepicker("option", "minDate", selectedDate);
 	        }
@@ -62,7 +112,7 @@
 	        defaultDate: "+1w",
 	        changeMonth: true,
 	        numberOfMonths: 3,
-	        dateFormat: 'dd-mm-yy',
+	        dateFormat: 'dd/mm/yy',
 	        onClose: function(selectedDate) {
 	            $("#fromDate").datepicker("option", "maxDate", selectedDate);
 	        }
@@ -92,6 +142,29 @@
 		            form.find(".body:eq(" + newIndex + ") label.error").remove();
 		            form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
 		        }
+
+		  //       $.ajaxSetup({
+				//     headers:
+				//     {
+				//         'X-CSRF-Token': $('input[name="_token"]').val()
+				//     }
+				// });
+
+		  //       $("#form_ticket").validate({
+		  //       	rules: {
+				//         position_name: {
+				//             remote: {
+				//                 url: '{{ url('checkPosition') }}',
+				// 				type : 'post',
+				//             }
+				//         }
+				//     },
+				//     messages: {
+				//         position_name: {
+				//             remote: jQuery.validator.format("{0} is already registered.")
+				//         }
+				//     }
+				// });
 
 		        // form.validate().settings.ignore = ":disabled,:hidden";
 		        return form.valid();
@@ -141,6 +214,7 @@
 </script>
 
 <script>
+/*popover*/
 	$(document).ready(function(){
 	    $('[data-toggle="popover"]').popover(); 
 	});
@@ -157,107 +231,129 @@
 				{"name":"paragraph","groups":["list","blocks"]},
 				// {"name":"document","groups":["mode"]},
 				// {"name":"insert","groups":["insert"]},
-				{"name":"styles","groups":["styles"]}
+				{"name":"styles","groups":["styles"]},
 			],
 			// Remove the redundant buttons from toolbar groups defined above.
 			removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
 		},
 	config = CKEDITOR.tools.prototypedCopy(config);
-  	CKEDITOR.replace('editor_jd1', config);
-	CKEDITOR.replace('editor_jd2', config);
-	CKEDITOR.replace('editor_jd3', config);
+	config.extraAllowedContent = 'span{color}';
 	CKEDITOR.replace('editor_exp', config);
-	CKEDITOR.replace('editor_skill', config);
+	CKEDITOR.replace('responsibility', config);
 </script>
 
-<!-- Dependent Dropdown -->
+<!-- Dependency Dropdown -->
 <script>
-	$('#group').change( function() {
-		var group_id = $(this).val();
-		var url = '{{ env('APP_URL') }}';
-		if (group_id > 0) {
-			$.ajax({
-				type: "GET",
-				url: url+"/division/"+group_id,
-				dataType: "json",
-				success:function(data) {
-					$('#division').empty();
-					$.each(data, function(key, value) {
-                        $('#division').append('<option value="'+value.id+'">'+value.division_name+'</option>');
-                    });
-				}
-			});
-		} else {
-			$('#division').empty();
-		}
-	});
-
-	$('#division').change( function() {
-		var id = $(this).val();
-		var url = '{{ env('APP_URL') }}';
-		if (id > 0) {
-			$.ajax({
-				type: "GET",
-				url: url+"/department/"+id,
-				dataType: "json",
-				success:function(data) {
-					$('#department').empty();
-					$.each(data, function(key, value) {
-                        $('#department').append('<option value="'+value.id+'">'+value.department_name+'</option>');
-                    });
-				}
-			});
-		} else {
-			$('#department').empty();
-		}
-	});
-
-	/* Edit */
-	var group_id = $('#group').val();
 	var url = '{{ env('APP_URL') }}';
-	var division = $('#division').attr('data-division');
 
-	if (group_id > 0) {
+	function change_dir() {
+		var dir_id = $('#directorate').val();
 		$.ajax({
 			type: "GET",
-			url: url+"/division/"+group_id,
+			url: url+"/group/"+dir_id,
+			dataType: "json",
+			success:function(data) {
+				$('#group').empty();
+				$('#division').empty();
+				$('#department').empty();
+				$.each(data, function(key, value) {
+                    $('#group').append('<option value="'+value.id+'">'+value.group_name+'</option>');
+                });
+			}
+		});
+	}
+
+	function change_gr() {
+		var gr_id = $('#group').val();
+		$.ajax({
+			type: "GET",
+			url: url+"/division/"+gr_id,
 			dataType: "json",
 			success:function(data) {
 				$('#division').empty();
+				$('#department').empty();
 				$.each(data, function(key, value) {
                     $('#division').append('<option value="'+value.id+'">'+value.division_name+'</option>');
                 });
-
-                $('#division').val(division);
 			}
 		});
-	} else {
-		$('#division').empty();
 	}
 
-	var division_id = $('#division').attr('data-division');
-	var department = $('#department').attr('data-department');
-
-	if ( division_id > 0 ) {
+	function change_div() {
+		var div_id = $('#division').val();
 		$.ajax({
 			type: "GET",
-			url: url+"/department/"+division_id,
+			url: url+"/department/"+div_id,
 			dataType: "json",
 			success:function(data) {
 				$('#department').empty();
 				$.each(data, function(key, value) {
                     $('#department').append('<option value="'+value.id+'">'+value.department_name+'</option>');
                 });
-
-                $('#department').val(department);
 			}
 		});
-	} else {
-		$('#department').empty();
 	}
 
+	/* Edit */
+	var url = '{{ env('APP_URL') }}';
+
+	function change_dir() {
+		var dir_id = $('#directorate').val();
+		$.ajax({
+			type: "GET",
+			url: url+"/group/"+dir_id,
+			dataType: "json",
+			success:function(data) {
+				$('#group').empty();
+				$('#division').empty();
+				$('#department').empty();
+				$.each(data, function(key, value) {
+                    $('#group').append('<option value="'+value.id+'">'+value.group_name+'</option>');
+                });
+			}
+		});
+	}
+
+	function change_gr() {
+		var gr_id = $('#group').val();
+		$.ajax({
+			type: "GET",
+			url: url+"/division/"+gr_id,
+			dataType: "json",
+			success:function(data) {
+				$('#division').empty();
+				$('#department').empty();
+				$.each(data, function(key, value) {
+                    $('#division').append('<option value="'+value.id+'">'+value.division_name+'</option>');
+                });
+			}
+		});
+	}
+
+	function change_div() {
+		var div_id = $('#division').val();
+		$.ajax({
+			type: "GET",
+			url: url+"/department/"+div_id,
+			dataType: "json",
+			success:function(data) {
+				$('#department').empty();
+				$.each(data, function(key, value) {
+                    $('#department').append('<option value="'+value.id+'">'+value.department_name+'</option>');
+                });
+			}
+		});
+	}
 </script>
 
+<script type="text/javascript" src="{{ asset('assets/widgets/uniform/uniform.js') }}"></script>
+<script>
+	/* Checkbox */
+	$(function() {
+	    $('input[type="checkbox"].custom-checkbox').uniform();
+	    $('.checker span').append('<i class="glyph-icon icon-check"></i>');
+	});
+</script>
 @stop
 
 @section('content')
@@ -282,6 +378,13 @@
 		    <div class="panel panel-default">
 
 		        <div class="panel-body">
+
+		        	@if(session('error'))
+		        		<div class="alert alert-danger" role="alert">
+		                    <strong>{{ session('error') }}</strong>
+		                </div>
+		        	@endif
+
 			        <form role="form" action="{{ route('store.ticket') }}" method="post" enctype="multipart/form-data" class="form-horizontal" id="form_ticket">
 			        @csrf
 			        	<div id="wizard">
@@ -290,21 +393,10 @@
 		                    	@include('Line_Manager1.form_erf')
 		                    </section>
 
-		                    <h2>Job Description (Step 1)</h2>
+		                    <h2>Job Description</h2>
 		                    <section>
 		                        @include('Line_Manager1.form_jd')
 		                    </section>
-
-		                    <h2>Job Description (Step 2)</h2>
-		                    <section>
-		                        @include('Line_Manager1.form_jd2')
-		                    </section>
-
-		                    <h2>Job Description (Step 3)</h2>
-		                    <section>
-		                        @include('Line_Manager1.form_jd3')
-		                    </section>
-
 		                </div>
 		            </form>
 		        </div>
@@ -334,19 +426,9 @@
 		                    	@include('Line_Manager1.edit_form_erf')
 		                    </section>
 
-		                    <h2>Job Description (Step 1)</h2>
+		                    <h2>Job Description</h2>
 		                    <section>
 		                        @include('Line_Manager1.edit_form_jd')
-		                    </section>
-
-		                    <h2>Job Description (Step 2)</h2>
-		                    <section>
-		                        @include('Line_Manager1.edit_form_jd2')
-		                    </section>
-
-		                    <h2>Job Description (Step 3)</h2>
-		                    <section>
-		                        @include('Line_Manager1.edit_form_jd3')
 		                    </section>
 		                </div>
 		            </form>
@@ -377,20 +459,10 @@
 		                    	@include('Line_Manager1.edit_form_erf')
 		                    </section>
 
-		                    <h2>Job Description (Step 1)</h2>
+		                    <h2>Job Description</h2>
 		                    <section>
 		                        @include('Line_Manager1.edit_form_jd')
 		                    </section>
-
-		                    <h2>Job Description (Step 2)</h2>
-		                    <section>
-		                        @include('Line_Manager1.edit_form_jd2')
-		                    </section>
-
-		                    <h2>Job Description (Step 3)</h2>
-		                    <section>
-		                        @include('Line_Manager1.edit_form_jd3')
-		                    </section>                                     
 		                </div>
 		            </form>
 		        </div>

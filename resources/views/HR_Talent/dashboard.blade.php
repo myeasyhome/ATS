@@ -2,5 +2,5 @@
 @section('title','Dashboard')
 
 @section('content')
-	dashboard gua
+	dashboard HRTA
 @endsection

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGroupsTable extends Migration
+class Groups extends Migration
 {
     /**
      * Run the migrations.
@@ -15,6 +15,8 @@ class CreateGroupsTable extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('directorates_id');
+            $table->foreign('directorates_id')->references('id')->on('directorates')->onDelete('cascade');
             $table->string('group_name')->nullable();
         });
 

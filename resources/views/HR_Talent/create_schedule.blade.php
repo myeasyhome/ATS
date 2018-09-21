@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title','Create Hiring Brief')
+@section('title','Create Schedule')
 
 @section('js')
 <!-- Datepicker bootstrap -->
@@ -39,21 +39,29 @@
 
 	        <div class="panel-body">
 		        <div class="example-box-wrapper">
-		        	<form role="form" action="{{ route('store.brief') }}" method="post" enctype="multipart/form-data" class="form-horizontal">
+		        	<form role="form" action="{{ route('schedule.brief',$data->hiring_briefs->id) }}" method="post" enctype="multipart/form-data" class="form-horizontal">
 			        @csrf
+			        @method('PATCH')
 			        	<div class="row">
 			        		<div class="col-md-8">
 			        			<div class="form-group">
 			        				<label class="col-md-3 control-label">Job Title</label>
 			        				<div class="col-md-8">
-			        					<input type="text" name="" value="{{ ucwords($data->position_name) }}" class="form-control" disabled="true">
+			        					<input type="text" name="" value="{{ $data->position_name }}" class="form-control" disabled="true">
+			        				</div>
+			        			</div>
+
+			        			<div class="form-group">
+			        				<label class="col-md-3 control-label">Grade</label>
+			        				<div class="col-md-1">
+			        					<input type="text" value="{{ $data->position_grade }}" class="form-control text-center" disabled>
 			        				</div>
 			        			</div>
 
 			        			<div class="form-group">
 			        				<label class="col-md-3 control-label">Department</label>
 			        				<div class="col-md-8">
-			        					<input type="text" name="" value="{{ $data->departments->department_name }}" class="form-control" disabled="true">
+			        					<input type="text" name="" value="{{ $data->ticket_erf_details->departments->department_name}}" class="form-control" disabled="true">
 			        				</div>
 			        			</div>
 
@@ -100,19 +108,10 @@
 			        				</div>
 			        			</div>
 			        		</div>
-
-			        		<div class="col-md-2">
-			        			<div class="form-group">
-			        				<label class="col-md-3 control-label">Grade</label>
-			        				<div class="col-md-4">
-			        					<input type="text" value="{{ $data->position_grade }}" class="form-control text-center" disabled>
-			        				</div>
-			        			</div>
-			        		</div>
 			        	</div>
 			        	<br><br>
 			        	<div class="row">
-			        		<div class="col-md-12">
+			        		{{-- <div class="col-md-12">
 			        			<div class="form-group">
 			        				<label class="col-md-2 control-label" style="padding-left: 20px;">Job Function</label>
 			        				<div class="col-md-8">
@@ -137,7 +136,7 @@
 			        					<textarea class="form-control" rows="10"></textarea>
 			        				</div>
 			        			</div>
-			        		</div>
+			        		</div> --}}
 
 			        		<div class="col-md-12">
 			        			<div class="form-group text-center">
@@ -146,17 +145,6 @@
 			        		</div>
 			        	</div>
 
-			        	{{-- <div id="wizard">
-		                    <h2>Form ERF</h2>
-		                    <section>
-		                    	@include('Line_Manager1.form_erf')
-		                    </section>
-
-		                    <h2>Form JD</h2>
-		                    <section>
-		                        @include('Line_Manager1.form_jd')
-		                    </section>
-		                </div> --}}
 		            </form>	
 		        </div>
 	        </div>

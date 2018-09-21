@@ -6,7 +6,6 @@
 <script type="text/javascript" src="{{ asset('assets/widgets/datatable/datatable.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/widgets/datatable/datatable-bootstrap.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/widgets/datatable/datatable-responsive.js') }}"></script>
-
 <script type="text/javascript">
     /* Datatables responsive */
     $(document).ready(function() {
@@ -60,6 +59,13 @@
     });
 </script>
 
+<script>
+/* keterangan label di option */
+	$('#ket').popover({
+		placement:'top',
+	});
+</script>
+
 @stop
 
 @section('content')
@@ -89,13 +95,12 @@
 			<table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap dataTable collapsed dtr-inline" cellspacing="0" width="100%">
 				<thead>
 				<tr>
-				    <th>No.</th>
-				    <th>Position Name</th>
-				    {{-- <th>JD File</th> --}}
-				    <th>Date</th>
-				    <th>Line Manager Approval</th>
-				    <th>HRBP Approval</th>
-				    <th>Option</th>
+				    <th class="text-center col-md-1">No.</th>
+				    <th class="text-center">Position Name</th>
+				    <th class="text-center">Date</th>
+				    <th class="text-center">Line Manager Approval</th>
+				    <th class="text-center">HRBP Approval</th>
+				    <th class="text-center">Option</th>
 				</tr>
 				</thead>
 
@@ -103,11 +108,10 @@
 				@php $no =1; @endphp
 				    @forelse($ticket as $ticket)
 				    <tr>
-					    <td>{{ $no++ }}</td>
-					    <td>{{ $ticket->position_name }}</td>
-					    {{-- <td></td> --}}
+					    <td class="text-center">{{ $no++ }}</td>
+					    <td class="text-center">{{ $ticket->position_name }}</td>
 					    <td>{{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y') }}</td>
-					    <td>
+					    <td class="text-center">
 					    	@if($ticket->approval_lm2 == 0)
 					    		<span class="bs-label label-yellow"><strong>Waiting Approval</strong></span>
 					    	@elseif($ticket->approval_lm2 == 1)
@@ -116,8 +120,10 @@
 					    		<span class="bs-label label-danger"><strong>Rejected</strong></span>
 					    	@endif
 					    </td>
-					    <td>
-					    	@if($ticket->approval_hrbp == 0)
+					    <td class="text-center col-md-2">
+					    	@if($ticket->approval_lm2 == 2)
+					    		<span class="bs-label label-warning"><strong>You must get approval first from the line manager</strong></span>
+					    	@elseif($ticket->approval_hrbp == 0)
 					    		<span class="bs-label label-yellow"><strong>Waiting Approval</strong></span>
 					    	@elseif($ticket->approval_hrbp == 1)
 					    		<span class="bs-label label-success"><strong>Approved</strong></span>
@@ -125,22 +131,21 @@
 					    		<span class="bs-label label-danger"><strong>Rejected</strong></span>
 					    	@endif
 					    </td>
-					    <td>
+					    <td class="text-center">
 					    	@if ($ticket->approval_lm2 == 0)
 							    <a href="{{ route('edit.ticket',$ticket->id) }}" type="button" class="btn btn-round btn-info" title="Edit">
 						            <span class="glyph-icon icon-pencil"></span>
+						        </a>
+						        <a href="#modal_delete" type="button" data-url="{{ route('delete.ticket',$ticket->id) }}" data-toggle="modal" class="btn btn-round btn-danger btn_modal_delete" title="Delete">
+						            <span class="glyph-icon icon-trash"></span>
 						        </a>
 						    @elseif ($ticket->approval_lm2 == 2)
 						    	<a href="{{ route('edit_rejected.ticket',$ticket->id) }}" type="button" class="btn btn-round btn-purple" title="Request Re-approval">
 						            <span class="glyph-icon icon-external-link-square"></span>
 						        </a>
-					        @endif
-					        &nbsp;
-					        <a href="#modal_delete" type="button" data-url="{{ route('delete.ticket',$ticket->id) }}" data-toggle="modal" class="btn btn-round btn-danger btn_modal_delete" title="Delete">
-					            <span class="glyph-icon icon-trash"></span>
-					        </a>
-					        &nbsp;
-					        @if ($ticket->approval_lm2 == 2)
+						        <a href="#modal_delete" type="button" data-url="{{ route('delete.ticket',$ticket->id) }}" data-toggle="modal" class="btn btn-round btn-danger btn_modal_delete" title="Delete">
+						            <span class="glyph-icon icon-trash"></span>
+						        </a>
 						        <a href="#modal_reject" type="button" data-toggle="modal" data-url="{{ route('reason.ticket',$ticket->id) }}" class="btn btn-round btn-info btn_modal_reject_lm2" title="Rejected Reason">
 						            <span class="glyph-icon icon-eye"></span>
 						        </a>
@@ -148,6 +153,8 @@
 						    	<a href="#modal_reject" type="button" data-toggle="modal" data-url="{{ route('reason.ticket',$ticket->id) }}" class="btn btn-round btn-info btn_modal_reject_hrbp" title="Rejected Reason">
 						            <span class="glyph-icon icon-eye"></span>
 						        </a>
+						    @elseif ($ticket->approval_lm2 == 1 && $ticket->approval_hrbp == 1)
+						    	<span class="bs-label label-success" id="ket" data-toggle="popover" data-trigger="hover" data-content="disini akan ada informasi proses sampai mana" title="Information"><strong>On Progress</strong></span>
 					        @endif
 					    </td>
 				    </tr>

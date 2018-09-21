@@ -9,11 +9,11 @@ class Group extends Model
     protected $table = 'groups';
 
     protected $fillable = [
-    	'group_name'
+    	'directorates_id','group_name'
     ];
 
-    public function tickets()
+    public function ticket_erf_details()
     {
-    	return $this->belongsTo('App\Models\Ticket','id');
+        return $this->hasMany('App\Models\Ticket_erf');
     }
 }

@@ -25,6 +25,13 @@ class ApprovalController extends Controller
     	return view('Line_Manager2.list',compact('ticket'));
     }
 
+    /* Deatil content requirement */
+    public function content_req($id)
+    {
+        $content = Ticket::findOrFail($id);
+        return response()->json();
+    }
+
     public function approval()
     {
         $ticket = Ticket::where('approval_lm2','0')->get();
@@ -52,19 +59,17 @@ class ApprovalController extends Controller
             'reason_reject_lm2' => ucfirst($request->reason_for_rejection),
         ]);
 
-        return redirect()->route('lm2.list');
+        return redirect()->route('lm2.list')->with('error','You Have Been Rejected This Ticket !');
     }
 
     public function detail($id)
     {
         $detail = Ticket::findOrFail($id);
-        dd($detail->ticket_erf_details->divisions->division_name);
-        $scope_area = json_decode($detail->ticket_jd_details->scope_area);
-        $scope_activities = json_decode($detail->ticket_jd_details->scope_activities);
         $soft = json_decode($detail->ticket_jd_details->soft_competency);
-        $hard = json_decode($detail->ticket_jd_details->hard_competency);
+        $hard = json_decode($detail->ticket_jd_details->hard_index);
+        $hard_value = json_decode($detail->ticket_jd_details->hard_value);
 
-        return view('Line_Manager2.detail',compact('detail','scope_area','scope_activities','soft','hard'));
+        return view('Line_Manager2.detail',compact('detail','soft','hard','hard_value'));
     }
 
 }

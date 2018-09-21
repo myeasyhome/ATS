@@ -12,8 +12,8 @@ class Department extends Model
     	'divisions_id','department_name'
     ];
 
-    public function tickets()
+    public function ticket_erf_details()
     {
-    	return $this->belongsTo('App\Models\Ticket','id');
+        return $this->hasMany('App\Models\Ticket_erf');
     }
 }

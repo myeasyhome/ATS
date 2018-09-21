@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
 use App\Models\Ticket;
+use App\Models\Hiring_brief;
 
 use App\Mail\Request_approvalHRBP;
 use Illuminate\Support\Facades\Mail;
@@ -20,20 +21,13 @@ class TicketController extends Controller
     public function list()
     {
         $ticket = Ticket::where('approval_lm2','1')->get();
-    	return view('HR_BussinessPartner.list',compact('ticket'));
+
+        /* untuk notice hiring brief */
+        $hiring = Hiring_brief::all();
+    	return view('HR_BussinessPartner.list',compact('ticket','hiring'));
     }
 
-    public function approval()
-    {
-        /* akan muncul jika sudah di apporve Line manager 2 */
-        $ticket = Ticket::where([
-                            ['approval_lm2','1'],
-                            ['approval_hrbp','0']
-                        ])->get();
-
-    	return view('HR_BussinessPartner.approval',compact('ticket'));
-    }
-
+    /* untuk approve ticket */
     public function approved($id)
     {
         $ticket = Ticket::findOrFail($id);
@@ -42,12 +36,18 @@ class TicketController extends Controller
             'approval_hrbp' => '1'
         ]);
 
+        /* dibuat untuk saling berhubungan dengan HR talent di table hiring brief */
+        Hiring_brief::create([
+            'ticket_id' => $id
+        ]);
+
         /* send email for notif */
         Mail::to(Auth::user()->email)->send(new Request_approvalHRBP($ticket));
 
         return redirect()->route('hrbp.list')->with('success','Successfully Approved!');
     }
 
+    /* for reject ticket */
     public function reject($id,Request $request)
     {
         Ticket::findOrFail($id)->update([
@@ -55,17 +55,17 @@ class TicketController extends Controller
             'reason_reject_hrbp' => ucfirst($request->reason_for_rejection),
         ]);
 
-        return back();
+        return back()->with('error','You Have Been Rejected This Ticket !');
     }
 
+    /* Detail ticket */
     public function detail($id)
     {
         $detail = Ticket::findOrFail($id);
-        $scope_area = json_decode($detail->ticket_jd_details->scope_area);
-        $scope_activities = json_decode($detail->ticket_jd_details->scope_activities);
         $soft = json_decode($detail->ticket_jd_details->soft_competency);
-        $hard = json_decode($detail->ticket_jd_details->hard_competency);
+        $hard = json_decode($detail->ticket_jd_details->hard_index);
+        $hard_value = json_decode($detail->ticket_jd_details->hard_value);
 
-        return view('HR_BussinessPartner.detail',compact('detail','scope_area','scope_activities','soft','hard'));
+        return view('HR_BussinessPartner.detail',compact('detail','soft','hard','hard_value'));
     }
 }
