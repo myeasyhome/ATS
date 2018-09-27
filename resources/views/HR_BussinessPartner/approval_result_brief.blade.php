@@ -38,17 +38,21 @@
 </script>
 @stop
 
+
+<!-- ALERT akan muncul jika HRT sudah input hasil briefing, status waiting => 0 -->
+@section('alert_for_HRBP')
+	@if($hiring->contains('approval_hiring_by_hrbp','0') == true)
+		@component('notice_message.notice', [ 
+						'msg'=> 'There is an approval that must be completed as soon as possible because it will affect duration of the SLA', 
+						'link' => route('hrbp.approval.hiring')
+					])
+		@endcomponent
+	@endif
+@endsection
 @section('content')
 <div class="panel">
 	<div class="panel-body">
-		<!-- akan muncul jika HRT sudah input hasil briefing, waiting=>0 -->
-		@if($hiring->contains('approval_hiring_by_hrbp','0') == true)
-			@component('notice_message.notice', [ 
-							'msg'=> 'There is an approval that must be completed as soon as possible because it will affect duration of the SLA', 
-							'link' => route('hrbp.approval.hiring')
-						])
-			@endcomponent
-		@endif
+		
 		<h3 class="title-hero">approval result of the brief list</h3>
 		<div class="example-box-wrapper">
 
@@ -56,10 +60,9 @@
 				<thead>
 					<tr>
 					    <th>No.</th>
-					    <th>Position Name</th>
-					    <th>Input Date Result of Brief</th>
-					    {{-- <th>Result Brief</th> --}}
-					    <th>Option</th>
+					    <th class="text-center">Position Name</th>
+					    <th class="text-center">Input Date Result of Brief</th>
+					    <th class="text-center">Status</th>
 					</tr>
 				</thead>
 
@@ -70,12 +73,13 @@
 					    <td class="text-center">{{ $no++ }}</td>
 					    <td><a href="">{{ $hiring->tickets->position_name }}</a></td>
 					    <td class="text-center">
-					    	{{ $hiring->date_result_hiring == Null ? '-' : \Carbon\Carbon::parse($hiring->date_result_hiring)->format('d/m/Y') }}
+					    	{{ $hiring->date_result_hiring == NULL ? '-' : \Carbon\Carbon::parse($hiring->date_result_hiring)->format('d/m/Y') }}
 					    </td>
 					    <td class="text-center">
-					    	@if ( $hiring->job_function == null || $hiring->general_information == null || $hiring->characteristic && $hiring->approval_hiring_by_hrbp == null )
-					    		<span class="bs-label label-yellow"><strong>HR Talent Hasn't Input the result of brief yet</strong></span>
+					    	@if ( $hiring->approval_hiring_by_hrbp == NULL )
+					    		<span class="bs-label label-warning"><strong>HR Talent Hasn't Input the result of brief yet</strong></span>
 					    	@else
+					    		<!-- status: 0=>sudah input hasil brief; 1=> di approve HRBP; 2=> di reject HRBP -->
 					    		@if ( $hiring->approval_hiring_by_hrbp == 0 )
 					    			<a class="btn btn-round btn-blue-alt" href="{{ route('hrbp.detail.result',$hiring->id) }}">
 				                        <i class="glyph-icon icon-eye"></i>
@@ -87,21 +91,6 @@
 					    		@endif
 					    	@endif
 					    </td>
-					    {{-- <td>
-					    	@if ( $hiring->approval_hiring_by_hrbp == 0 )
-						        <a href="#modal_approval" type="button" data-url="{{ route('hrbp.approved.result',$hiring->id) }}" data-toggle="modal" class="btn btn-round btn-success btn_modal_approved" title="Approved">
-						            <span class="glyph-icon icon-check"></span>
-						        </a>
-						        &nbsp;
-						        <a href="#modal_reject" type="button" data-url="{{ route('hrbp.reject.result',$hiring->id) }}" data-toggle="modal" class="btn btn-round btn-danger btn_modal_reject" title="Reject">
-						            <span class="glyph-icon icon-remove"></span>
-						        </a>
-					        @elseif ( $hiring->approval_hiring_by_hrbp == 1 )
-					        	<span class="bs-label label-success"><strong>This Result Has Been Approved</strong></span>
-					        @elseif ( $hiring->approval_hiring_by_hrbp == 2 )
-					        	<span class="bs-label label-danger"><strong>This Result Has Been Rejected</strong></span>
-					        @endif
-					    </td> --}}
 				    </tr>
 				    @empty
 				    	<td valign="top" colspan="5" class="dataTables_empty">No data available in table</td>

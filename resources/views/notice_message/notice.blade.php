@@ -1,4 +1,4 @@
-<div class="alert alert-danger">
+<div class="alert alert-danger" style="position: fixed;right: 0; bottom: 0">
     <div class="bg-red alert-icon">
         <i class="glyph-icon icon-warning"></i>
     </div>

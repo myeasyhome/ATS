@@ -19,6 +19,7 @@ class CreateHiringBriefsTable extends Migration
             $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
             $table->enum('approval_hiring_by_hrbp',['0','1','2'])->nullable();
             $table->text('reason_reject')->nullable();
+            $table->date('approval_date_hrbp')->nullable();
             $table->date('date_schedule')->nullable();
             $table->time('time_schedule')->nullable();
             $table->string('place_schedule')->nullable();

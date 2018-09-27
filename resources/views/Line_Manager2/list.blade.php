@@ -114,20 +114,22 @@
 			<!-- notif -->
 	        @if(session('success'))
 	        	<div class="alert alert-success" role="alert">
+	        		<button type="button" class="close" data-dismiss="alert">×</button>
 	                <strong>{{ session('success') }}</strong>
 	            </div>
 	        @elseif(session('error'))
 	        	<div class="alert alert-danger" role="alert">
+	        		<button type="button" class="close" data-dismiss="alert">×</button>
 	                <strong>{{ session('error') }}</strong>
 	            </div>
 	        @endif
 			<table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap" cellspacing="0" width="100%">
 				<thead>
 					<tr>
-					    <th>No.</th>
-					    <th>Position Name</th>
-					    <th>Created Date</th>
-					    <th>Status</th>
+					    <th class="text-center col-md-1">No.</th>
+					    <th class="text-center">Position Name</th>
+					    <th class="text-center">Created Date</th>
+					    <th class="text-center">Option</th>
 					</tr>
 				</thead>
 
@@ -137,8 +139,8 @@
 				    <tr>
 					    <td class="text-center">{{ $no++ }}</td>
 					    <td><a href="{{ route('lm2.detail.ticket',$ticket->id) }}">{{ $ticket->position_name }}</a></td>
-					    <td>{{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y') }}</td>
-					    <td>
+					    <td class="text-center">{{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y') }}</td>
+					    <td class="text-center">
 					    	@if($ticket->approval_lm2 > 0)
 					    		@if ( $ticket->approval_lm2 == 1 )
 					    			<span class="bs-label label-success"><strong>Approved</strong></span>

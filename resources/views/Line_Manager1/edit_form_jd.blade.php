@@ -90,18 +90,18 @@
 			                    <div class="col-md-8">
 			                        <select class="form-control" name="min_education" id="min_education" required>
 			                        	<option value="" disabled selected>Select Education</option>
-			                        	@if ( $data->ticket_jd_details->min_education == 'S1' )
-			                        		<option value="S1" selected>Bachelor's degree graduate</option>
-				                        	<option value="S2">Master's degree graduate</option>
-				                        	<option value="S3">Doctoral degree graduate</option>
-			                        	@elseif ( $data->ticket_jd_details->min_education == 'S2' )
-			                        		<option value="S1">Bachelor's degree graduate</option>
-				                        	<option value="S2" selected>Master's degree graduate</option>
-				                        	<option value="S3">Doctoral degree graduate</option>
-			                        	@elseif ( $data->ticket_jd_details->min_education == 'S3' )
-			                        		<option value="S1">Bachelor's degree graduate</option>
-				                        	<option value="S2">Master's degree graduate</option>
-				                        	<option value="S3" selected>Doctoral degree graduate</option>
+			                        	@if ( $data->ticket_jd_details->min_education == 's1' )
+			                        		<option value="s1" selected>Bachelor's degree graduate</option>
+				                        	<option value="s2">Master's degree graduate</option>
+				                        	<option value="s3">Doctoral degree graduate</option>
+			                        	@elseif ( $data->ticket_jd_details->min_education == 's2' )
+			                        		<option value="s1">Bachelor's degree graduate</option>
+				                        	<option value="s2" selected>Master's degree graduate</option>
+				                        	<option value="s3">Doctoral degree graduate</option>
+			                        	@elseif ( $data->ticket_jd_details->min_education == 's3' )
+			                        		<option value="s1">Bachelor's degree graduate</option>
+				                        	<option value="s2">Master's degree graduate</option>
+				                        	<option value="s3" selected>Doctoral degree graduate</option>
 			                        	@endif
 			                        </select>
 			                    </div>

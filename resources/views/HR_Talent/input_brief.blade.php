@@ -69,9 +69,6 @@
 			        			</div>
 			        		</div>
 
-			        		<!-- date input -->
-			        		<input type="hidden" name="date_result_hiring" value="{{ \Carbon\Carbon::now()->toDateString() }} {{-- 2018-10-01 --}}">
-
 			        		<div class="col-md-12">
 			        			<div class="form-group text-center">
 			        				<button type="submit" class="btn btn-primary">Input</button>	

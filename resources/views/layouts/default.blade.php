@@ -4,7 +4,7 @@
 
     <style>
         /* Loading Spinner */
-        .spinner{margin:0;width:70px;height:18px;margin:-35px 0 0 -9px;position:absolute;top:50%;left:50%;text-align:center}.spinner > div{width:18px;height:18px;background-color:#333;border-radius:100%;display:inline-block;-webkit-animation:bouncedelay 1.4s infinite ease-in-out;animation:bouncedelay 1.4s infinite ease-in-out;-webkit-animation-fill-mode:both;animation-fill-mode:both}.spinner .bounce1{-webkit-animation-delay:-.32s;animation-delay:-.32s}.spinner .bounce2{-webkit-animation-delay:-.16s;animation-delay:-.16s}@-webkit-keyframes bouncedelay{0%,80%,100%{-webkit-transform:scale(0.0)}40%{-webkit-transform:scale(1.0)}}@keyframes bouncedelay{0%,80%,100%{transform:scale(0.0);-webkit-transform:scale(0.0)}40%{transform:scale(1.0);-webkit-transform:scale(1.0)}}
+        .spinner{margin:0;width:70px;height:18px;margin:-35px 0 0 -9px;position:absolute;top:50%;left:50%;text-align:center;}.spinner > div{width:18px;height:18px;background-color:#333;border-radius:100%;display:inline-block;-webkit-animation:bouncedelay 1.4s infinite ease-in-out;animation:bouncedelay 1.4s infinite ease-in-out;-webkit-animation-fill-mode:both;animation-fill-mode:both}.spinner .bounce1{-webkit-animation-delay:-.32s;animation-delay:-.32s}.spinner .bounce2{-webkit-animation-delay:-.16s;animation-delay:-.16s}@-webkit-keyframes bouncedelay{0%,80%,100%{-webkit-transform:scale(0.0)}40%{-webkit-transform:scale(1.0)}}@keyframes bouncedelay{0%,80%,100%{transform:scale(0.0);-webkit-transform:scale(0.0)}40%{transform:scale(1.0);-webkit-transform:scale(1.0)}}
     
         @font-face {
             font-family: 'ooredoo'; /*a name to be used later*/
@@ -89,9 +89,7 @@
 
 
 <!-- WIDGETS -->
-
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/accordion-ui/accordion.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/calendar/calendar.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/carousel/carousel.css') }}">
 
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/charts/justgage/justgage.css') }}">
@@ -102,17 +100,19 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/chosen/chosen.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/colorpicker/colorpicker.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/datatable/datatable.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/datepicker/datepicker.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/datepicker-ui/datepicker.css') }}">
+
+<!-- bootstrap datepicker -->
+<link href="{{ asset('assets/widgets/datepicker/bootstrap-datepicker.css') }}" rel="stylesheet">
+
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/daterangepicker/daterangepicker.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/dialog/dialog.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/dropdown/dropdown.css') }}">
+{{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/dialog/dialog.css') }}"> --}}
+{{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/dropdown/dropdown.css') }}"> --}}
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/dropzone/dropzone.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/file-input/fileinput.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/input-switch/inputswitch.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/input-switch/inputswitch-alt.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/ionrangeslider/ionrangeslider.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/jcrop/jcrop.css') }}">
+{{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/jcrop/jcrop.css') }}"> --}}
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/jgrowl-notifications/jgrowl.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/loading-bar/loadingbar.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/maps/vector-maps/vectormaps.css') }}">
@@ -137,7 +137,7 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/touchspin/touchspin.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/uniform/uniform.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/wizard/wizard.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/xeditable/xeditable.css') }}">
+{{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/xeditable/xeditable.css') }}"> --}}
 
 <!-- SNIPPETS -->
 
@@ -210,7 +210,7 @@
 
 </head>
 
-<body class="fixed fixed-sidebar {{-- fixed-header --}}">
+<body class="fixed fixed-sidebar fixed-header">
 <div id="">
 
 <!-- loading -->
@@ -280,7 +280,11 @@
         </div>
     </div><!-- #header-nav-left -->
 
-    <div id="header-nav-right"> 
+    <div id="header-nav-right">
+        <!--alert untuk pemberitauan apporval hiring brief di HRBP -->
+        @if(Request::segment(2) == 'hrbp')
+            @yield('alert_for_HRBP')
+        @endif
     </div><!-- #header-nav-right -->
 
     </div>
@@ -301,13 +305,13 @@
                 </li>
                 <li class="divider"></li>
 
-                {{-- <li>
-                    <a href="" title="Change Password">
-                        <i class="glyph-icon icon-key"></i>
-                        <span>Change Password</span>
+                <li>
+                    <a href="{{ route('candidate') }}" title="Candidate">
+                        <i class="glyph-icon icon-group"></i>
+                        <span>Candidate</span>
                     </a>
                 </li>
-                <li class="divider"></li> --}}
+                <li class="divider"></li>
                 
                 {{-- <li>
                     <a href="{{ route('create.ticket') }}" title="Create New Ticket">

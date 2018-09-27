@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Auth;
 use App\Models\Ticket;
 use App\Models\Hiring_brief;
+use Carbon\Carbon;
 
 use App\Mail\Request_approvalHRBP;
 use Illuminate\Support\Facades\Mail;
@@ -28,8 +29,11 @@ class ApprovalResultBriefController extends Controller
     public function detail($id)
     {
         $hiring = Hiring_brief::findOrFail($id);
-        
-        return view('HR_BussinessPartner.detail_result_brief',compact('hiring'));
+
+        /* buat notif alert di detail */
+        $notif = Hiring_brief::all();
+
+        return view('HR_BussinessPartner.detail_result_brief',compact('hiring','notif'));
     }
 
     /* approve result hiring */
@@ -37,8 +41,9 @@ class ApprovalResultBriefController extends Controller
     {
         Hiring_brief::findOrFail($id)->update([
             'approval_hiring_by_hrbp' => '1',
-            /*disini tambah lagi update tanggal buat sesuaikan SLA*/
-            'date_result_hiring' => $request->date_result_hiring
+
+            /* Tanggal ini untuk perhitungan SLA setelah di approve ( selisih waktu tampil di hiring brief HR Talent ) */
+            // 'approval_date_hrbp' => 
         ]);
 
         return redirect()->route('hrbp.approval.hiring')->with('success','Successfully Approved Result of Hiring Brief');

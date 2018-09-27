@@ -23,8 +23,16 @@
 
 <script>
 /* keterangan label di option */
-	$('#ket').popover({
+	$('body').popover({
 		placement:'top',
+		html : true,
+		delay: {show: 50, hide: 400},
+		selector: '[data-popover]',
+    	trigger: 'click hover',
+	    content: function(ele) {
+	        console.log(ele,this);
+	        return $(this).next("#ket").html();
+		}
 	});
 </script>
 
@@ -64,21 +72,22 @@
 			</div>
 		</div>
 		<div class="example-box-wrapper">
-        <!-- notif -->
+        <!-- Notification Alart -->
         @if(session('success'))
         	<div class="alert alert-success" role="alert">
+        		<button type="button" class="close" data-dismiss="alert">×</button>
                 <strong>{{ session('success') }}</strong>
             </div>
         @endif
 			<table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap dataTable collapsed dtr-inline" cellspacing="0" width="100%">
 				<thead>
 				<tr>
-				    <th>No.</th>
-				    <th>Position Name</th>
-				    <th>Brief Schedule</th>
-				    <th>Time Schedule</th>
-				    <th>Place Schedule</th>
-				    <th>Option</th>
+				    <th class="text-center">No.</th>
+				    <th class="text-center">Position Name</th>
+				    <th class="text-center">Brief Schedule</th>
+				    <th class="text-center">Time Schedule</th>
+				    <th class="text-center">Place Schedule</th>
+				    <th class="text-center">Status</th>
 				</tr>
 				</thead>
 
@@ -98,128 +107,150 @@
 						    <tr>
 							    <td class="text-center">{{ $no++ }}</td>
 							    <td>{{ $data->position_name }}</td>
-							    <td>
+							    <td class="text-center">
 								    @if( $data->hiring_briefs->date_schedule != Null )
 									    {{ \Carbon\Carbon::parse($data->hiring_briefs->date_schedule)->format('d/m/Y') }}
 									@else
-										Date not scheduled yet
+										-
 								    @endif
-							    <td>
+							    <td class="text-center">
 							    	@if( $data->hiring_briefs->time_schedule != Null )
 									    {{ \Carbon\Carbon::parse($data->hiring_briefs->time_schedule)->format('h:i:s A') }}
 									@else
-										Time not scheduled yet
+										-
 								    @endif
 							    </td>
-							    <td>
+							    <td class="text-center">
 							    	@if( $data->hiring_briefs->place_schedule != Null )
 									    {{ $data->hiring_briefs->place_schedule }}
 									@else
-										Place not scheduled yet
+										-
 								    @endif
 							    </td>
 
-							    <!-- jika date schedule belum di set -->
-							    @if ( $data->hiring_briefs->date_schedule == null )
-							    	<td>
-								        <a href="{{ route('create.brief',$data->id) }}" type="button" class="btn btn-primary" title="Create Schedule">
-								            <span class="glyph-icon icon-clock-o"> Schedule</span>
-								        </a>
-								    </td>
+								<!-- =============================== SLA SYSTEM ==============================
+									@author Denny Aris Setiawan (dennyariss@gmail.com)
+								-->
+							    <td class="text-center">
+								    @php
+								    /* TANGGAL SEKARANG SEBAGAI ACUAN PERHITUNGAN SLA */ 
+								    	$now = '2018-10-01';
+								    @endphp
+							    <!-- jika date schedule buat hiring brief belum di set -->
+							    @if ( $data->hiring_briefs->date_schedule == NULL )
+							        <a href="{{ route('create.brief',$data->id) }}" type="button" class="btn btn-primary" title="Create Schedule">
+							            <span class="glyph-icon icon-clock-o"> Schedule</span>
+							        </a>
+
+							    <!-- logika date yang sudah di schedule -->
 								@else
-									<!-- menuju ke date schedule -->
-								    @if( \Carbon\Carbon::now()->toDateString() < $data->hiring_briefs->date_schedule )
+									<!-- Sebelum ke Date Schedule -->
+								    @if( $now < $data->hiring_briefs->date_schedule )
 								    	@php
-								    		$now = \Carbon\Carbon::now();
+								    		/* perhitungan untuk jarak date schedule dengan tanggal sekarang */
 											$date = \Carbon\Carbon::parse($data->hiring_briefs->date_schedule);
 
 											$diff = $date->diffInDays($now);
 								    	@endphp
-									    <td>
-									    	<span class="bs-label label-yellow" id="ket" data-toggle="popover" data-trigger="hover" data-content="{{ $diff }} days more to input the result of brief" title="Information"><strong>Waiting for the hiring brief date</strong></span>
-									    </td>
-									@elseif( \Carbon\Carbon::now()->toDateString() >= $data->hiring_briefs->date_schedule )
+								    	<!-- schedule udh di set dan menunggu sampai waktu schedule -->
+								    	@if ( $data->hiring_briefs->approval_hiring_by_hrbp == NULL )
+							    			<span class="bs-label label-yellow" id="ket" data-popover="true" data-content="{{ $diff }} days more to input the result of brief" title="Information">
+										    	<strong>Wait until brief schedule</strong>
+										    </span>
+										<!-- jika hasil hiring brief sudah di input & menunggu approval HRBP -->
+										@elseif ( $data->hiring_briefs->approval_hiring_by_hrbp == 0 )
+											<span class="bs-label label-yellow" id="ket" data-popover="true" data-content="You have entered the result of the briefing, so please wait for approval from HRBP" title="Information">
+												<strong>Waiting Approval From HRBP</strong>
+											</span>
+
+										<!-- sudah di approve HRBP -->
+										@elseif ( $data->hiring_briefs->approval_hiring_by_hrbp == 1 )
+											@php
+												/* total menghitung SLA sejak HRBP approve hasil brief dan TIDAK LEWAT DARI SLA */
+												$approval = \Carbon\Carbon::parse($data->hiring_briefs->approval_date_hrbp);
+												$schedule = \Carbon\Carbon::parse($data->hiring_briefs->date_schedule)->addDays(2);
+
+												$total = $schedule->diffInDays($approval);
+											@endphp
+											<!-- SLA HIJAU -->
+											@if ( $approval <= $schedule )
+												@if ( $total == 2 )
+													<span class="bs-label label-success"><strong>SLA 1 Days</strong></span>
+												@elseif ( $total == 1 )
+													<span class="bs-label label-success"><strong>SLA 2 Days</strong></span>
+												@elseif ( $total == 0 )
+													<span class="bs-label label-success"><strong>SLA 3 Days</strong></span>
+												@endif
+											@endif
+										<!-- sudah di reject HRBP -->
+										@elseif ( $data->hiring_briefs->approval_hiring_by_hrbp == 2 )
+											<a href="#modal_reject" data-url="{{ route('reject.reason.brief',$data->hiring_briefs->id) }}" type="button" class="btn btn-danger btn_modal_reject" data-url="" data-toggle="modal" title="Rejected Reason">Rejected</a>
+								    	@endif
+
+
+
+
+									<!-- lewat dari date schedule -->
+									@elseif( $now >= $data->hiring_briefs->date_schedule )
 										@php
-											/* waktu input hasil brief */
-											$now = \Carbon\Carbon::now();
+											/* waktu dari brief schedule di tambah 3 Hari SLA */
 											$SLA = \Carbon\Carbon::parse($data->hiring_briefs->date_schedule)->addDays(2);
 
 											$diff = $SLA->diffInDays($now);
 										@endphp
-										@if ( \Carbon\Carbon::now()->toDateString() <= \Carbon\Carbon::parse($SLA)->toDateString() )
-
-											@if ( $data->hiring_briefs->date_result_hiring != Null && $data->hiring_briefs->approval_hiring_by_hrbp == 0 )
-												<!-- ini muncul ketika sudah input hasil hiring brief -->
-												<td>
-													<span class="bs-label label-yellow" id="ket" data-toggle="popover" data-trigger="hover" data-content="You have entered the result of the briefing, so please wait for approval from HRBP" title="Information"><strong>Waiting Approval From HRBP</strong></span>
-												</td>
-											@elseif ( $data->hiring_briefs->date_result_hiring != Null && $data->hiring_briefs->approval_hiring_by_hrbp == 1 )
-												<!-- proses di apporve oleh hrbp -->
-												@php
-													/* total menghitung SLA sejak HRBP approve hasil brief */
-													$approval = \Carbon\Carbon::parse($data->hiring_briefs->date_result_hiring);
-													$schedule = \Carbon\Carbon::parse($data->hiring_briefs->date_schedule)->addDays(2);
-
-													$total = $schedule->diffInDays($approval);
-												@endphp
-												<!-- total SLA sejak di approve HRBP -->
-												<td>
-													<span class="bs-label label-success"><strong>Waktu SLA {{ $total }} hari</strong></span>
-												</td>
-											@elseif ( $data->hiring_briefs->date_result_hiring != Null && $data->hiring_briefs->approval_hiring_by_hrbp == 2 )
-												<!-- proses di tolak hrbp -->
-												<td>
-													<a href="#modal_reject" data-url="{{ route('reject.reason.brief',$data->hiring_briefs->id) }}" type="button" class="btn btn-danger btn_modal_reject" data-url="" data-toggle="modal" title="Rejected Reason">Rejected</a>
-												</td>
-											@else
-												<!-- Waktu SLA yang sesuai berjalan -->
-												<td>
-										    		<a href="{{ route('input.brief',$data->id) }}" type="button" class="btn btn-success" title="Input Result of Brief">
-										    			<span > {{ $now == \Carbon\Carbon::parse($SLA)->toDateString() ? 'Final Day' : $diff.' Days Remaining' }}</span>
+										<!-- proses mau input hasil brief untuk mengetahui SLA -->
+										@if( $data->hiring_briefs->approval_hiring_by_hrbp == NULL )
+											<!-- jika $now sama dengan tanggal brief -->
+											@if( $now > $data->hiring_briefs->date_schedule )
+												@if( $now <= $SLA )
+													<a href="{{ route('input.brief',$data->id) }}" type="button" class="btn btn-success" title="Input Result of Brief">
+										    			<span>{{ $now == \Carbon\Carbon::parse($SLA)->toDateString() ? 'Final Day' : $diff.' Days Remaining' }}</span>
 										    		</a>
-										    	</td>	
-											@endif
-									    @else
-									    	@if ( $data->hiring_briefs->date_result_hiring != Null && $data->hiring_briefs->approval_hiring_by_hrbp == 0 )
-												<td>
-													<span class="bs-label label-yellow"><strong>Waiting Approval From HRBP</strong></span>
-												</td>
-											@else
-												@if ( $data->hiring_briefs->approval_hiring_by_hrbp == 1 )
-													@php
-														/* total menghitung SLA sejak HRBP approve hasil brief */
-														$approval = \Carbon\Carbon::parse($data->hiring_briefs->date_result_hiring);
-														$schedule = \Carbon\Carbon::parse($data->hiring_briefs->date_schedule)->addDays(2);
-
-														$total = $schedule->diffInDays($approval);
-													@endphp
-													@if ( $approval <= \Carbon\Carbon::parse($schedule)->toDateString() )
-														<td>
-															<span class="bs-label label-success"><strong>Waktu SLA {{ $total }} hari</strong></span>
-														</td>
-													@else 
-														<td>
-															<span class="bs-label label-danger"><strong>Waktu SLA + {{ $total }} hari</strong></span>
-														</td>
-													@endif
-												@else
-													<!-- jika lewat dari waktu SLA-->
-											    	<td>
-											    		<a href="{{ route('input.brief',$data->id) }}" type="button" class="btn btn-danger" title="Input Result of Brief">
-											    			<span > + {{ $diff }} Days</span>
-											    		</a>
-											    	</td>
+										    	@elseif ( $now > $SLA )
+										    		<a href="{{ route('input.brief',$data->id) }}" type="button" class="btn btn-danger" title="Input Result of Brief">
+										    			<span> + {{ $diff }} Days</span>
+									    			</a>
 												@endif
-									    	@endif
+									    	@elseif ( $now == $data->hiring_briefs->date_schedule )
+									    		<a href="{{ route('input.brief',$data->id) }}" type="button" class="btn btn-success" title="Input Result of Brief">
+									    			<span>{{ $diff }} Days Remaining</span>
+									    		</a>
+										    @endif
+										<!-- sudah input hasil brief dan menunggu apporval HRBP -->
+										@elseif ( $data->hiring_briefs->approval_hiring_by_hrbp == 0 )
+											<span class="bs-label label-yellow" id="ket" data-popover="true" data-content="You have entered the result of the briefing, so please wait for approval from HRBP" title="Information">
+												<strong>Waiting Approval From HRBP</strong>
+											</span>
+										<!-- sudah di approve HRBP -->
+										@elseif( $data->hiring_briefs->approval_hiring_by_hrbp == 1 )
+											@php
+												/* total menghitung SLA sejak HRBP approve hasil brief dan TIDAK LEWAT DARI SLA */
+												$approval = \Carbon\Carbon::parse($data->hiring_briefs->approval_date_hrbp);
+												$schedule = \Carbon\Carbon::parse($data->hiring_briefs->date_schedule)->addDays(2);
+
+												$total = $schedule->diffInDays($approval);
+											@endphp
+											<!-- SLA HIJAU -->
+											@if ( $approval <= $schedule )
+												@if ( $total == 2 )
+													<span class="bs-label label-success"><strong>SLA 1 Days</strong></span>
+												@elseif ( $total == 1 )
+													<span class="bs-label label-success"><strong>SLA 2 Days</strong></span>
+												@elseif ( $total == 0 )
+													<span class="bs-label label-success"><strong>SLA 3 Days</strong></span>
+												@endif
+											<!-- SLA MERAH -->
+											@elseif ( $approval > $schedule )
+												<span class="bs-label label-danger"><strong>SLA + {{ $total }}</strong></span>
+											@endif
+
+										<!-- Di reject oleh HRBP -->
+										@elseif( $data->hiring_briefs->approval_hiring_by_hrbp == 2 )
+											<a href="#modal_reject" data-url="{{ route('reject.reason.brief',$data->hiring_briefs->id) }}" type="button" class="btn btn-danger btn_modal_reject" data-url="" data-toggle="modal" title="Rejected Reason">Rejected</a>
 										@endif
-									@else
-										<td>
-									        <a href="{{ route('create.brief',$data->id) }}" type="button" class="btn btn-primary" title="Create Schedule">
-									            <span class="glyph-icon icon-clock-o"> Schedule</span>
-									        </a>
-									    </td>
 								    @endif
 								@endif
+								</td>
 						    </tr>
 					    @endif
 				    @empty

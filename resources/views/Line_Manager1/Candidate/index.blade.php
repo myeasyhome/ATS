@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title','CV & Sourcing')
+@section('title','Candidate')
 
 @section('js')
 <script type="text/javascript" src="{{ asset('assets/widgets/datatable/datatable.js') }}"></script>
@@ -18,11 +18,12 @@
         $('.dataTables_filter input').attr("placeholder", "Search...");
     });
 </script>
+
 @stop
 
 @section('content')
 
-<h2>CV & Sourcing</h2>
+<h2>Candidate</h2>
 <br />
 <div style="color: tomato;">
 	<p></p>
@@ -38,37 +39,28 @@
 						<tr>
 						    <th class="col-md-1">No.</th>
 						    <th class="text-center">Position Name</th>
-						    <th class="text-center col-md-2">Upload CV</th>
-						    <th class="text-center">Status</th>
+						    <th class="text-center col-md-3">Sourcing Candidate</th>
 						</tr>
 					</thead>
 
-					<tbody>
-					    @php 
-						    $no=1;
-					    @endphp
-					    @forelse($data as $data)
+					<tbody id="data_candidate">
+					    @php $no=1; @endphp
+					    @forelse($candidate as $candidate)
 					    <tr>
 						    <td class="text-center">{{ $no++ }}</td>
-						    <td>{{ $data->tickets->position_name }}</td>
-						    <td class="text-center"><a href="{{ route('upload',$data->id) }}" type="button" class="btn btn-round btn-info" title="Upload">
-						    	<i class="glyph-icon icon-upload"></i></a>
+						    <td>{{ $candidate->tickets->position_name }}</td>
+						    <td class="text-center"><a href="{{ route('lm1.sourcing',$candidate->id) }}" type="button" class="btn btn-round btn-info" title="Upload">
+						    	<i class="glyph-icon icon-eye"></i></a>
 						    </td>
-						    <td class="text-center col-md-2">
-						    	<!-- jika CV belum ada yg di upload -->
-						    	@if ( $data->CV == Null )
-						    		<span class="bs-label label-yellow"><strong>There are no candidate</strong></span>
+						    {{-- <td class="text-center col-md-2">
+						    	@if ( $candidate > 0 )
+						    		<a href="{{ route('upload',$data->id) }}" class="bs-label label-success">
+						    			<strong>You Have Been Uploaded {{ $candidate }} Candidate</strong>
+						    		</a>
 						    	@else
-						    		<!-- total candidate yg sudah di upload berdasarkan posisinya -->
-							    	@if ( $data->CV->hiring_brief_id == $data->id  )
-							    		<span class="bs-label label-success">
-							    			<strong>You Have Been Uploaded {{ $data->CV->where('hiring_brief_id',$data->id)->count() }} Candidate</strong>
-							    		</span>
-							    	@else
-							    		<span class="bs-label label-yellow"><strong>There are no candidate</strong></span>
-							    	@endif
+						    		<span class="bs-label label-yellow"><strong>You Haven't Uploaded The Candidate</strong></span>
 						    	@endif
-						    </td>
+						    </td> --}}
 					    </tr>
 					    @empty
 					    	<td valign="top" colspan="4" class="dataTables_empty">No data available in table</td>

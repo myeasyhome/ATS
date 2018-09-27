@@ -8,8 +8,9 @@ use Auth;
 use App\Models\Ticket;
 use App\Models\Hiring_brief;
 use Carbon\Carbon;
+use DateTime;
 
-class ProcessController extends Controller
+class HiringBriefController extends Controller
 {
 	public function __construct() 
 	{
@@ -22,15 +23,13 @@ class ProcessController extends Controller
 						['approval_lm2','1'],
 						['approval_hrbp','1']
 					])->get();
-
 		return view('HR_Talent.hiring_brief',compact('data'));
 	}
 
-	/* create schedule brief */
+	/* index untuk buat schedule brief */
 	public function create($id)
 	{
 		$data = Ticket::findOrFail($id);
-
 		return view('HR_Talent.create_schedule',compact('data'));
 	}
 
@@ -48,6 +47,7 @@ class ProcessController extends Controller
 		return redirect()->route('hiring_brief')->with('success','Successfully Created Schedule!');
 	}
 
+	/* index untuk masukan hasil briefing */
 	public function input_brief($id)
 	{
 		$data = Ticket::findOrFail($id);
@@ -55,7 +55,7 @@ class ProcessController extends Controller
 		return view('HR_Talent.input_brief',compact('data'));
 	}
 
-	/* Save result hiring brief */
+	/* Save hasil hiring brief */
 	public function store_input_brief($id,Request $request)
 	{
 		Hiring_brief::findOrFail($id)->update([
@@ -63,7 +63,6 @@ class ProcessController extends Controller
 			'job_function' => $request->job_function,
 			'general_information' => $request->general_information,
 			'characteristic' => $request->characteristics,
-			'date_result_hiring'=> $request->date_result_hiring
 		]);
 
 		return redirect()->route('hiring_brief')->with('success','Successfully Input Result Of Brief!');	

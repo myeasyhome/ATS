@@ -95,31 +95,6 @@
     });
 </script>
 
-<!-- JQuery datepicker -->
-<script type="text/javascript" src="{{ asset('assets/widgets/datepicker-ui/datepicker.js') }}"></script>
-<script type="text/javascript">
-	$(function() {
-	    $("#fromDate").datepicker({
-	        defaultDate: "+1w",
-	        changeMonth: true,
-	        numberOfMonths: 3,
-	        dateFormat: 'dd/mm/yy',
-	        onClose: function(selectedDate) {
-	            $("#toDate").datepicker("option", "minDate", selectedDate);
-	        }
-	    });
-	    $("#toDate").datepicker({
-	        defaultDate: "+1w",
-	        changeMonth: true,
-	        numberOfMonths: 3,
-	        dateFormat: 'dd/mm/yy',
-	        onClose: function(selectedDate) {
-	            $("#fromDate").datepicker("option", "maxDate", selectedDate);
-	        }
-	    });
-	});
-</script>
-
 <!-- JQuery Validate -->
 <script type="text/javascript">	
     	var form = $("#form_ticket");

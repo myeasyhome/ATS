@@ -36,28 +36,32 @@
 </script>
 @stop
 
+
+<!-- ALERT akan muncul jika HRT sudah input hasil briefing, status waiting => 0 -->
+@section('alert_for_HRBP')
+	@if($hiring->contains('approval_hiring_by_hrbp','0') == true)
+		@component('notice_message.notice', [ 
+						'msg'=> 'There is an approval that must be completed as soon as possible because it will affect duration of the SLA', 
+						'link' => route('hrbp.approval.hiring')
+					])
+		@endcomponent
+	@endif
+@endsection
 @section('content')
 <div class="panel">
 	<div class="panel-body">
 
-		<!-- akan muncul jika HRT sudah input hasil briefing, waiting => 0 -->
-		@if($hiring->contains('approval_hiring_by_hrbp','0') == true)
-			@component('notice_message.notice', [ 
-							'msg'=> 'There is an approval that must be completed as soon as possible because it will affect duration of the SLA', 
-							'link' => route('hrbp.approval.hiring')
-						])
-			@endcomponent
-		@endif
-
 		<h3 class="title-hero">Approval List</h3>
 		<div class="example-box-wrapper">
-			<!-- notif -->
+			<!-- Notification Alert -->
 	        @if(session('success'))
 	        	<div class="alert alert-success" role="alert">
+	        		<button type="button" class="close" data-dismiss="alert">×</button>
 	                <strong>{{ session('success') }}</strong>
 	            </div>
 	        @elseif(session('error'))
 	        	<div class="alert alert-danger" role="alert">
+	        		<button type="button" class="close" data-dismiss="alert">×</button>
 	                <strong>{{ session('error') }}</strong>
 	            </div>
 	        @endif

@@ -21,15 +21,26 @@
 </script>
 @stop
 
+
+<!-- ALERT akan muncul jika HRT sudah input hasil briefing, status waiting => 0 -->
+@section('alert_for_HRBP')
+    @if($notif->contains('approval_hiring_by_hrbp','0') == true)
+        @component('notice_message.notice', [ 
+                        'msg'=> 'There is an approval that must be completed as soon as possible because it will affect duration of the SLA', 
+                        'link' => route('hrbp.approval.hiring')
+                    ])
+        @endcomponent
+    @endif
+@endsection
 @section('content')
-{{-- <ol class="breadcrumb bc-3" >
+<ol class="breadcrumb bc-3" >
     <li>
-        <a href="{{ route('hrbp.approval') }}">Approval Ticket</a>
+        <a href="{{ route('hrbp.approval.hiring') }}">Approval Hiring Brief</a>
     </li>
-    <li class="active">
-    	<a>Detail Ticket</a>
+    <li>
+    	<span>Detail Result of Hiring Brief</span>
     </li>
-</ol> --}}
+</ol>
 
 <h2>Result of Hiring Brief</h2>
 <br>
@@ -43,20 +54,20 @@
 	        <div class="panel-body">
 
 		        <div class="form-group">
-		        	<h4><label class="col-md-8" style="padding-bottom: 10px;">Job Function</label></h4>
-        			<div class="col-md-12" style="padding-left: 30px;">
+		        	<h4><label class="col-md-8">Job Function</label></h4>
+        			<div class="col-md-12" style="padding-left: 30px; margin-bottom: 20px">
         				{!! $hiring->job_function !!}	
         			</div>
 		        </div>
 		        <div class="form-group">
-		        	<h4><label class="col-md-8" style="padding-bottom: 10px;">General Information</label></h4>
-        			<div class="col-md-12" style="padding-left: 30px;">
+		        	<h4><label class="col-md-8">General Information</label></h4>
+        			<div class="col-md-12" style="padding-left: 30px; margin-bottom: 20px">
         				{!! $hiring->general_information !!}	
         			</div>
 		        </div>
 		        <div class="form-group">
-		        	<h4><label class="col-md-8" style="padding-bottom: 10px;">Characteristic</label></h4>
-        			<div class="col-md-12" style="padding-left: 30px;">
+		        	<h4><label class="col-md-8">Characteristic</label></h4>
+        			<div class="col-md-12" style="padding-left: 30px; margin-bottom: 20px">
         				{!! $hiring->characteristic !!}	
         			</div>
 		        </div>

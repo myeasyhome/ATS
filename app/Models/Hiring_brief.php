@@ -12,6 +12,7 @@ class Hiring_brief extends Model
     	'ticket_id',
     	'approval_hiring_by_hrbp',
     	'reason_reject',
+        'approval_date_hrbp',
     	'date_schedule',
     	'time_schedule',
     	'place_schedule',
@@ -26,5 +27,10 @@ class Hiring_brief extends Model
     public function tickets()
     {
     	return $this->belongsTo('App\Models\Ticket','ticket_id');
+    }
+
+    public function CV()
+    {
+        return $this->hasOne('App\Models\CV','hiring_brief_id');
     }
 }

@@ -84,10 +84,12 @@
 			<!-- notif -->
 			@if (session('error'))
                 <div class="alert alert-danger" role="alert">
+                	<button type="button" class="close" data-dismiss="alert">×</button>
                     <strong>{{ session('error') }}</strong>
                 </div>
             @elseif(session('success'))
             	<div class="alert alert-success" role="alert">
+            		<button type="button" class="close" data-dismiss="alert">×</button>
                     <strong>{{ session('success') }}</strong>
                 </div>
             @endif
@@ -122,7 +124,7 @@
 					    </td>
 					    <td class="text-center col-md-2">
 					    	@if($ticket->approval_lm2 == 2)
-					    		<span class="bs-label label-warning"><strong>You must get approval first from the line manager</strong></span>
+					    		<span class="bs-label label-warning"><strong>Stop</strong></span>
 					    	@elseif($ticket->approval_hrbp == 0)
 					    		<span class="bs-label label-yellow"><strong>Waiting Approval</strong></span>
 					    	@elseif($ticket->approval_hrbp == 1)

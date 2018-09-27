@@ -43,6 +43,11 @@ Route::get('/department/{id}','Line_Manager1\TicketController@department_dropdow
 Route::get('/ticket/re-approval/request/{id}', 'Line_Manager1\TicketController@edit')->name('edit_rejected.ticket');
 Route::patch('/ticket/re-approval/{id}', 'Line_Manager1\TicketController@re_approval')->name('re_approval.ticket');
 
+/* buat Candidate */
+Route::get('/candidate','Line_Manager1\CandidateController@index')->name('candidate');
+Route::get('/candidate/{id}','Line_Manager1\CandidateController@sourcing')->name('lm1.sourcing');
+Route::get('/candidate/document/{id}','Line_Manager1\CandidateController@getCV')->name('getCV');
+
 
 
 /* Access Line Manager 2 */
@@ -63,24 +68,27 @@ Route::patch('/ticket/hrbp/reject/{id}', 'HR_BussinessPartner\TicketController@r
 Route::get('/ticket/hrbp/detail/{id}', 'HR_BussinessPartner\TicketController@detail')->name('hrbp.detail');
 
 /* approval result hiring on HRBP*/
-Route::get('/ticket/hrbp/result_brief/detail/{id}', 'HR_BussinessPartner\ApprovalResultBriefController@detail')->name('hrbp.detail.result');
 Route::get('/ticket/hrbp/approval_hiring', 'HR_BussinessPartner\ApprovalResultBriefController@index')->name('hrbp.approval.hiring');
+Route::get('/ticket/hrbp/result_brief/detail/{id}', 'HR_BussinessPartner\ApprovalResultBriefController@detail')->name('hrbp.detail.result');
 Route::patch('/ticket/hrbp/result_brief/approved/{id}', 'HR_BussinessPartner\ApprovalResultBriefController@approved_result_hiring')->name('hrbp.approved.result');
 Route::patch('/ticket/hrbp/result_brief/reject/{id}', 'HR_BussinessPartner\ApprovalResultBriefController@reject_result_hiring')->name('hrbp.reject.result');
 
 
 /* Access HR Talent Acquistion */
 Route::get('/dashboard/hr_talent', 'HR_Talent\DashboardController@index')->name('hrt.dashboard');
-Route::get('/hiring', 'HR_Talent\ProcessController@index')->name('hiring_brief');
-Route::get('/hiring/create/{id}', 'HR_Talent\ProcessController@create')->name('create.brief');
-Route::patch('/hiring/schedule/{id}', 'HR_Talent\ProcessController@schedule')->name('schedule.brief');
-Route::get('/hiring/input/{id}', 'HR_Talent\ProcessController@input_brief')->name('input.brief');
-Route::patch('/hiring/store_input/{id}', 'HR_Talent\ProcessController@store_input_brief')->name('store.input.brief');
-Route::get('/hiring/rejected_reason/{id}', 'HR_Talent\ProcessController@rejected_reason')->name('reject.reason.brief');
+Route::get('/hiring', 'HR_Talent\HiringBriefController@index')->name('hiring_brief');
+Route::get('/hiring/create/{id}', 'HR_Talent\HiringBriefController@create')->name('create.brief');
+Route::patch('/hiring/schedule/{id}', 'HR_Talent\HiringBriefController@schedule')->name('schedule.brief');
+Route::get('/hiring/input/{id}', 'HR_Talent\HiringBriefController@input_brief')->name('input.brief');
+Route::patch('/hiring/store_input/{id}', 'HR_Talent\HiringBriefController@store_input_brief')->name('store.input.brief');
+Route::get('/hiring/rejected_reason/{id}', 'HR_Talent\HiringBriefController@rejected_reason')->name('reject.reason.brief');
 
 /* CV & Sourcing */
 Route::get('/sourcing','HR_Talent\SourcingController@index')->name('sourcing');
-
+Route::get('/sourcing/{id}','HR_Talent\SourcingController@upload')->name('upload');
+Route::post('/sourcing/store','HR_Talent\SourcingController@doUpload')->name('doUpload');
+Route::get('/getDocument/{id}','HR_Talent\SourcingController@getDocument')->name('getDocument');
+Route::delete('sourcing/delete/{id}','HR_Talent\SourcingController@delete')->name('delete.sourcing');
 
 
 /* Access HR Operation */

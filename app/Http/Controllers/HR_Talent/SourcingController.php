@@ -7,6 +7,10 @@ use App\Http\Controllers\Controller;
 use Auth;
 use App\Models\Ticket;
 use App\Models\Hiring_brief;
+use App\Models\CV;
+use Validator;
+use File;
+use Carbon\Carbon;
 
 class SourcingController extends Controller
 {
@@ -15,15 +19,81 @@ class SourcingController extends Controller
 		$this->middleware('auth');
 	}
 
+	/* daftar posisi yang sudah di approve melalui briefing */
 	public function index()
 	{
 		$data = Hiring_brief::where('approval_hiring_by_hrbp','1')->get();
-		return view('HR_Talent.Sourcing.index',compact('data'));
+		return view('HR_Talent.Sourcing.index',compact('data','candidate'));
 	}
 
+	/* upload beberapa candidate */
 	public function upload($id)
 	{
-		// $upload = ;
-		return view('HR_Talent.Sourcing.upload');
+		$candidate = CV::where('hiring_brief_id',$id)->get();
+		return view('HR_Talent.Sourcing.upload',compact('candidate','id'));
+	}
+
+	/* save to database */
+	public function doUpload(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+	        'cv' => 'required|file|mimes:pdf,docx,doc|max:2048',
+	    ]);
+
+			/*jika type file sesuai*/
+		    if ($validator->passes()) {
+		        $input = $request->all();
+		        $input['hiring_brief_id'] = $request->hiring_brief_id;
+		        $input['name_candidate'] = ucwords($request->name_candidate);
+		        $input['gender'] = $request->gender;
+		        $input['place_birth'] = ucwords($request->place);
+		        $input['date_birth'] = Carbon::parse($request->birth_date)->toDateString();
+		        $input['education'] = $request->education;
+		        $input['CV_candidate'] = $request->cv->getClientOriginalName();
+		        $request->cv->move(public_path('CV_Candidate'), $input['CV_candidate']);
+
+		        CV::create($input);
+		        return back()->with('success','Successfully Upload Candidate !');
+		    	// $data = new CV;
+		    	// $data->hiring_brief_id = $request->hiring_brief_id;
+		    	// $data->name_candidate = ucwords($request->name_candidate);
+		    	// $data->education = $request->education;
+		    	// $data->CV_candidate = $request->cv->getClientOriginalName();
+		    	// $request->cv->move(public_path('CV_Candidate'), $data->CV_candidate);
+		    	// $data->save();
+
+		     //    return response()->json(['berhasil'=> 'oke']);
+		    }
+		    // return response()->json(['pesan' => 'gagal']);
+		 return back()->with('error','Format file must pdf,docx,doc and file size 2MB !');
+	}
+
+	/* get document CV */
+	public function getDocument($id)
+	{
+		$document = CV::findOrFail($id);
+
+		/* lokasi file */
+		$file_path = public_path('CV_Candidate').'/'.$document->CV_candidate;
+
+		$headers = array(
+        	'Content-Type: application/pdf',
+        );
+
+		return Response()->download($file_path , $document->CV_canddate, $headers);
+	}
+
+	/* delete candidate */
+	public function delete($id)
+	{
+		$filename = CV::findOrFail($id);
+
+		/* lokasi file */
+		$file_path = public_path('CV_Candidate').'/'.$filename->CV_candidate;
+		File::delete($file_path);
+
+		$filename->delete();
+
+		return back();
 	}
 }

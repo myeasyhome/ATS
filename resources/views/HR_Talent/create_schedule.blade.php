@@ -3,14 +3,15 @@
 
 @section('js')
 <!-- Datepicker bootstrap -->
-<script src="{{ asset('assets/widgets/datepicker/datepicker.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js">
+<script src="{{ asset('assets/widgets/datepicker/bootstrap-datepicker.js') }}"></script>">
 </script>
 <script>
     $(function() { 
-        $('.bootstrap-datepicker').bsdatepicker({
+        $('.date').datepicker({
             format: 'dd-mm-yyyy',
-            autoClose: true,
+            autoclose : true,
+            todayHighlight : true,
+            startDate: new Date()
         });
     });
 </script>
@@ -26,6 +27,14 @@
 @stop
 
 @section('content')
+<ol class="breadcrumb">
+    <li>
+        <a href="{{ route('hiring_brief') }}">Hiring Brief</a>
+    </li>
+    <li>
+    	<span>Create Schedule</span>
+    </li>
+</ol>
 
 <h2>Create Schedule</h2>
 <br />
@@ -67,21 +76,21 @@
 
 			        			<div class="form-group">
 			        				<label class="col-md-3 control-label">Date</label>
-			        				<div class="col-md-3">
-		                                <div class="input-prepend input-group">
-		                                    <span class="add-on input-group-addon">
+		                            <div class="col-md-3">
+		                            	<div class="input-group date">
+			                            	<span class="add-on input-group-addon" id="date">
 		                                        <i class="glyph-icon icon-calendar"></i>
-		                                    </span>
-		                                    <input type="text" name="date" id="datepicker" class="bootstrap-datepicker form-control" value="" required>
-		                                </div>
+		                                    </span>	
+										    <input type="text" name="date" id="date" class="form-control" required>
+										</div>
 		                            </div>
 
 		                            <div class="col-md-3">
-		                                <div class="{{-- bootstrap-timepicker dropdown --}} input-group">
+		                                <div class="input-group">
 		                                	<span class="add-on input-group-addon">
 		                                        <i class="glyph-icon icon-clock-o"></i>
 		                                    </span>
-		                                    <input class="timepicker form-control" type="text" name="time">
+		                                    <input class="timepicker form-control" type="text" name="time" required>
 		                                </div>
 		                            </div>
 		                            <div class="col-md-3">
@@ -89,7 +98,7 @@
 		                                	<span class="add-on input-group-addon">
 		                                        <i class="glyph-icon icon-institution"></i>
 		                                    </span>
-		                                    <input class="form-control" type="text" name="place">
+		                                    <input class="form-control" type="text" name="place" required>
 		                                </div>
 		                            </div>
 			        			</div>
@@ -109,41 +118,13 @@
 			        			</div>
 			        		</div>
 			        	</div>
-			        	<br><br>
-			        	<div class="row">
-			        		{{-- <div class="col-md-12">
-			        			<div class="form-group">
-			        				<label class="col-md-2 control-label" style="padding-left: 20px;">Job Function</label>
-			        				<div class="col-md-8">
-			        					<textarea class="form-control" rows="10"></textarea>
-			        				</div>
-			        			</div>
-			        		</div>
+			        	<br>
 
-			        		<div class="col-md-12">
-			        			<div class="form-group">
-			        				<label class="col-md-2 control-label" style="padding-left: 20px;">General Information</label>
-			        				<div class="col-md-8">
-			        					<textarea class="form-control" rows="10"></textarea>
-			        				</div>
-			        			</div>
-			        		</div>
-
-			        		<div class="col-md-12">
-			        			<div class="form-group">
-			        				<label class="col-md-2 control-label" style="padding-left: 20px;">Characteristics</label>
-			        				<div class="col-md-8">
-			        					<textarea class="form-control" rows="10"></textarea>
-			        				</div>
-			        			</div>
-			        		</div> --}}
-
-			        		<div class="col-md-12">
-			        			<div class="form-group text-center">
-			        				<button type="submit" class="btn btn-primary">Create</button>	
-			        			</div>
-			        		</div>
-			        	</div>
+		        		<div class="col-md-12">
+		        			<div class="form-group text-center">
+		        				<button type="submit" class="btn btn-info">Create</button>	
+		        			</div>
+		        		</div>
 
 		            </form>	
 		        </div>
