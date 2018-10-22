@@ -11,27 +11,32 @@
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return redirect(url('login'));
+});
 
 // Auth::routes();
 Route::get('/login', 'Auth\LoginController@index')->name('show.login');
 Route::get('/login', 'Auth\LoginController@logout')->name('logout');
-
 Route::post('/login', 'Auth\LoginController@login')->name('login');
 // Route::get('/home', 'HomeController@index')->name('home');
 
 
-/* Akses Line Manager 1 */
-// Route::get('/dashboard/Line_manager1', 'Line_Manager1\DashboardController@index')->name('dashboard.LM1');
-Route::get('/ticket', 'Line_Manager1\TicketController@index')->name('ticket');
-Route::get('/ticket/create', 'Line_Manager1\TicketController@create')->name('create.ticket');
-Route::post('/ticket/store', 'Line_Manager1\TicketController@store')->name('store.ticket');
-Route::get('/ticket/edit/{id}', 'Line_Manager1\TicketController@edit')->name('edit.ticket');
-Route::patch('/ticket/update/{id}', 'Line_Manager1\TicketController@update')->name('update.ticket');
-Route::delete('/ticket/delete/{id}', 'Line_Manager1\TicketController@delete')->name('delete.ticket');
-Route::get('/ticket/reject_detail/{id}', 'Line_Manager1\TicketController@rejected_reason')->name('reason.ticket');
+/* Akses Line Manager 1, bisa buat tiket */
+Route::group(['middleware'=>'checkGrade'], function() {
+	Route::get('/ticket', 'Line_Manager1\TicketController@index')->name('ticket');
+	Route::get('/ticket/create', 'Line_Manager1\TicketController@create')->name('create.ticket');
+	Route::post('/ticket/store', 'Line_Manager1\TicketController@store')->name('store.ticket');
+	Route::get('/ticket/edit/{id}', 'Line_Manager1\TicketController@edit')->name('edit.ticket');
+	Route::patch('/ticket/update/{id}', 'Line_Manager1\TicketController@update')->name('update.ticket');
+	Route::delete('/ticket/delete/{id}', 'Line_Manager1\TicketController@delete')->name('delete.ticket');
+	Route::get('/ticket/detail/{id}', 'Line_Manager1\TicketController@detail')->name('detail.ticket');
+	Route::get('/ticket/reject_detail/{id}', 'Line_Manager1\TicketController@rejected_reason')->name('reason.ticket');
+
+	/*liat progress approval*/
+	Route::get('/prog/{id}','Line_Manager1\TicketController@progress')->name('progress');
+});
+
 
 /*cek position*/
 Route::post('/checkPosition', 'Line_Manager1\TicketController@checkPosition');
@@ -47,25 +52,45 @@ Route::patch('/ticket/re-approval/{id}', 'Line_Manager1\TicketController@re_appr
 Route::get('/candidate','Line_Manager1\CandidateController@index')->name('candidate');
 Route::get('/candidate/{id}','Line_Manager1\CandidateController@sourcing')->name('lm1.sourcing');
 Route::get('/candidate/document/{id}','Line_Manager1\CandidateController@getCV')->name('getCV');
+Route::patch('/candidate/approve/{id}','Line_Manager1\CandidateController@approve_candidate')->name('candidate.approve');
+Route::patch('/candidate/reject/{id}','Line_Manager1\CandidateController@reject_candidate')->name('candidate.reject');
+
+
+Route::post('importExcel','Line_Manager1\TicketController@import')->name('import');
 
 
 
 /* Access Line Manager 2 */
-Route::get('/ticket/lm2/list','Line_Manager2\ApprovalController@index')->name('lm2.list');
-Route::get('/ticket/lm2/approval','Line_Manager2\ApprovalController@approval')->name('lm2.approval');
-Route::get('/ticket/lm2/detail/{id}', 'Line_Manager2\ApprovalController@detail')->name('lm2.detail.ticket');
-Route::patch('/ticket/lm2/approval/{id}', 'Line_Manager2\ApprovalController@approved')->name('approved.ticket');
-Route::patch('/ticket/lm2/reject/{id}', 'Line_Manager2\ApprovalController@reject')->name('reject.ticket');
+Route::get('/ticket/DH/list','Division_Head\ApprovalController@index')->name('dh.list');
+Route::get('/ticket/DH/approval','Division_Head\ApprovalController@approval')->name('dh.approval');
+Route::get('/ticket/DH/detail/{id}', 'Division_Head\ApprovalController@detail')->name('dh.detail.ticket');
+Route::patch('/ticket/DH/approval/{id}', 'Division_Head\ApprovalController@approved')->name('approved.ticket');
+Route::patch('/ticket/DH/reject/{id}', 'Division_Head\ApprovalController@reject')->name('reject.ticket');
 
 
+
+/* Akses Group Head */
+Route::group(['prefix'=>'ticket/GH','middleware'=>'auth'], function() {
+	Route::get('list','Group_Head\ApprovalController@index')->name('gh.list');
+	Route::get('detail/{id}','Group_Head\ApprovalController@detail')->name('gh.detail.ticket');
+	Route::patch('approval/{id}', 'Group_Head\ApprovalController@approved')->name('gh.approved.ticket');
+	Route::patch('reject/{id}', 'Group_Head\ApprovalController@reject')->name('gh.reject.ticket');
+});
+
+/* Akses Chief */
+Route::group(['prefix'=>'ticket/Chief','middleware'=>'auth'], function() {
+	Route::get('list','Chief\ApprovalController@index')->name('chief.list');
+	Route::get('detail/{id}','Chief\ApprovalController@detail')->name('chief.detail.ticket');
+	Route::patch('approval/{id}', 'Chief\ApprovalController@approved')->name('chief.approved.ticket');
+	Route::patch('reject/{id}', 'Chief\ApprovalController@reject')->name('chief.reject.ticket');
+});
 
 /* Access HR BP */
 // Route::get('/dashboard/HR_BussinessPartner', 'HR_BussinessPartner\DashboardController@index')->name('dashboard.HR_bp');
 Route::get('/ticket/hrbp/list', 'HR_BussinessPartner\TicketController@list')->name('hrbp.list');
-Route::get('/ticket/hrbp/approval', 'HR_BussinessPartner\TicketController@approval')->name('hrbp.approval');
 Route::patch('/ticket/hrbp/approval/{id}', 'HR_BussinessPartner\TicketController@approved')->name('hrbp.approved');
 Route::patch('/ticket/hrbp/reject/{id}', 'HR_BussinessPartner\TicketController@reject')->name('hrbp.reject');
-Route::get('/ticket/hrbp/detail/{id}', 'HR_BussinessPartner\TicketController@detail')->name('hrbp.detail');
+Route::get('/ticket/hrbp/ticketDetail/{id}', 'HR_BussinessPartner\TicketController@detail')->name('hrbp.detail');
 
 /* approval result hiring on HRBP*/
 Route::get('/ticket/hrbp/approval_hiring', 'HR_BussinessPartner\ApprovalResultBriefController@index')->name('hrbp.approval.hiring');
@@ -76,12 +101,17 @@ Route::patch('/ticket/hrbp/result_brief/reject/{id}', 'HR_BussinessPartner\Appro
 
 /* Access HR Talent Acquistion */
 Route::get('/dashboard/hr_talent', 'HR_Talent\DashboardController@index')->name('hrt.dashboard');
+Route::patch('/freezeTicket/{id}','HR_Talent\DashboardController@freeze')->name('freeze');
+Route::patch('/unfreezeTicket/{id}','HR_Talent\DashboardController@unfreeze')->name('unfreeze');
+Route::get('/dashboard/detailTicket/{id}','HR_Talent\DashboardController@detailTicket')->name('dashboard.detailTicket');
+
 Route::get('/hiring', 'HR_Talent\HiringBriefController@index')->name('hiring_brief');
 Route::get('/hiring/create/{id}', 'HR_Talent\HiringBriefController@create')->name('create.brief');
 Route::patch('/hiring/schedule/{id}', 'HR_Talent\HiringBriefController@schedule')->name('schedule.brief');
 Route::get('/hiring/input/{id}', 'HR_Talent\HiringBriefController@input_brief')->name('input.brief');
 Route::patch('/hiring/store_input/{id}', 'HR_Talent\HiringBriefController@store_input_brief')->name('store.input.brief');
 Route::get('/hiring/rejected_reason/{id}', 'HR_Talent\HiringBriefController@rejected_reason')->name('reject.reason.brief');
+Route::get('hiring/detail/{id}','HR_Talent\HiringBriefController@detail')->name('hiring.detail');
 
 /* CV & Sourcing */
 Route::get('/sourcing','HR_Talent\SourcingController@index')->name('sourcing');
@@ -89,6 +119,8 @@ Route::get('/sourcing/{id}','HR_Talent\SourcingController@upload')->name('upload
 Route::post('/sourcing/store','HR_Talent\SourcingController@doUpload')->name('doUpload');
 Route::get('/getDocument/{id}','HR_Talent\SourcingController@getDocument')->name('getDocument');
 Route::delete('sourcing/delete/{id}','HR_Talent\SourcingController@delete')->name('delete.sourcing');
+Route::patch('/sourcing/nextProcess/{id}','HR_Talent\SourcingController@nextProcess')->name('nextProcess.sourcing');
+Route::get('/sourcing/candidate/{id}','HR_Talent\SourcingController@showCandidate')->name('showCandidate');
 
 
 /* Access HR Operation */

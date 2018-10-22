@@ -9,15 +9,26 @@
 			                </div>
 
 			                <div class="form-group">
-		                		<label for="grade" class="col-md-5 control-label">Grade{{-- <span style="color: red;"> *</span> --}}
+		                		<label for="grade" class="col-md-5 control-label">Grade<span style="color: red;"> *</span>
 		                		</label>
 			                    <div class="col-md-6">
-			                        {{-- <input type="number" name="grade" value="" class="form-control" id="grade" placeholder="Grade" required> --}}
 			                        <select class="form-control" name="grade" id="grade" required>
-				                        @php $val=8; @endphp
-				                        @for ($i = 1; $i <= $val ; $i++)
-				                        	<option value="{{ $i }}" {{ $i == $data->position_grade ? "selected=true" : "" }} >{{ $i }}</option>
-				                        @endfor
+				                        @if( Auth::user()->grade == 7 )
+			                            	@php $val=7; @endphp
+				                                @for ($i = 3; $i <= $val ; $i++)
+				                                	<option value="{{ $i }}" {{ $i == $data->position_grade ? "selected=true" : "" }} >{{ $i }}</option>
+				                                @endfor
+			                            @elseif( Auth::user()->grade == 8 )
+			                            	@php $val=8; @endphp
+				                                @for ($i = 3; $i <= $val ; $i++)
+				                                	<option value="{{ $i }}" {{ $i == $data->position_grade ? "selected=true" : "" }} >{{ $i }}</option>
+				                                @endfor
+			                            @elseif ( Auth::user()->grade == 9 )
+			                            	@php $val=9; @endphp
+				                                @for ($i = 3; $i <= $val ; $i++)
+				                                	<option value="{{ $i }}" {{ $i == $data->position_grade ? "selected=true" : "" }} >{{ $i }}</option>
+				                                @endfor
+			                            @endif
 			                        </select>
 			                    </div>
 			                </div>
@@ -128,35 +139,17 @@
 					                    	<label class="col-md-5 control-label">Contract Duration<span style="color: red;"> *</span></label>
 					                      	<div class="col-md-7" style="padding-bottom: 10px;">
 				                              	<select class="form-control" id="contract_duration" name="contract_duration" required>
-				                              		@if( $data->ticket_erf_details->contract_duration == '3 Month' )
-				                              			<option value="3 Month" selected>3 Month</option>
-					                              		<option value="6 Month">6 Month</option>
-					                              		<option value="12 Month">12 Month</option>
-					                              		<option value="18 Month">18 Month</option>
-					                              		<option value="24 Month">24 Month</option>
-				                              		@elseif( $data->ticket_erf_details->contract_duration == '6 Month' )
-				                              			<option value="3 Month">3 Month</option>
+				                              		@if( $data->ticket_erf_details->contract_duration == '6 Month' )
 					                              		<option value="6 Month" selected>6 Month</option>
 					                              		<option value="12 Month">12 Month</option>
-					                              		<option value="18 Month">18 Month</option>
 					                              		<option value="24 Month">24 Month</option>
 				                              		@elseif( $data->ticket_erf_details->contract_duration == '12 Month' )
-				                              			<option value="3 Month">3 Month</option>
 					                              		<option value="6 Month">6 Month</option>
 					                              		<option value="12 Month" selected>12 Month</option>
-					                              		<option value="18 Month">18 Month</option>
-					                              		<option value="24 Month">24 Month</option>
-				                              		@elseif( $data->ticket_erf_details->contract_duration == '18 Month' )
-				                              			<option value="3 Month">3 Month</option>
-					                              		<option value="6 Month">6 Month</option>
-					                              		<option value="12 Month">12 Month</option>
-					                              		<option value="18 Month" selected>18 Month</option>
 					                              		<option value="24 Month">24 Month</option>
 				                              		@elseif( $data->ticket_erf_details->contract_duration == '24 Month' )
-				                              			<option value="3 Month">3 Month</option>
 					                              		<option value="6 Month">6 Month</option>
 					                              		<option value="12 Month">12 Month</option>
-					                              		<option value="18 Month">18 Month</option>
 					                              		<option value="24 Month" selected>24 Month</option>
 				                              		@endif
 				                              	</select>
@@ -167,35 +160,17 @@
 					                    	<label class="col-md-5 control-label">Contract Duration<span style="color: red;"> *</span></label>
 					                      	<div class="col-md-7" style="padding-bottom: 10px;">
 				                              	<select class="form-control" id="contract_duration" name="contract_duration" required>
-				                              		@if( $data->ticket_erf_details->contract_duration == '3 Month' )
-				                              			<option value="3 Month" selected>3 Month</option>
-					                              		<option value="6 Month">6 Month</option>
-					                              		<option value="12 Month">12 Month</option>
-					                              		<option value="18 Month">18 Month</option>
-					                              		<option value="24 Month">24 Month</option>
-				                              		@elseif( $data->ticket_erf_details->contract_duration == '6 Month' )
-				                              			<option value="3 Month">3 Month</option>
+				                              		@if( $data->ticket_erf_details->contract_duration == '6 Month' )
 					                              		<option value="6 Month" selected>6 Month</option>
 					                              		<option value="12 Month">12 Month</option>
-					                              		<option value="18 Month">18 Month</option>
 					                              		<option value="24 Month">24 Month</option>
 				                              		@elseif( $data->ticket_erf_details->contract_duration == '12 Month' )
-				                              			<option value="3 Month">3 Month</option>
 					                              		<option value="6 Month">6 Month</option>
 					                              		<option value="12 Month" selected>12 Month</option>
-					                              		<option value="18 Month">18 Month</option>
-					                              		<option value="24 Month">24 Month</option>
-				                              		@elseif( $data->ticket_erf_details->contract_duration == '18 Month' )
-				                              			<option value="3 Month">3 Month</option>
-					                              		<option value="6 Month">6 Month</option>
-					                              		<option value="12 Month">12 Month</option>
-					                              		<option value="18 Month" selected>18 Month</option>
 					                              		<option value="24 Month">24 Month</option>
 				                              		@elseif( $data->ticket_erf_details->contract_duration == '24 Month' )
-				                              			<option value="3 Month">3 Month</option>
 					                              		<option value="6 Month">6 Month</option>
 					                              		<option value="12 Month">12 Month</option>
-					                              		<option value="18 Month">18 Month</option>
 					                              		<option value="24 Month" selected>24 Month</option>
 				                              		@endif
 				                              	</select>
@@ -266,18 +241,6 @@
 				                                    </label>
 				                                </div>
 					                    	@endif
-			                              {{--   <div class="checkbox checkbox-success">
-			                                    <label>
-			                                        <input type="checkbox" id="type_hiring" value="IJO" name="type_hiring[]" class="custom-checkbox">
-			                                        Internal Job Offering
-			                                    </label>
-			                                </div>
-			                                <div class="checkbox checkbox-success">
-			                                    <label>
-			                                        <input type="checkbox" id="type_hiring" value="EJO" name="type_hiring[]" class="custom-checkbox">
-			                                        External Job Offering
-			                                    </label>
-			                                </div> --}}
 			                            </div>
 		                        	</fieldset>	
 			                	</div>
@@ -290,16 +253,16 @@
 		                            		<label class="control-label">Nature Of Hiring</label>
 		                            	</legend>
 
-		                            	<label for="Confidentiality" class="col-md-4 control-label">Confidentiality <span style="color: red;">*</span></label>
+		                            	<label for="Confidentiality" class="col-md-4 control-label">Advertisement <span style="color: red;">*</span></label>
 					                    <div class="col-md-8" style="padding-bottom: 20px;">
 					                        <select class="form-control" id="Confidentiality" name="confidentiality" required>
-					                    		<option value="" disabled selected>Select Confidentiality</option>
-					                    		@if ( $data->ticket_erf_details->confidentiality == 'Confidential' )
-					                    			<option value="Confidential" selected>Confidential</option>
-		        							    	<option value="Non Confidential">Non Confidential</option>
-					                    		@elseif ( $data->ticket_erf_details->confidentiality == 'Non Confidential' )
-					                    			<option value="Confidential">Confidential</option>
-		        							    	<option value="Non Confidential" selected>Non Confidential</option>
+					                    		<option value="" disabled selected>Select Advertisement</option>
+					                    		@if ( $data->ticket_erf_details->confidentiality == 'Publish' )
+					                    			<option value="Publish" selected>Publish</option>
+		        							    	<option value="Non Publish">Non Publish</option>
+					                    		@elseif ( $data->ticket_erf_details->confidentiality == 'Non Publish' )
+					                    			<option value="Publish">Publish</option>
+		        							    	<option value="Non Publish" selected>Non Publish</option>
 					                    		@endif
 		        						    </select>
 					                    </div>
@@ -316,7 +279,7 @@
 
 		                            	<label for="request_background" class="col-md-4 control-label">Request Background<span style="color: red;"> *</span></label>
 					                    <div class="col-md-8" style="padding-bottom: 20px;">
-					                    	<select class="form-control" id="request_background" name="request_background" required>
+					                    	<select class="form-control" id="request_background" name="request_background" onchange="request_form()" required>
 					                    		<option value="" disabled selected>Select Request Background</option>
 					                    		@if ( $data->ticket_erf_details->request_background == 'Replacement' )
 					                    			<option value="Replacement" selected>Replacement</option>
@@ -328,7 +291,7 @@
 		        						  	</select>
 					                    </div>
 
-					                    <label for="reason" class="col-md-4 control-label">Reason<span style="color: red;"> *</span></label>
+					                    <label for="reason" class="col-md-4 control-label">Hiring Justification<span style="color: red;"> *</span></label>
 					                    <div class="col-md-8" style="padding-bottom: 10px;">
 					                        <textarea class="form-control" id="reason" rows="3" name="reason" required>{{ $data->ticket_erf_details->reason }}</textarea>
 					                    </div>

@@ -46,62 +46,80 @@
 			                </div>
 
 			                <div class="form-group">
-			                    <label for="job_level" class="col-md-4 control-label">Job Level</label>
+			                    <label for="job_level" class="col-md-4 control-label">Job Level<span style="color: red;"> *</span></label>
 			                    <div class="col-md-8">
 			                        <select class="form-control" name="job_level" id="job_level" required>
+			                        @if ( Auth::user()->grade == 7 )
 			                        	<option value="" disabled selected>Select Level of Job</option>
 			                        	@if ( $data->ticket_jd_details->job_level == 'Fresh Graduate' )
 			                        		<option value="Fresh Graduate" selected>Fresh Graduate</option>
 				                        	<option value="Mid-Senior Staff">Mid-Senior Staff</option>
 				                        	<option value="Manager/Specialist">Manager/Specialist</option>
-				                        	<option value="Group Head">Group Head</option>
 				                        	<option value="Division Head/Expert">Division Head/Expert</option>
 			                        	@elseif ( $data->ticket_jd_details->job_level == 'Mid-Senior Staff' )
 			                        		<option value="Fresh Graduate">Fresh Graduate</option>
 				                        	<option value="Mid-Senior Staff" selected>Mid-Senior Staff</option>
 				                        	<option value="Manager/Specialist">Manager/Specialist</option>
-				                        	<option value="Group Head">Group Head</option>
 				                        	<option value="Division Head/Expert">Division Head/Expert</option>
 			                        	@elseif ( $data->ticket_jd_details->job_level == 'Manager/Specialist' )
 			                        		<option value="Fresh Graduate">Fresh Graduate</option>
 				                        	<option value="Mid-Senior Staff">Mid-Senior Staff</option>
 				                        	<option value="Manager/Specialist" selected>Manager/Specialist</option>
-				                        	<option value="Group Head">Group Head</option>
-				                        	<option value="Division Head/Expert">Division Head/Expert</option>
-			                        	@elseif ( $data->ticket_jd_details->job_level == 'Group Head' )
-			                        		<option value="Fresh Graduate">Fresh Graduate</option>
-				                        	<option value="Mid-Senior Staff">Mid-Senior Staff</option>
-				                        	<option value="Manager/Specialist">Manager/Specialist</option>
-				                        	<option value="Group Head" selected>Group Head</option>
 				                        	<option value="Division Head/Expert">Division Head/Expert</option>
 			                        	@elseif ( $data->ticket_jd_details->job_level == 'Division Head/Expert' )
 			                        		<option value="Fresh Graduate">Fresh Graduate</option>
 				                        	<option value="Mid-Senior Staff">Mid-Senior Staff</option>
 				                        	<option value="Manager/Specialist">Manager/Specialist</option>
-				                        	<option value="Group Head">Group Head</option>
 				                        	<option value="Division Head/Expert" selected>Division Head/Expert</option>
 			                        	@endif
+			                        @elseif ( Auth::user()->grade == 8 )
+			                        	@if ( $data->ticket_jd_details->job_level == 'Fresh Graduate' )
+			                        		<option value="Fresh Graduate" selected>Fresh Graduate</option>
+				                        	<option value="Mid-Senior Staff">Mid-Senior Staff</option>
+				                        	<option value="Manager/Specialist">Manager/Specialist</option>
+				                        	<option value="Division Head/Expert">Division Head/Expert</option>
+				                        	<option value="Group Head">Group Head</option>
+			                        	@elseif ( $data->ticket_jd_details->job_level == 'Mid-Senior Staff' )
+			                        		<option value="Fresh Graduate">Fresh Graduate</option>
+				                        	<option value="Mid-Senior Staff" selected>Mid-Senior Staff</option>
+				                        	<option value="Manager/Specialist">Manager/Specialist</option>
+				                        	<option value="Division Head/Expert">Division Head/Expert</option>
+				                        	<option value="Group Head">Group Head</option>
+			                        	@elseif ( $data->ticket_jd_details->job_level == 'Manager/Specialist' )
+			                        		<option value="Fresh Graduate">Fresh Graduate</option>
+				                        	<option value="Mid-Senior Staff">Mid-Senior Staff</option>
+				                        	<option value="Manager/Specialist" selected>Manager/Specialist</option>
+				                        	<option value="Division Head/Expert">Division Head/Expert</option>
+				                        	<option value="Group Head">Group Head</option>
+			                        	@elseif ( $data->ticket_jd_details->job_level == 'Division Head/Expert' )
+			                        		<option value="Fresh Graduate">Fresh Graduate</option>
+				                        	<option value="Mid-Senior Staff">Mid-Senior Staff</option>
+				                        	<option value="Manager/Specialist">Manager/Specialist</option>
+				                        	<option value="Division Head/Expert" selected>Division Head/Expert</option>
+				                        	<option value="Group Head">Group Head</option>
+				                        @elseif ( $data->ticket_jd_details->job_level == 'Group Head' )
+			                        		<option value="Fresh Graduate">Fresh Graduate</option>
+				                        	<option value="Mid-Senior Staff">Mid-Senior Staff</option>
+				                        	<option value="Manager/Specialist">Manager/Specialist</option>
+				                        	<option value="Division Head/Expert">Division Head/Expert</option>
+				                        	<option value="Group Head" selected>Group Head</option>
+			                        	@endif
+			                        @endif
 			                        </select>
 			                    </div>
 			                </div>
 
 			                <div class="form-group">
-			                    <label for="min_education" class="col-md-4 control-label">Minimum Education</label>
+			                    <label for="min_education" class="col-md-4 control-label">Minimum Education<span style="color: red;"> *</span></label>
 			                    <div class="col-md-8">
 			                        <select class="form-control" name="min_education" id="min_education" required>
 			                        	<option value="" disabled selected>Select Education</option>
-			                        	@if ( $data->ticket_jd_details->min_education == 's1' )
+			                        	@if ( $data->ticket_jd_details->min_education == 'd3' )
+			                        		<option value="d3" selected>Diploma's degree graduate</option>
+			                        		<option value="s1">Bachelor's degree graduate</option>
+			                        	@elseif ( $data->ticket_jd_details->min_education == 's1' )
+			                        		<option value="d3">Diploma's degree graduate</option>
 			                        		<option value="s1" selected>Bachelor's degree graduate</option>
-				                        	<option value="s2">Master's degree graduate</option>
-				                        	<option value="s3">Doctoral degree graduate</option>
-			                        	@elseif ( $data->ticket_jd_details->min_education == 's2' )
-			                        		<option value="s1">Bachelor's degree graduate</option>
-				                        	<option value="s2" selected>Master's degree graduate</option>
-				                        	<option value="s3">Doctoral degree graduate</option>
-			                        	@elseif ( $data->ticket_jd_details->min_education == 's3' )
-			                        		<option value="s1">Bachelor's degree graduate</option>
-				                        	<option value="s2">Master's degree graduate</option>
-				                        	<option value="s3" selected>Doctoral degree graduate</option>
 			                        	@endif
 			                        </select>
 			                    </div>
@@ -116,7 +134,7 @@
 
 	                        	<div class="row" style="padding-bottom: 10px;">
 	                        		<div class="col-md-8">
-	                        			<label class="col-sm-6">Minimum Requirements</label>
+	                        			<label class="col-sm-6">Minimum Requirements<span style="color: red;"> *</span></label>
 					                    <div class="col-md-12" >
 					                         <textarea class="form-control" id="editor_exp" name="qualification">
 					                         	{{ $data->ticket_jd_details->qualification }}
@@ -140,7 +158,7 @@
 
 		                        	<div class="row" style="padding-bottom: 10px;">
 		                        		<div class="col-md-8">
-		                        			<label class="col-sm-6">Responsibility</label>
+		                        			<label class="col-sm-6">Responsibility<span style="color: red;"> *</span></label>
 						                    <div class="col-md-12" >
 						                        <textarea class="form-control" id="responsibility" name="responsibility">
 						                        	{{ $data->ticket_jd_details->responsibility }}
@@ -162,33 +180,6 @@
 		                	</div>
 		                </div>
 
-		                {{-- <div class="form-group" style="padding-top: 30px">
-		                	<div class="col-md-12">
-	                        	<table class="table table-striped table-bordered responsive" id="table_custom">
-		                			<thead>
-		                				<tr>
-		                					<th class="col-sm-3 text-center">ini diganti kaya minimum</th>
-		                					<th class="text-center">Key Activities</th>
-		                					<th class="col-sm-1 text-center">Action</th>
-		                				</tr>
-		                			</thead>
-		                			<tbody>
-		                				<tr>
-	                						<td>
-	                							<textarea class="form-control" rows="2" name="scope_area[]"></textarea>
-		                					</td>
-		                					<td>
-		                						<textarea class="form-control" id="addLine" cols="77" rows="4" name="scope_activities[]"></textarea>
-		                					</td>
-		                					<td>
-		                						<button type="button" id="add_field" class="btn btn-primary">+</button>
-		                					</td>
-		                				</tr>
-		                			</tbody>
-		                		</table>
-		                	</div>
-	                    </div> --}}
-
 	                    <div class="row">
 	                    	<div class="col-md-6" style="padding-right:30px">
 	                    		<div class="form-group" style="padding-bottom: 20px;">
@@ -196,44 +187,36 @@
 				                        <table class="table table-striped table-bordered">
 				                            <thead>
 				                                <tr>
-				                                    <th class="col-sm-1 text-center">No</th>
 				                                    <th class="col-sm-8 text-center">Soft Competencies</th>
 				                                    <th class="col-sm-3 text-center">(1-5) <span style="color: red;">*</span></th>
 				                                </tr>
 				                            </thead>
 				                            <tbody>
 				                                <tr>
-				                                    <td class="text-center">1</td>
 				                                    <td>Learning Agility</td>
 				                                    <td><input class="form-control" type="number" name="soft[0]" min="1" max="5" required value="{{ $soft[0] }}"></td>
 				                                </tr>
 				                                <tr>
-				                                    <td class="text-center">2</td>
 				                                    <td>Making Difference</td>
 				                                    <td><input class="form-control" type="number" name="soft[1]" min="1" max="5" required value="{{ $soft[1] }}"></td>
 				                                </tr>
 				                                <tr>
-				                                    <td class="text-center">3</td>
 				                                    <td>People Management</td>
 				                                    <td><input class="form-control" type="number" name="soft[2]" min="1" max="5" required value="{{ $soft[2] }}"></td>
 				                                </tr>
 				                                <tr>
-				                                    <td class="text-center">4</td>
 				                                    <td>Accelerate Business And Customer</td>
 				                                    <td><input class="form-control" type="number" name="soft[3]" min="1" max="5" required value="{{ $soft[3] }}"></td>
 				                                </tr>
 				                                <tr>
-				                                    <td class="text-center">5</td>
 				                                    <td>Translating Strategy into Action</td>
 				                                    <td><input class="form-control" type="number" name="soft[4]" min="1" max="5" required value="{{ $soft[4] }}"></td>
 				                                </tr>
 				                                <tr>
-				                                    <td class="text-center">6</td>
 				                                    <td>Decisiveness</td>
 				                                    <td><input class="form-control" type="number" name="soft[5]" min="1" max="5" required value="{{ $soft[5] }}"></td>
 				                                </tr>
 				                                <tr>
-				                                    <td class="text-center">7</td>
 				                                    <td>Cultivate  Networks & Partnerships</td>
 				                                    <td><input class="form-control" type="number" name="soft[6]" min="1" max="5" required value="{{ $soft[6] }}"></td>
 				                                </tr>
@@ -250,17 +233,14 @@
 				                        <table class="table table-striped table-bordered" id="table_hard_competencies">
 				                            <thead>
 				                                <tr>
-				                                    <th class="col-sm-1 text-center">No</th>
 				                                    <th class="col-sm-8 text-center">Hard Competencies</th>
 				                                    <th class="col-sm-3 text-center">(1-5) <span style="color: red;">*</span></th>
 				                                    <th class="col-sm-1 text-center">Action</th>
 				                                </tr>
 				                            </thead>
 				                            <tbody>
-				                            	@php $no=1 @endphp
 				                            	@foreach($hard as $array => $value)
-					                				<tr>
-					                					<td class="text-center" id="no" data-no="{{ count($hard) }}" >{{ $no++ }}</td>
+					                				<tr class="row{{ $array }}" id="{{ $array }}">
 				                						<td>
 				                							<input class="form-control" type="text" name="hard[]" required value="{{ ucwords($value) }}">
 					                					</td>
@@ -268,9 +248,11 @@
 					                						<input class="form-control" type="number" name="value[]" min="1" max="5" required value="{{ $hard_value[$array] }}">
 					                					</td>
 					                					<td>
-					                						{{-- <button type="button" id={{ $array }} class="btn btn-danger btn_remove">X</button> --}}
-					                						@if ($loop->last)
+					                						
+					                						@if ($loop->first)
 					                							<button type="button" id="edit_hard_competencies" class="btn btn-primary">+</button>
+					                						@else
+					                							<button type="button" id={{ $array }} class="btn btn-danger edit_remove">X</button>
 					                						@endif
 					                					</td>		
 					                				</tr>

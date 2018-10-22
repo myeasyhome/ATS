@@ -70,6 +70,7 @@
 				    @php $no=1; @endphp
 				    @forelse($hiring as $hiring)
 				    <tr>
+				    	@if ($hiring->tickets->user_hrbp == Auth::user()->id )
 					    <td class="text-center">{{ $no++ }}</td>
 					    <td><a href="">{{ $hiring->tickets->position_name }}</a></td>
 					    <td class="text-center">
@@ -91,6 +92,13 @@
 					    		@endif
 					    	@endif
 					    </td>
+					    @else
+					    	<td valign="top" colspan="5" class="dataTables_empty">No data available in table</td>
+					    	<td id="hidden"></td>
+					    	<td id="hidden"></td>
+					    	<td id="hidden"></td>
+					    	<td id="hidden"></td>
+					    @endif
 				    </tr>
 				    @empty
 				    	<td valign="top" colspan="5" class="dataTables_empty">No data available in table</td>

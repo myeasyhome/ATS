@@ -17,6 +17,10 @@ class CreateCVsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('hiring_brief_id');
             $table->foreign('hiring_brief_id')->references('id')->on('hiring_briefs')->onDelete('cascade');
+            $table->string('approval_candidate')->nullable();
+            $table->date('approval_date_candidate')->nullable();
+            $table->date('date_nextProcess_hrta')->nullable();
+            $table->text('reason_reject');
             $table->enum('gender',['M','F']);
             $table->string('place_birth');
             $table->date('date_birth');

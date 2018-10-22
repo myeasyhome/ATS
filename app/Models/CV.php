@@ -11,6 +11,10 @@ class CV extends Model
     protected $fillable = [
     	'hiring_brief_id',
     	'name_candidate',
+        'approval_candidate',
+        'approval_date_candidate',
+        'date_nextProcess_hrta',
+        'reason_reject',
     	'gender',
     	'place_birth',
     	'date_birth',

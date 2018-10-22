@@ -9,19 +9,32 @@ class Ticket extends Model
     protected $table = 'tickets';
 
     protected $fillable = [
-    	'user_id',
+    	'created_by',
     	'position_name',
         'location',
         'position_grade',
-        'approval_lm2',
         'approval_hrbp',
-        'reason_reject_lm2',
-        'reason_reject_hrbp'
+        'reason_reject_hrbp',
+        'user_hrbp',
+        'user_GH',
+        'approval_GH',
+        'reason_reject_GH',
+        'user_GH_HR',
+        'approval_GH_HR',
+        'reason_reject_GH_HR',
+        'user_chief',
+        'approval_chief',
+        'reason_reject_chief',
+        'user_chro',
+        'approval_chro',
+        'reason_reject_chro',
+        'freeze',
+        'reason_freeze'
     ];
 
     public function user()
     {
-    	return $this->hasMany('App\User','user_id');
+        return $this->belongsTo('App\User','created_by');
     }
 
     public function ticket_jd_details()

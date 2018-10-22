@@ -18,23 +18,27 @@ class RoleSeeder extends Seeder
         	],
         	[
         		'id' => 2,
-        		'nama_role' => 'Line Manager 2'
+        		'nama_role' => 'Division Head'
         	],
+            [
+                'id' => 3,
+                'nama_role' => 'Group Head'
+            ],
+            [
+                'id' => 4,
+                'nama_role' => 'Chief'
+            ],
         	[
-        		'id' => 3,
+        		'id' => 5,
         		'nama_role' => 'HR Business Partner'
         	],
             [
-                'id' => 4,
+                'id' => 6,
                 'nama_role' => 'HR Talent Acquistion'
             ],
             [
-                'id' => 5,
+                'id' => 7,
                 'nama_role' => 'HR Operation'
-            ],
-            [
-                'id' => 6,
-                'nama_role' => 'Candidate'
             ]
         ]);
 

@@ -51,7 +51,7 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/helpers/backgrounds.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/helpers/boilerplate.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/helpers/border-radius.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/helpers/grid.css') }}">
+{{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/helpers/grid.css') }}"> --}}
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/helpers/page-transitions.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/helpers/spacing.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/helpers/typography.css') }}">
@@ -80,7 +80,6 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/elements/timeline.css') }}">
 
 
-
 <!-- ICONS -->
 
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/icons/fontawesome/fontawesome.css') }}">
@@ -97,13 +96,12 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/charts/piegage/piegage.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/charts/xcharts/xcharts.css') }}">
 
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/chosen/chosen.css') }}">
+{{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/chosen/chosen.css') }}"> --}}
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/colorpicker/colorpicker.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/datatable/datatable.css') }}">
 
 <!-- bootstrap datepicker -->
 <link href="{{ asset('assets/widgets/datepicker/bootstrap-datepicker.css') }}" rel="stylesheet">
-
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/daterangepicker/daterangepicker.css') }}">
 {{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/dialog/dialog.css') }}"> --}}
 {{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/dropdown/dropdown.css') }}"> --}}
@@ -140,7 +138,6 @@
 {{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/xeditable/xeditable.css') }}"> --}}
 
 <!-- SNIPPETS -->
-
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/snippets/chat.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/snippets/files-box.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/snippets/login-box.css') }}">
@@ -158,7 +155,6 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/themes/admin/color-schemes/default.css') }}">
 
 <!-- Components theme -->
-
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/themes/components/default.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/themes/components/border-radius.css') }}">
 
@@ -249,7 +245,7 @@
         <div class="user-account-btn dropdown">
             <a href="#" title="My Account" class="user-profile clearfix" data-toggle="dropdown">
                 <img width="28" src="{{ asset('assets/image-resources/gravatar.jpg') }}" alt="Profile image">
-                <span>{{ Auth::user()->nama }}</span>
+                <span>{{ Auth::user()->name }}</span>
                 <i class="glyph-icon icon-angle-down"></i>
             </a>
             <div class="dropdown-menu float-left">
@@ -261,11 +257,12 @@
                         </div>
                         <div class="user-info">
                             <span style="color:#000000;">
-                                {{ Auth::user()->nama }}
-                                <i>{{ Auth::user()->roles->nama_role }}</i>
+                                {{ Auth::user()->name }}
+                                <i>{{ Auth::user()->position_name }}</i>
+                                <i>Grade {{ Auth::user()->grade }}</i>
+                                <i>{{ Auth::user()->job_title }}</i>
                             </span>
                             <a href="#" title="Edit profile">Edit profile</a>
-                            <a href="#" title="View notifications">View notifications</a>
                         </div>
                     </div>
                     
@@ -293,161 +290,7 @@
     <div id="page-sidebar" class="bg-gradient-8 font-inverse">
         <div class="scroll-sidebar">
             <ul id="sidebar-menu">
-            <!-- Line Manager 1 -->
-            @if ( Auth::user()->role_id == 1 )
-                <li class="header"><span>Process</span></li>
-
-                <li>
-                    <a href="{{ route('ticket') }}" title="You Ticket List">
-                        <i class="glyph-icon icon-linecons-doc"></i>
-                        <span>Ticket</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-
-                <li>
-                    <a href="{{ route('candidate') }}" title="Candidate">
-                        <i class="glyph-icon icon-group"></i>
-                        <span>Candidate</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                
-                {{-- <li>
-                    <a href="{{ route('create.ticket') }}" title="Create New Ticket">
-                        <i class="glyph-icon icon-plus"></i>
-                        <span>Create Ticket</span>
-                    </a>
-                </li>
-                <li class="divider"></li> --}}
-                {{-- <li>
-                    <a href="" title="Create New Ticket">
-                        <i class="glyph-icon icon-coffee"></i>
-                        <span>Interview Schedule</span>
-                    </a>
-                </li>
-                <li class="divider"></li> --}}
-            @endif
-
-            <!-- Line Manager 2 -->
-            @if ( Auth::user()->role_id == 2 )
-                <li class="header"><span>Process</span></li>
-
-                <li>
-                    <a href="{{ route('lm2.list') }}" title="Approval List">
-                        <i class="glyph-icon icon-linecons-note"></i>
-                        <span>Approval List</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                
-                {{-- <li>
-                    <a href="{{ route('lm2.approval') }}" title="Approval Ticket">
-                        <i class="glyph-icon icon-check"></i>
-                        <span>Approval Ticket</span>
-                    </a>
-                </li>
-                <li class="divider"></li> --}}
-            @endif
-
-            <!-- HR Bussiness Partner -->
-            @if ( Auth::user()->role_id == 3 )
-                {{-- <li class="header"><span>Process</span></li>
-                <li>
-                    <a href="{{ route('hrbp.approval') }}" title="Approval Ticket">
-                        <i class="glyph-icon icon-check"></i>
-                        <span>Approval Ticket</span>
-                    </a>
-                </li>
-                <li class="divider"></li> --}}
-                <li>
-                    <a href="{{ route('hrbp.list') }}" title="Approval List">
-                        <i class="glyph-icon icon-linecons-note"></i>
-                        <span>Approval List</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="{{ route('hrbp.approval.hiring') }}" title="Approval Hiring Brief">
-                        <i class="glyph-icon icon-check"></i>
-                        <span>Approval Hiring Brief</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-            @endif
-
-            <!-- Hiring Talent -->
-            @if ( Auth::user()->role_id == 4 )
-                <li class="header"><span>Overview</span></li>
-                <li>
-                    <a href="{{ route('hrt.dashboard') }}" title="Dashboard">
-                        <i class="glyph-icon icon-linecons-tv"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="" title="Applicant">
-                        <i class="glyph-icon icon-linecons-tv"></i>
-                        <span>Applicant</span>
-                    </a>
-                </li>
-
-                <li class="header"><span>Process</span></li>
-
-                <li class="divider"></li>
-                <li class="no-menu">
-                    <a href="{{ route('hiring_brief') }}" title="Hiring Brief">
-                        <i class="glyph-icon icon-adjust"></i>
-                        <span>Hiring Brief</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li class="no-menu">
-                    <a href="{{ route('sourcing') }}" title="CV & Sourcing">
-                        <i class="glyph-icon icon-leaf"></i>
-                        <span>CV & Sourcing</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li class="no-menu">
-                    <a href="" title="Frontend template">
-                        <i class="glyph-icon icon-slideshare"></i>
-                        <span>Interview Process</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li class="no-menu">
-                    <a href="" title="Frontend template">
-                        <i class="glyph-icon icon-tags"></i>
-                        <span>Final Process</span>
-                    </a>
-                </li>
-
-                <li class="header"><span>Configure</span></li>
-                <li>
-                    <a href="" title="Admin Dashboard">
-                        <i class="glyph-icon icon-gears"></i>
-                        <span>SLA Setting</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="" title="Admin Dashboard">
-                        <i class="glyph-icon icon-gears"></i>
-                        <span>User Management</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="" title="Admin Dashboard">
-                        <i class="glyph-icon icon-gears"></i>
-                        <span>References</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-            @endif
-
+                @include('layouts.sidebar')
             </ul>
         <!-- #sidebar-menu -->    
         </div>
@@ -459,7 +302,6 @@
             <div class="container">
                 <div id="page-title" style="font-family: 'ooredoo';">
                     <div id="theme-options" class="admin-options">
-                    hay
                     </div>
                 </div>
                 @yield('content')
@@ -542,6 +384,20 @@
 
 @yield('js')
 @show
+
+<script>
+    /* keterangan popover label di option */
+    $('body').popover({
+        placement:'top',
+        html : true,
+        delay: {show: 50, hide: 400},
+        selector: '[data-popover]',
+        trigger: 'hover',
+        content: function(ele) {
+            return $(this).next("#ket").html();
+        }
+    });
+</script>
 
 </div>
 </body>

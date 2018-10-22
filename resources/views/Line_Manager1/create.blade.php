@@ -8,7 +8,7 @@
 		$("#edit_contract_form").show();
 	} else {
 		$("#edit_contract_form").hide();
-	}
+	};
 
 	$("#contract_form").hide();
 	function contract_form(){
@@ -20,12 +20,32 @@
 			$("#edit_contract_form").show();
 		}
 	};
+
+	/* request background di pilih new position */
+	function request_form() {
+		if ( $('#request_background').val() == 'New Position' ) {
+			$('#incumbent').prop('disabled',true);
+		} else {
+			$('#incumbent').prop('disabled',false);
+		}
+	};
+
+	/*buat di edit ticket*/
+	$(document).ready(function() {
+		if ( $('#request_background').val() == 'New Position' ) {
+			$('#incumbent').prop('disabled',true);
+		} else {
+			$('#incumbent').prop('disabled',false);
+		}
+	})
+
 </script>
 
 <script src="{{ asset('assets/select2/select2.js') }}"></script>
 <script>
 	/* Dropdown select 2 */
 	$(document).ready(function() {
+		/* form ERF */
 		$( ".select2-directorate" ).select2( {
 			placeholder: "Select Directorate",
 			theme: "bootstrap",
@@ -45,57 +65,65 @@
 			placeholder: "Select Deparment",
 			theme: "bootstrap",
 		});
+
+		/* form LOA */
+		$( ".select2-hrbp" ).select2( {
+			placeholder: "Select HR Business Partner",
+			theme: "bootstrap",
+		});
+
+		if ( {{ Auth::user()->grade }} == 7 ) {
+			$( ".select2-GH" ).select2( {
+				placeholder: "Select Line Manager 1",
+				theme: "bootstrap",
+			});
+
+			$( ".select2-chief" ).select2( {
+				placeholder: "Select Line Manager 2",
+				theme: "bootstrap",
+			});
+		} else if ( {{ Auth::user()->grade }} == 8 ) {
+			$( ".select2-chief" ).select2( {
+				placeholder: "Select Line Manager",
+				theme: "bootstrap",
+			});
+
+			$( ".select2-chro" ).select2( {
+				placeholder: "Select Chief Of Human Resource",
+				theme: "bootstrap",
+			});
+		}
+
 	});
 </script>
 
-<!-- Add field in textarea -->
+<!-- Add row dynamic -->
 <script>
-	/* Textarea on keyactivites */
-	// $(document).ready(function() {
-	// 	var i=1;
-	// 	$('#add_field').click(function() {
-	// 		i++;
-	// 		$('#table_custom').append('<tr id="row'+i+'"><td><textarea class="form-control" cols="27" rows="3" name="scope_area[]"></textarea></td><td><textarea class="form-control" id="addLine" cols="77" rows="4" name="scope_activities[]"></textarea></td><td><button type="button" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
-	// 	});
-	// });
-
-	// $(document).on('click', '.btn_remove', function(){  
- //       var button_id = $(this).attr("id");
- //       $('#row'+button_id+'').remove();  
- //    }); 
-
-    /* Field on Hard Competencies */
- //    $(document).ready(function() {
-	// 	var i=1;
-	// 	var btn = $('#add_hard_competencies');
-	// 	btn.click(function() {
-	// 		btn.remove();
-	// 		i++;
-	// 		$('#table_hard_competencies').append('<tr><td class="text-center">'+i+'</td><td><input class="form-control" type="text" name="hard[]" required></td><td><input class="form-control" type="number" name="value[]" min="1" max="5" required></td><td><button type="button" id="add_hard_competencies" class="btn btn-primary">+</button></td></tr>');
-	// 	});
-	// });
-	var no = 1;
+	var i = 1;
 	$(document).on('click', '#add_hard_competencies', function(){
-		$('#add_hard_competencies').remove();
-		no++;  
-    	$('#table_hard_competencies').append('<tr><td class="text-center">'+ no +'</td><td><input class="form-control" type="text" name="hard[]" required></td><td><input class="form-control" type="number" name="value[]" min="1" max="5" required></td><td><button type="button" id="add_hard_competencies" class="btn btn-primary">+</button></td></tr>');
+		i++;
+    	$('#table_hard_competencies').append('<tr id="row'+i+'"><td><input class="form-control" type="text" name="hard[]" required></td><td><input class="form-control" type="number" name="value[]" min="1" max="5" required></td><td><button type="button" id="'+i+'" class="btn btn-danger btn_remove_hard">X</button></td></tr>');
     });
 
-	var no_edit = $('#no').data('no');
-    $(document).on('click', '#edit_hard_competencies', function(){
-		$('#edit_hard_competencies').remove();
-		no_edit++;  
-    	$('#table_hard_competencies').append('<tr><td class="text-center">'+ no_edit +'</td><td><input class="form-control" type="text" name="hard[]" required></td><td><input class="form-control" type="number" name="value[]" min="1" max="5" required></td><td><button type="button" id="edit_hard_competencies" class="btn btn-primary">+</button></td></tr>');
-    });
-
-	/*btn remove*/
+    /*btn remove*/
 	$(document).on('click', '.btn_remove_hard', function(){  
        var button_id = $(this).attr("id");
-       $('#row'+button_id+'').remove();  
+       $('tr#row'+button_id+'').remove();  
+    });
+
+	var no_edit = $('tr:last').attr('id');
+    $(document).on('click', '#edit_hard_competencies', function(){
+		no_edit++;
+    	$('#table_hard_competencies').append('<tr class="row'+no_edit+'" id="'+no_edit+'"><td><input class="form-control" type="text" name="hard[]" required></td><td><input class="form-control" type="number" name="value[]" min="1" max="5" required></td><td><button type="button" id="'+no_edit+'" class="btn btn-danger edit_remove">x</button></td></tr>');
+    });
+
+    $(document).on('click', '.edit_remove', function(){  
+       var button_id = $(this).attr("id");
+       $('tr.row'+button_id+'').remove();
     });
 </script>
 
-<!-- JQuery Validate -->
+<!-- JQuery Step -->
 <script type="text/javascript">	
     	var form = $("#form_ticket");
 
@@ -104,46 +132,47 @@
 		    bodyTag: "section",
 		    transitionEffect: "slideLeft",
 		    enableAllSteps: true,
-		    onStepChanging: function (event, currentIndex, newIndex) {
-		        // Allways allow previous action even if the current form is not valid!
-		        if (currentIndex > newIndex)
-		        {
-		            return true;
-		        }
-		        // Needed in some cases if the user went back (clean up)
-		        if (currentIndex < newIndex)
-		        {
-		            // To remove error styles
-		            form.find(".body:eq(" + newIndex + ") label.error").remove();
-		            form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
-		        }
+		    // saveState: true,
+		  //   onStepChanging: function (event, currentIndex, newIndex) {
+		  //       // Allways allow previous action even if the current form is not valid!
+		  //       if (currentIndex > newIndex)
+		  //       {
+		  //           return true;
+		  //       }
+		  //       // Needed in some cases if the user went back (clean up)
+		  //       if (currentIndex < newIndex)
+		  //       {
+		  //           // To remove error styles
+		  //           form.find(".body:eq(" + newIndex + ") label.error").remove();
+		  //           form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
+		  //       }
 
-		  //       $.ajaxSetup({
-				//     headers:
-				//     {
-				//         'X-CSRF-Token': $('input[name="_token"]').val()
-				//     }
-				// });
+		  // //       $.ajaxSetup({
+				// //     headers:
+				// //     {
+				// //         'X-CSRF-Token': $('input[name="_token"]').val()
+				// //     }
+				// // });
 
-		  //       $("#form_ticket").validate({
-		  //       	rules: {
-				//         position_name: {
-				//             remote: {
-				//                 url: '{{ url('checkPosition') }}',
-				// 				type : 'post',
-				//             }
-				//         }
-				//     },
-				//     messages: {
-				//         position_name: {
-				//             remote: jQuery.validator.format("{0} is already registered.")
-				//         }
-				//     }
-				// });
+		  // //       $("#form_ticket").validate({
+		  // //       	rules: {
+				// //         position_name: {
+				// //             remote: {
+				// //                 url: '{{ url('checkPosition') }}',
+				// // 				type : 'post',
+				// //             }
+				// //         }
+				// //     },
+				// //     messages: {
+				// //         position_name: {
+				// //             remote: jQuery.validator.format("{0} is already registered."),
+				// //         }
+				// //     }
+				// // });
 
-		        // form.validate().settings.ignore = ":disabled,:hidden";
-		        return form.valid();
-		    },
+		  //       form.validate().settings.ignore = ":disabled,:hidden";
+		  //       return form.valid();
+		  //   },
 		    onFinishing: function (event, currentIndex) {
 		    	form.validate().settings.ignore = ":disabled,:hidden";
 		        return form.valid();
@@ -188,13 +217,6 @@
 		});
 </script>
 
-<script>
-/*popover*/
-	$(document).ready(function(){
-	    $('[data-toggle="popover"]').popover(); 
-	});
-</script>
-
 <!-- Ckeditor -->
 <script type="text/javascript" src="{{ asset('assets/widgets/ckeditor/ckeditor.js') }}"></script>
 <script>
@@ -202,10 +224,7 @@
 			// Define the toolbar groups as it is a more accessible solution.
 			toolbarGroups: [
 				{"name":"basicstyles","groups":["basicstyles"]},
-				// {"name":"links","groups":["links"]},
 				{"name":"paragraph","groups":["list","blocks"]},
-				// {"name":"document","groups":["mode"]},
-				// {"name":"insert","groups":["insert"]},
 				{"name":"styles","groups":["styles"]},
 			],
 			// Remove the redundant buttons from toolbar groups defined above.
@@ -220,7 +239,6 @@
 <!-- Dependency Dropdown -->
 <script>
 	var url = '{{ env('APP_URL') }}';
-
 	function change_dir() {
 		var dir_id = $('#directorate').val();
 		$.ajax({
@@ -336,7 +354,7 @@
 @if ( Request::segment(2) == 'create' )
 	<ol class="breadcrumb bc-3" >
 	    <li>
-	        <a href="{{ route('ticket') }}"><i class="fa-home"></i>Ticket List</a>
+	        <a href="{{ route('ticket') }}"><i class="fa-home"></i>Ticket</a>
 	    </li>
 	    <li class="active">
 	        <a href="{{ route('create.ticket') }}">New Request</a>
@@ -372,6 +390,11 @@
 		                    <section>
 		                        @include('Line_Manager1.form_jd')
 		                    </section>
+
+		                    <h2>Verified By</h2>
+		                    <section>
+		                        @include('Line_Manager1.form_LOA')
+		                    </section>
 		                </div>
 		            </form>
 		        </div>
@@ -405,6 +428,11 @@
 		                    <section>
 		                        @include('Line_Manager1.edit_form_jd')
 		                    </section>
+
+		                    <h2>Verified By</h2>
+		                    <section>
+		                        @include('Line_Manager1.edit_form_LOA')
+		                    </section>
 		                </div>
 		            </form>
 		        </div>
@@ -437,6 +465,11 @@
 		                    <h2>Job Description</h2>
 		                    <section>
 		                        @include('Line_Manager1.edit_form_jd')
+		                    </section>
+
+		                    <h2>Verified By</h2>
+		                    <section>
+		                        @include('Line_Manager1.edit_form_LOA')
 		                    </section>
 		                </div>
 		            </form>

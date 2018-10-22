@@ -49,18 +49,35 @@
 					    <tr>
 						    <td class="text-center">{{ $no++ }}</td>
 						    <td>{{ $candidate->tickets->position_name }}</td>
-						    <td class="text-center"><a href="{{ route('lm1.sourcing',$candidate->id) }}" type="button" class="btn btn-round btn-info" title="Upload">
-						    	<i class="glyph-icon icon-eye"></i></a>
-						    </td>
-						    {{-- <td class="text-center col-md-2">
-						    	@if ( $candidate > 0 )
-						    		<a href="{{ route('upload',$data->id) }}" class="bs-label label-success">
-						    			<strong>You Have Been Uploaded {{ $candidate }} Candidate</strong>
-						    		</a>
+						    <td class="text-center">
+						    <!-- jika CV belum ada yg di upload -->
+						    	@if ( $candidate->CV == Null )
+						    		<span class="bs-label label-yellow" id="ket" data-popover="true" data-content="HR Talent Acquistion hasn't uploaded the candidate" title="Information"><strong>There are no candidate</strong></span>
 						    	@else
-						    		<span class="bs-label label-yellow"><strong>You Haven't Uploaded The Candidate</strong></span>
+						    		<!-- total candidate yg sudah di upload berdasarkan posisinya -->
+							    	@if ( $candidate->CV->hiring_brief_id == $candidate->id  )
+							    		<!-- kondisi sudah di pilih 3 kandidat dan berdasarkan hiring_brief_id -->
+							    		@if ( $candidate->CV->where([['approval_candidate','1'],['hiring_brief_id',$candidate->id]])->count()==3 )
+							    			@php
+							    				/* ambil field tgl yg ada di antara row ( ini tgl ketika LM1 udah milih 3 kandidat ) */
+							    				$tglApprove = $candidate->CV->where([['hiring_brief_id',$candidate->id],['approval_date_candidate','!=',Null]])->first();
+
+							    				/* ini tgl awal HRTA upload kandidat */
+							    				$tglBuat = \Carbon\Carbon::parse($candidate->CV->created_at)->addDays(1);
+							    			@endphp
+							    			@if( $tglApprove->approval_date_candidate > $tglBuat )
+							    				<span class="bs-label label-danger"><strong>You exceed the SLA schedule</strong></span>
+							    			@else
+							    				<span class="bs-label label-success"><strong>You have chosen according to the SLA schedule</strong></span>
+							    			@endif
+							    		@else
+							    			<a href="{{ route('lm1.sourcing',$candidate->id) }}" type="button" class="bs-label label-info"><strong>{{ $candidate->CV->where('hiring_brief_id',$candidate->id)->count() }} Candidate</strong>
+							    			</a>	
+							    		@endif
+							    	@else
+							    		<span class="bs-label label-yellow"><strong>There are no candidate</strong></span>
+							    	@endif
 						    	@endif
-						    </td> --}}
 					    </tr>
 					    @empty
 					    	<td valign="top" colspan="4" class="dataTables_empty">No data available in table</td>

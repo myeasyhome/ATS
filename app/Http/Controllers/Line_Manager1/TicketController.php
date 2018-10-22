@@ -18,6 +18,9 @@ use Validator;
 use App\Mail\Request_approval;
 use Illuminate\Support\Facades\Mail;
 
+use App\User;
+use Excel;
+
 class TicketController extends Controller
 {
     public function __construct() 
@@ -27,15 +30,55 @@ class TicketController extends Controller
 
     public function index()
     {
-        $ticket = Ticket::where('user_id',Auth::user()->id)
+        $ticket = Ticket::where('created_by',Auth::user()->id)
                         ->get();
     	return view('Line_Manager1.ticket',compact('ticket'));
     }
 
+    /* halaman create ticket */
     public function create()
     {
         $directorate = Directorate::all();
-    	return view('Line_Manager1.create',compact('directorate'));
+        /* untuk LOA */
+        $hrbp = Auth::user()->where([
+                    ['group','Group HR Business Partner'],
+                    ['id','!=',Auth::user()->id],
+                    ['grade','>',5]
+                ])->orderBy('name','asc')->get();
+
+        $division_head = Auth::user()->where([
+                    ['id','!=',Auth::user()->id],
+                    ['grade',7]
+                ])->get();
+
+        $group_head = Auth::user()->where([
+                    ['group',Auth::user()->group],
+                    ['id','!=',Auth::user()->id],
+                    ['grade',8]
+                ])->orderBy('name','asc')->get();
+
+        /* final approval ketika GH HR blm ada otomatis naik ke atas */
+        $gh_HR = Auth::user()->where([
+                    ['group','Group HR Business Partner'],
+                    ['grade',8]
+                ])->orWhere([
+                        ['id','!=',Auth::user()->id],
+                        ['grade',9]
+                    ])->orderBy('name','asc')->get();
+
+        $chief = Auth::user()->where([
+                    ['chief','!=','Office of Dir. & Chief Human Resources'],
+                    ['id','!=',Auth::user()->id],
+                    ['grade',9]
+                ])->orderBy('name','asc')->get();
+
+        $chro = Auth::user()->where([
+                    ['chief','Office of Dir. & Chief Human Resources'],
+                    ['id','!=',Auth::user()->id],
+                    ['grade',9]
+                ])->orderBy('name','asc')->get();
+
+    	return view('Line_Manager1.create',compact('directorate','hrbp','division_head','group_head','gh_HR','chief','chro'));
     }
 
     public function checkPosition(Request $request)
@@ -58,19 +101,23 @@ class TicketController extends Controller
     public function division_dropdown($id)
     {
         $division = Division::where('groups_id',$id)->get();
-
         return json_encode($division);
     }
 
     public function department_dropdown($id)
     {
         $department = Department::where('divisions_id',$id)->get();
-
         return json_encode($department);
     }
 
     public function store(Request $request)
     {
+        // $email_hrbp = User::where('id',$request->hrbp)->first()->email;
+        // $email_GH = User::where('id',$request->user_groupHead)->first()->email;
+        // $email_chief = User::where('id',$request->user_chief)->first()->email;
+        // $array = [$email_GH];
+        // dd($array);
+
         /* validasi if position exist */
         $validator = Validator::make($request->all(), [
             'position_name' => 'unique:tickets',
@@ -81,17 +128,23 @@ class TicketController extends Controller
         }
 
         $ticket = Ticket::create([
-            'user_id' => Auth::user()->id,
+            'created_by' => Auth::user()->id,
             'position_name' => ucwords($request->position_name),
             'location' => ucwords($request->location),
             'position_grade' => $request->grade,
+            'user_hrbp' => $request->user_hrbp,
+            'user_GH' => $request->user_GH,
+            'user_GH_HR' => $request->user_GH_HR,
+            'user_chief' => $request->user_chief,
+            'user_chro' => $request->user_chro
         ]);
 
         /*take ticket id*/
         $ticket_id = Ticket::select('id')->where([
-            ['user_id',Auth::user()->id],
+            ['created_by',Auth::user()->id],
             ['position_name',ucwords($request->position_name)]
         ])->first();
+
 
         /* form ERF */
         $ticket_erf = Ticket_erf::create([
@@ -108,7 +161,6 @@ class TicketController extends Controller
             'contract_duration' => $request->contract_duration,
             'type_hiring' => json_encode($request->type_hiring),
             'confidentiality' => $request->confidentiality,
-            // 'bussiness_impact' => $request->bussiness_impact,
             'request_background' => $request->request_background,
             'reason' => ucfirst($request->reason)
         ]);
@@ -125,16 +177,14 @@ class TicketController extends Controller
             'job_level' => $request->job_level,
             'min_education' => $request->min_education,
             'qualification' => $request->qualification,
-            // 'scope_area' => json_encode($request->scope_area),
-            // 'scope_activities' => json_encode($request->scope_activities),
             'responsibility' => $request->responsibility,
             'soft_competency' => json_encode($request->soft),
-            'hard_index' => json_encode($request->hard),
-            'hard_value' => json_encode($request->value)
+            'hard_index' => json_encode(array_filter($request->hard,'strlen')),
+            'hard_value' => json_encode(array_filter($request->value,'strlen'))
         ]);
 
         /* send email for notif */
-        Mail::to(Auth::user()->email)->send(new Request_approval($ticket));
+        // Mail::to(Auth::user()->email)->send(new Request_approval($ticket));
 
         return redirect()->route('ticket')->with('success','Successfully Create Ticket For '.ucwords($request->position_name));
     }
@@ -142,6 +192,44 @@ class TicketController extends Controller
     /* Show Edit data */
     public function edit($id)
     {
+        $hrbp = Auth::user()->where([
+                    ['group','Group HR Business Partner'],
+                    ['id','!=',Auth::user()->id],
+                    ['grade','>',5]
+                ])->orderBy('name','asc')->get();
+
+        $division_head = Auth::user()->where([
+                    ['id','!=',Auth::user()->id],
+                    ['grade',7]
+                ])->get();
+
+        $group_head = Auth::user()->where([
+                    ['group',Auth::user()->group],
+                    ['id','!=',Auth::user()->id],
+                    ['grade',8]
+                ])->orderBy('name','asc')->get();
+
+        /* final approval ketika GH HR blm ada otomatis naik ke atas */
+        $gh_HR = Auth::user()->where([
+                    ['group','Group HR Business Partner'],
+                    ['grade',8]
+                ])->orWhere([
+                        ['id','!=',Auth::user()->id],
+                        ['grade',9]
+                    ])->orderBy('name','asc')->get();
+
+        $chief = Auth::user()->where([
+                    ['chief','!=','Office of Dir. & Chief Human Resources'],
+                    ['id','!=',Auth::user()->id],
+                    ['grade',9]
+                ])->orderBy('name','asc')->get();
+
+        $chro = Auth::user()->where([
+                    ['chief','Office of Dir. & Chief Human Resources'],
+                    ['id','!=',Auth::user()->id],
+                    ['grade',9]
+                ])->orderBy('name','asc')->get();
+
         $directorate = Directorate::all();
         $group = Group::all();
         $division = Division::all();
@@ -151,7 +239,7 @@ class TicketController extends Controller
         $hard = json_decode($data->ticket_jd_details->hard_index);
         $hard_value = json_decode($data->ticket_jd_details->hard_value);
 
-        return view('Line_Manager1.create',compact('group','division','department','directorate','data','soft','hard','hard_value','id'));
+        return view('Line_Manager1.create',compact('group','division','department','directorate','data','soft','hard','hard_value','id','hrbp','group_head','gh_HR','chief','chro'));
     }
 
     public function update($id,Request $request)
@@ -159,6 +247,11 @@ class TicketController extends Controller
         Ticket::findOrFail($id)->update([
             'location' => ucwords($request->location),
             'position_grade' => $request->grade,
+            'user_hrbp' => $request->user_hrbp,
+            'user_GH' => $request->user_GH,
+            'user_GH_HR' => $request->user_GH_HR,
+            'user_chief' => $request->user_chief,
+            'user_chro' => $request->user_chro
         ]);
 
         Ticket_erf::where('ticket_id',$id)->update([
@@ -174,7 +267,6 @@ class TicketController extends Controller
             'contract_duration' => $request->contract_duration,
             'type_hiring' => json_encode($request->type_hiring),
             'confidentiality' => $request->confidentiality,
-            // 'bussiness_impact' => $request->bussiness_impact,
             'request_background' => $request->request_background,
             'reason' => ucfirst($request->reason)
         ]);
@@ -189,12 +281,10 @@ class TicketController extends Controller
             'job_level' => $request->job_level,
             'min_education' => $request->min_education,
             'qualification' => $request->qualification,
-            // 'scope_area' => json_encode($request->scope_area),
-            // 'scope_activities' => json_encode($request->scope_activities),
             'responsibility' => $request->responsibility,
             'soft_competency' => json_encode($request->soft),
-            'hard_index' => json_encode($request->hard),
-            'hard_value' => json_encode($request->value)
+            'hard_index' => json_encode(array_filter($request->hard,'strlen')),
+            'hard_value' => json_encode(array_filter($request->value,'strlen'))
         ]);
 
         return redirect()->route('ticket')->with('success','Successfully Updated Ticket');
@@ -211,7 +301,12 @@ class TicketController extends Controller
         Ticket::findOrFail($id)->update([
             'location' => ucwords($request->location),
             'position_grade' => $request->grade,
-            'approval_lm2' => '0',
+            'user_hrbp' => $request->user_hrbp,
+            'user_GH' => $request->user_GH,
+            'user_GH_HR' => $request->user_GH_HR,
+            'user_chief' => $request->user_chief,
+            'user_chro' => $request->user_chro,
+            'approval_hrbp' => '0',
         ]);
 
         Ticket_erf::where('ticket_id',$id)->update([
@@ -227,7 +322,6 @@ class TicketController extends Controller
             'contract_duration' => $request->contract_duration,
             'type_hiring' => json_encode($request->type_hiring),
             'confidentiality' => $request->confidentiality,
-            // 'bussiness_impact' => $request->bussiness_impact,
             'request_background' => $request->request_background,
             'reason' => ucfirst($request->reason)
         ]);
@@ -242,12 +336,10 @@ class TicketController extends Controller
             'job_level' => $request->job_level,
             'min_education' => $request->min_education,
             'qualification' => $request->qualification,
-            // 'scope_area' => json_encode($request->scope_area),
-            // 'scope_activities' => json_encode($request->scope_activities),
             'responsibility' => $request->responsibility,
             'soft_competency' => json_encode($request->soft),
-            'hard_index' => json_encode($request->hard),
-            'hard_value' => json_encode($request->value)
+            'hard_index' => json_encode(array_filter($request->hard,'strlen')),
+            'hard_value' => json_encode(array_filter($request->value,'strlen'))
         ]);
 
         return redirect()->route('ticket')->with('success','Successfully Request Re-Approval Ticket');
@@ -255,11 +347,61 @@ class TicketController extends Controller
 
     public function delete($id)
     {
+        Line_Manager::where('ticket_id',$id)->delete();
         Ticket::findOrFail($id)->delete();
         Ticket_erf::where('ticket_id',$id)->delete();
         Ticket_jd::where('ticket_id',$id)->delete();
 
         return back()->with('success','Successfully Deleted Ticket');
+    }
+
+    /* detail tiket */
+    public function detail($id)
+    {
+        $detail = Ticket::findOrFail($id);
+        $soft = json_decode($detail->ticket_jd_details->soft_competency);
+        $hard = json_decode($detail->ticket_jd_details->hard_index);
+        $hard_value = json_decode($detail->ticket_jd_details->hard_value);
+
+        return view('Line_Manager1.detail',compact('detail','soft','hard','hard_value'));
+    }
+
+    /* LINE MANAGER PROGRESS */
+    public function progress($id) 
+    {
+        $ticket = Ticket::findOrFail($id);
+
+        /* bedakan user yg buat berdasarkan grade */
+        if ( $ticket->user->grade == 7 ) {
+            $gh = User::findOrFail($ticket->user_GH);
+            $chief = User::findOrFail($ticket->user_chief);
+
+            return response()->json(
+                array(
+                    'gh' => $gh->name,
+                    'chief' => $chief->name,
+                    'approval_GH' => $ticket->approval_GH,
+                    'approval_chief' => $ticket->approval_chief,
+                    'grade' => $ticket->user->grade,
+                )
+            );
+
+        } elseif ( $ticket->user->grade == 8 ) {
+            $chief = User::findOrFail($ticket->user_chief);
+            $chro = User::findOrFail($ticket->user_chro);
+
+            return response()->json(
+                array(
+                    'chro' => $chro->name,
+                    'approval_chro' => $ticket->approval_chro,
+                    'chief' => $chief->name,
+                    'approval_chief' => $ticket->approval_chief,
+                    'grade' => $ticket->user->grade,
+                )
+            );
+
+        }
+
     }
 
 }

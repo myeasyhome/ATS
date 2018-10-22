@@ -21,7 +21,7 @@ class ApprovalResultBriefController extends Controller
 
     public function index()
     {
-    	$hiring = Hiring_brief::all();
+    	$hiring = Hiring_brief::get();
         return view('HR_BussinessPartner.approval_result_brief',compact('hiring'));
     }
 
@@ -43,7 +43,7 @@ class ApprovalResultBriefController extends Controller
             'approval_hiring_by_hrbp' => '1',
 
             /* Tanggal ini untuk perhitungan SLA setelah di approve ( selisih waktu tampil di hiring brief HR Talent ) */
-            // 'approval_date_hrbp' => 
+            'approval_date_hrbp' => Carbon::now()->toDateString()
         ]);
 
         return redirect()->route('hrbp.approval.hiring')->with('success','Successfully Approved Result of Hiring Brief');

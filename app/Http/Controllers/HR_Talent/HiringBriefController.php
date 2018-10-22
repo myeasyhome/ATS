@@ -20,10 +20,22 @@ class HiringBriefController extends Controller
 	public function index()
 	{
 		$data = Ticket::where([
-						['approval_lm2','1'],
-						['approval_hrbp','1']
+						['approval_hrbp','1'],
+						['approval_GH','1'],
+						['approval_chief','1']
 					])->get();
+		
 		return view('HR_Talent.hiring_brief',compact('data'));
+	}
+
+	/* detail tiket yg di ajukan */
+	public function detail($id)
+	{
+		$detail = Ticket::findOrFail($id);
+		$soft = json_decode($detail->ticket_jd_details->soft_competency);
+        $hard = json_decode($detail->ticket_jd_details->hard_index);
+        $hard_value = json_decode($detail->ticket_jd_details->hard_value);
+		return view('HR_Talent.detail',compact('detail','soft','hard','hard_value'));
 	}
 
 	/* index untuk buat schedule brief */

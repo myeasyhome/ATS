@@ -77,8 +77,6 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/chosen/chosen.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/colorpicker/colorpicker.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/datatable/datatable.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/datepicker/datepicker.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/datepicker-ui/datepicker.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/daterangepicker/daterangepicker.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/dialog/dialog.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/dropdown/dropdown.css') }}">
@@ -202,7 +200,7 @@
     <div class="center-content row">
         <div class="col-md-3 center-margin">
 
-            <form method="post" action="{{ route('login') }}">
+            <form method="post" action="{{ route('login') }}" enctype="multipart/form-data" >
             @csrf
                 <div class="content-box wow bounceInDown modal-content">
                     <h3 class="content-box-header content-box-header-alt bg-default">
@@ -225,14 +223,14 @@
                     @endif
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" name="username" class="form-control" id="exampleInputEmail1" placeholder="Enter username" required>
+                                <input type="text" name="nik" class="form-control" id="exampleInputEmail1" placeholder="NIK" required>
                                 <span class="input-group-addon bg-blue">
                                     <i class="glyph-icon icon-user"></i>
                                 </span>
                             </div>
-                            @if ($errors->has('username'))
+                            @if ($errors->has('nik'))
                                 <span class="invalid-feedback" role="alert">
-                                    <strong style="color:red;">{{ $errors->first('username') }}</strong>
+                                    <strong style="color:red;">{{ $errors->first('nik') }}</strong>
                                 </span>
                             @endif
                         </div>
@@ -249,10 +247,7 @@
                                 </span>
                             @endif
                         </div>
-                        <div class="form-group">
-                            <input type="hidden" id="xyztoken" name="">
-                            <a href="#" title="Recover password">Forgot Your Password? Contact Admin</a>
-                        </div>
+                        
                         <button class="btn btn-success btn-block">Sign In</button>
                     </div>
                 </div>
@@ -313,6 +308,5 @@
 <!-- Theme switcher -->
 
 <script type="text/javascript" src="{{ asset('assets/widgets/theme-switcher/themeswitcher.js') }}"></script>
-
 </body>
 </html>

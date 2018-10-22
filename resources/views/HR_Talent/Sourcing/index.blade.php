@@ -51,19 +51,89 @@
 					    <tr>
 						    <td class="text-center">{{ $no++ }}</td>
 						    <td>{{ $data->tickets->position_name }}</td>
-						    <td class="text-center"><a href="{{ route('upload',$data->id) }}" type="button" class="btn btn-round btn-info" title="Upload">
-						    	<i class="glyph-icon icon-upload"></i></a>
+						    <td class="text-center">
+						    	@php
+						    		/* Kandidate yg di pilih LM1 sudah 3 */
+						    		$candidate_approve = $candidate->where('hiring_brief_id',$data->id);
+						    	@endphp
+						    	@if ( $candidate_approve->where('approval_candidate','1')->count() == 3 )
+						    		<a href="#" type="button" class="btn btn-round btn-info" title="" disabled>
+								    	<i class="glyph-icon icon-upload"></i>
+								    </a>
+						    	@else
+						    		<a href="{{ route('upload',$data->id) }}" type="button" class="btn btn-round btn-info" title="Upload">
+								    	<i class="glyph-icon icon-upload"></i>
+								    </a>
+						    	@endif
 						    </td>
-						    <td class="text-center col-md-2">
+						    <td class="text-center col-md-4">
 						    	<!-- jika CV belum ada yg di upload -->
 						    	@if ( $data->CV == Null )
 						    		<span class="bs-label label-yellow"><strong>There are no candidate</strong></span>
 						    	@else
 						    		<!-- total candidate yg sudah di upload berdasarkan posisinya -->
 							    	@if ( $data->CV->hiring_brief_id == $data->id  )
-							    		<span class="bs-label label-success">
-							    			<strong>You Have Been Uploaded {{ $data->CV->where('hiring_brief_id',$data->id)->count() }} Candidate</strong>
-							    		</span>
+							    		@if ( $candidate_approve->where('approval_candidate','1')->count() == 3 )
+							    			<!-- jika HRTA next process, cari tgl dan bandingkan utk hitung SLA -->
+							    			@if ( $candidate->where('date_nextProcess_hrta','!=',Null)->count() > 0 )
+							    				@php
+							    					$tglNextProcess = $data->CV->where('hiring_brief_id',$data->id)->first();
+
+							    					/* created_at dijadikan SLA 5 hari */
+							    					$tglBuat = $data->CV->created_at;
+							    					$SLA = \Carbon\Carbon::parse($tglBuat)->addDays(4);
+
+							    					/* PERHITUNGAN SLA SYSTEM */
+							    					$a = \Carbon\Carbon::parse($tglNextProcess->date_nextProcess_hrta)->toDateString();
+							    					$diff = $SLA->diffInDays($a);
+
+							    					/*total kandidat approve,reject*/
+							    					$total = $candidate->where('hiring_brief_id',$data->id);
+							    				@endphp
+							    				<!-- belum di next process oleh HRTA -->
+							    				@if ( $tglNextProcess->date_nextProcess_hrta == Null )
+							    					<form action="{{ route('nextProcess.sourcing',$data->CV->id) }}" method="POST">
+											    		@csrf
+											    		@method('PATCH')
+											    		<a href="{{ route('showCandidate',$data->id) }}" type="button" class="btn btn-info">{{ $total->where('approval_candidate',1)->count() }} Approved, {{ $total->where('approval_candidate',2)->count() }} Rejected, {{ $total->where('approval_candidate',0)->count() }} No Action
+											    		</a>
+											    		<br>
+											    		<button class="btn btn-success" type="submit" style="margin-top: 10px;">Done !
+											    		</button>
+											    	</form>
+											    @elseif ( $SLA < $tglNextProcess->date_nextProcess_hrta )
+											    	<!-- di loop karna hasil dari diff = 0,1,2,3 dst. Jika 0 itu 1 hari, Ini lewat dari waktu SLA-->
+											    	@for ($i = $diff; $i <=$diff; $i++)
+							    						<span class="bs-label label-danger"><strong>SLA + {{ $i+1 }} Days</strong></span>
+							    					@endfor
+							    				@else
+							    					<!-- tidak lewat waktu SLA -->
+							    					@if( $diff == 4 )
+							    						<span class="bs-label label-success"><strong>SLA 1 Days</strong></span>
+							    					@elseif ( $diff == 3 )
+							    						<span class="bs-label label-success"><strong>SLA 2 Days</strong></span>
+							    					@elseif ( $diff == 2 )
+							    						<span class="bs-label label-success"><strong>SLA 3 Days</strong></span>
+							    					@elseif ( $diff == 1 )
+							    						<span class="bs-label label-success"><strong>SLA 4 Days</strong></span>
+							    					@elseif ( $diff == 0 )
+							    						<span class="bs-label label-success"><strong>SLA 5 Days</strong></span>
+							    					@endif
+							    				@endif
+							    			@else
+							    				<form action="{{ route('nextProcess.sourcing',$data->CV->id) }}" method="POST">
+										    		@csrf
+										    		@method('PATCH')
+										    		<button class="btn btn-round btn-success" type="submit">
+										    			Done !
+										    		</button>
+										    	</form>
+							    			@endif
+							    		@else
+							    			<span class="bs-label label-success">
+								    			<strong>You Have Been Uploaded {{ $data->CV->where('hiring_brief_id',$data->id)->count() }} Candidate</strong>
+								    		</span>
+							    		@endif
 							    	@else
 							    		<span class="bs-label label-yellow"><strong>There are no candidate</strong></span>
 							    	@endif

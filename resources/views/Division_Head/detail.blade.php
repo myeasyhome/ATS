@@ -1,56 +1,30 @@
 @extends('layouts.default')
 @section('title','Detail Ticket')
-
 @section('js')
+
 <script type="text/javascript">
-	/* Modal Reject */
-	$(document).ready(function (e) {
-        $(document).on("click", ".btn_modal_reject", function (e) {
-            var url = $(this).attr('data-url'); 
+    /* Modal Reject */
+    $(document).ready(function () {
+        $(document).on("click", ".btn_modal_reject", function () {
+            var url = $(this).attr('data-url');
             $('#form_modal_reject').attr('action',url);
         });
     });
 
     /* Modal Approved */
-	$(document).ready(function (e) {
-        $(document).on("click", ".btn_modal_approved", function (e) {
+    $(document).ready(function () {
+        $(document).on("click", ".btn_modal_approved", function () {
             var url = $(this).attr('data-url'); 
             $('#form_modal_approved').attr('action',url);
         });
     });
-</script>
-
-<script src="{{ asset('assets/select2/select2.js') }}"></script>
-<script>
-	/* Dropdown select 2 */
-	$(document).ready(function() {
-		/* form ERF */
-		// if ( {{ Auth::user()->grade }} == 7 ) {
-			$( ".select2-GH" ).select2( {
-				placeholder: "Select Line Manager 1",
-				theme: "bootstrap",
-			});
-
-		// } else if ( {{ Auth::user()->grade }} == 8 ) {
-			$( ".select2-chief" ).select2( {
-				placeholder: "Select Line Manager",
-				theme: "bootstrap",
-			});
-
-			$( ".select2-chro" ).select2( {
-				placeholder: "Select Chief Of Human Resource",
-				theme: "bootstrap",
-			});
-		// }
-
-	});
 </script>
 @stop
 
 @section('content')
 <ol class="breadcrumb bc-3" >
     <li>
-        <a href="{{ route('hrbp.list') }}">Approval List</a>
+        <a href="{{ route('dh.list') }}">Approval Ticket</a>
     </li>
     <li class="active">
     	<a>Detail Ticket</a>
@@ -66,15 +40,15 @@
 <div class="row">
     <div class="col-md-12">
 	    <div class="panel panel-default">
-	        <div class="panel-body">
-		        <form role="form" method="post" {{-- enctype="multipart/form-data" --}} class="form-horizontal" id="detail_ticketHRBP">
-	        		<h2 style="padding-bottom: 30px"><span class="bs-label label-info"><strong>Employee Requisition Form</strong></span></h2>
 
+	        <div class="panel-body">
+		        <form role="form" action="" method="post" enctype="multipart/form-data" class="form-horizontal" id="form_ticket">
+	        		<h2 style="padding-bottom: 30px"><span class="bs-label label-info"><strong>Employee Requisition Form</strong></span></h2>
 	                    	<div class="row" style="padding-left: 10px">
 	                    		<div class="col-md-6">
 	                    			{{-- <fieldset class="the-fieldset"> --}}
 		                    			<div class="form-group">
-			                    			<label class="col-md-12" style="margin-bottom: 0px">Position Name</label>
+			                    			<label class="col-md-12 style="margin-bottom: 0px"">Position Name</label>
 			                    			{{-- <label class="col.6 col-md-1">:</label> --}}
 			                    			<p class="col-md-12">{{ ucwords($detail->position_name) }}</p>
 		                    			</div>
@@ -89,7 +63,7 @@
 			                    			<p class="col-md-12">{{ ucwords($detail->location) }}</p>
 		                    			</div>
 		                    			<div class="form-group">
-			                    			<label class="col-md-12" style="margin-bottom: 0px">Reporting To</label>
+			                    			<label class="col-md-12" style="margin-bottom: 0px">Reporting TO</label>
 			                    			{{-- <label class="col-md-1">:</label> --}}
 			                    			<p class="col-md-12">{{ ucwords($detail->ticket_erf_details->reporting_to) }}</p>
 		                    			</div>
@@ -125,7 +99,10 @@
 		                    			</div>
 		                    			<div class="form-group">
 			                    			<label class="col-md-12" style="margin-bottom: 0px">Contract Duration</label>
-			                    			<p class="col-md-12">{{ $detail->ticket_erf_details->employee_status == 'Contract' ? $detail->ticket_erf_details->contract_duration : '-' }}</p>
+			                    			{{-- <label class="col-md-1">:</label> --}}
+			                    			<p class="col-md-12">
+			                    				{{ $detail->ticket_erf_details->employee_status == 'Contract' ? $detail->ticket_erf_details->contract_duration : '-' }}
+			                    			</p>
 		                    			</div>
 		                    			<div class="form-group">
 			                    			<label class="col-md-12" style="margin-bottom: 0px">Type Of Hiring</label>
@@ -135,8 +112,7 @@
 					                    		$type_hiring = json_decode($detail->ticket_erf_details->type_hiring);
 					                    	@endphp
 				                    			@if(count($type_hiring) > 1)
-				                    				Internal Job Offering <br>
-				                    				External Job Offering
+				                    				Internal Job Offering & External Job Offering
 				                    			@elseif ( $type_hiring[0] == 'IJO' )
 				                    				Internal Job Offering
 				                    			@elseif( $type_hiring[0] == 'EJO' )
@@ -214,7 +190,7 @@
 			                    			{{-- <label class="col-md-1">:</label> --}}
 			                    			<p class="col-md-12">
 			                    				@if($detail->ticket_jd_details->min_education=='d3')
-			                    					Diplomas's degree graduate
+			                    					Diploma's degree graduate
 			                    				@elseif($detail->ticket_jd_details->min_education=='s1')
 			                    					Bachelor's degree graduate
 			                    				@endif
@@ -292,12 +268,7 @@
 						                            </tr>
 						                        </tbody>
 						                    </table>
-						                    <span><i style="color: #7C7C7C;">* Proficiency Level: 
-						                    <br>1. Significant Development Needed; 
-						                    <br>2. Development Needed; 
-						                    <br>3. Partially Meet Expectation; 
-						                    <br>4. Meet Expectation; 
-						                    <br>5. Exceed Expectation</i></span>
+						                    <span><i style="color: #7C7C7C;">* Proficiency Level: 1. Significant Development Needed; 2. Development Needed; 3. Partially Meet Expectation; 4. Meet Expectation; 5. Exceed Expectation</i></span>
 						                </div>
 					                </div>	
 		                    	</div>
@@ -319,7 +290,7 @@
 						                                <tr>
 						                                    <td class="text-center">{{ $no++ }}</td>
 						                                    <td>
-						                                        {{ ucwords($value) }}
+						                                        {{ ($value) }}
 						                                    </td>
 						                                    <td class="text-center">
 						                                        {{ $hard_value[$array] }}
@@ -328,33 +299,29 @@
 						                            @endforeach
 						                        </tbody>
 						                    </table>
-						                    <span><i style="color: #7C7C7C;">* Proficiency Level: <br>
-						                    1. Introductory; <br>
-						                    2. Basic; <br>
-						                    3. Intermediate; <br>
-						                    4. Advanced; <br>
-						                    5. Expert</i></span>
+						                    <span><i style="color: #7C7C7C;">* Proficiency Level: 1. Introductory; 2. Basic; 3. Intermediate; 4. Advanced; 5. Expert</i></span>
 						                </div>
 						            </div>
 		                    	</div>
-		                    </div>
+		                    </div>	
 
+		        <!-- btn back, approve, reject -->
 	            <div class="form-group text-center">
-	            	<a href="{{ route('hrbp.list') }}" type="button" class="btn btn-round btn-info" title="back">
+	            	<a href="{{ route('dh.list') }}" type="button" class="btn btn-round btn-info" title="back">
 	            		<span class="glyph-icon icon-arrow-left"></span>
 	            	</a>
 	            	&nbsp;
-	            	@if ( $detail->approval_hrbp == 0 )
-	            	<a href="#modal_approval" type="button" data-url="{{ route('hrbp.approved',$detail->id) }}" data-toggle="modal" class="btn btn-round btn-success btn_modal_approved" title="Approved">
+	            	@if ( $detail->approval_lm2 == 0 )
+	            	<a href="#modal_approval" type="button" data-url="{{ route('dh.approved.ticket',$detail->id) }}" data-toggle="modal" class="btn btn-round btn-success btn_modal_approved" title="Approved">
                     	<span class="glyph-icon icon-check"></span>
                     </a>
                     &nbsp;
-                    <a href="#modal_reject" type="button" data-url="{{ route('hrbp.reject',$detail->id) }}" data-toggle="modal" class="btn btn-round btn-danger btn_modal_reject" title="Reject">
+                    <a href="#modal_reject" type="button" data-url="{{ route('dh.reject.ticket',$detail->id) }}" data-toggle="modal" class="btn btn-round btn-danger btn_modal_reject" title="Reject">
 	                    <span class="glyph-icon icon-remove"></span>
 	                </a>
-	                @elseif ( $detail->approval_hrbp == 1 )
+	                @elseif ( $detail->approval_lm2 == 1 )
 	                	<span class="bs-label label-success"><strong>This Ticket Has Been Approved</strong></span>
-	                @elseif ( $detail->approval_hrbp == 2 )
+	                @elseif ( $detail->approval_lm2 == 2 )
 	                	<span class="bs-label label-danger"><strong>This Ticket Has Been Rejected</strong></span>
 	                @endif
 	            </div>
@@ -365,6 +332,7 @@
 	    </div>
     </div>
 </div>
+
 
 <!-- Modal approval -->
 <div class="modal fade" tabindex="1" id="modal_approval" role="dialog">
@@ -377,75 +345,13 @@
             <form role="form" method="post" class="form-horizontal" id="form_modal_approved">
             @csrf
             @method('PATCH')
-            	<div class="modal-body">
-            		 <h2 style="padding-bottom: 30px;"><span class="bs-label label-info"><strong>line of approval</strong></span></h2>
-
-		                <div class="row" style="padding-bottom:30px">
-							<div class="col-md-7">
-							{{-- jika yang membuat grade 7 or 8 --}}
-						      @if ( $detail->user->grade == 7 )
-						        <div class="form-group">
-						          <label for="user_GH" class="col-md-5 control-label">Line Manager<span style="color: red;"> *</span></label>
-						          <div class="col-md-7" style="padding-bottom: 10px;">
-						              <select class="form-control select2-GH" id="user_GH" name="user_GH" required title="Select Line Manager 1" style="width:100%">
-						                <option></option>
-						                @foreach ($group_head as $group_head)
-						                  <option value="{{ $group_head->id }}" {{ $group_head->id == $detail->user_GH ? 'selected' : ''}}>{{ $group_head->name }}</option>
-						                @endforeach
-						              </select>
-						          </div>
-						        </div>
-
-						        <div class="form-group">
-						          <label for="user_chief" class="col-md-5 control-label"></label>
-						          <div class="col-md-7" style="padding-bottom: 10px;">
-						              <select class="form-control select2-chief" id="user_chief" name="user_chief" required title="Select Line Manager 2" style="width:100%">
-						                <option></option>
-						                @foreach ($gh_HR as $gh_HR)
-						                  <option value="{{ $gh_HR->id }}" {{ $gh_HR->id == $detail->user_chief ? 'selected' : ''}}>{{ $gh_HR->name }}</option>
-						                @endforeach
-						              </select>
-						          </div>
-						        </div>
-						      @elseif( $detail->user->grad == 8 )
-						        <div class="form-group">
-						          <label for="user_chief" class="col-md-5 control-label">Line Manager<span style="color: red;"> *</span></label>
-						          <div class="col-md-6" style="padding-bottom: 10px;">
-						              <select class="form-control select2-chief" id="user_chief" name="user_chief" required title="Select Line Manager">
-						                <option></option>
-						                @foreach ($chief as $chief)
-						                  <option value="{{ $chief->id }}">{{ $chief->name }}</option>
-						                @endforeach
-						              </select>
-						          </div>
-						        </div>
-
-						        <div class="form-group">
-						          <label for="user_chro" class="col-md-5 control-label">{{-- Chief Of Human Resource<span style="color: red;"> *</span> --}}</label>
-						          <div class="col-md-6" style="padding-bottom: 10px;">
-						              <select class="form-control select2-chro" id="user_chro" name="user_chro" required title="Chief Of Human Resource">
-						                <option></option>
-						                @foreach ($chro as $chro)
-						                  <option value="{{ $chro->id }}">{{ $chro->name }}</option>
-						                @endforeach
-						              </select>
-						          </div>
-						        </div>
-						      @endif
-						     
-						  </div>
-
-							<div class="col-md-4">
-						    	<label><span class="glyph-icon icon-exclamation-circle"></span> Verified By</label>
-						    	<p>In this section you will choose an approval request that will be approved by the person who has the right to approve your request.
-							</div>
-						</div> 	 
-                	<p class="text-center" style="padding-top: 20px"><strong>Are you sure to Approve this Ticket ?</strong></p>
-	            </div>
-	            <div class="modal-footer">
-	                <button type="submit" class="btn btn-success">Yes, i approve it</button>
+                <div class="modal-body">
+                    <p class="text-center"><strong>Are you sure to Approve this position ?</strong></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Yes, i approve it</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">No, cancel</button>
-	            </div>
+                </div>
             </form>
         </div>
     </div>
@@ -457,23 +363,24 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Reject Status</h4>
+                <h4 class="modal-title">Approval Status</h4>
             </div>
             <form role="form" method="post" class="form-horizontal" id="form_modal_reject">
             @csrf
             @method('PATCH')
-            	<div class="modal-body">
-                	<div class="form-group">
+                <div class="modal-body">
+                    {{-- <p class="text-center"><strong>Are you sure to Reject this position ?</strong></p> --}}
+                    <div class="form-group">
                         <label for="position_name" class="col-sm-2 control-label">Reason</label>
                         <div class="col-sm-9">
                             <textarea class="form-control" cols="51" rows="12" name="reason_for_rejection" required></textarea>
                         </div>
                     </div>
-	            </div>
-	            <div class="modal-footer">
-	                <button type="submit" class="btn btn-success">Yes, i reject it</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Yes, i reject it</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">No, cancel</button>
-	            </div>
+                </div>
             </form>
         </div>
     </div>

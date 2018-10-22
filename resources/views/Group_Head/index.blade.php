@@ -1,57 +1,50 @@
 @extends('layouts.default')
 @section('title','Approval List')
+
 @section('js')
 <script type="text/javascript" src="{{ asset('assets/widgets/datatable/datatable.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/widgets/datatable/datatable-bootstrap.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/widgets/datatable/datatable-responsive.js') }}"></script>
-<script>
+
+<script type="text/javascript">
     /* Datatables responsive */
     $(function() {
         $('#datatable-responsive').DataTable( {
             "responsive": true
-        });
+        } );
+    } );
 
+    $(function() {
         $('.dataTables_filter input').attr("placeholder", "Search...");
     });
 </script>
 
 <script type="text/javascript">
-	/* Modal Reject */
-	$(document).ready(function (e) {
-        $(document).on("click", ".btn_modal_reject", function (e) {
-            var url = $(this).attr('data-url'); 
+    /* Modal Reject */
+    $(document).ready(function () {
+        $(document).on("click", ".btn_modal_reject", function () {
+            var url = $(this).attr('data-url');
             $('#form_modal_reject').attr('action',url);
         });
     });
 
     /* Modal Approved */
-	$(document).ready(function (e) {
-        $(document).on("click", ".btn_modal_approved", function (e) {
+    $(document).ready(function () {
+        $(document).on("click", ".btn_modal_approved", function () {
             var url = $(this).attr('data-url'); 
             $('#form_modal_approved').attr('action',url);
         });
     });
 </script>
+
 @stop
 
-
-<!-- ALERT akan muncul jika HRT sudah input hasil briefing, status waiting => 0 -->
-@section('alert_for_HRBP')
-	@if($hiring->contains('approval_hiring_by_hrbp','0') == true)
-		@component('notice_message.notice', [ 
-						'msg'=> 'There is an approval that must be completed as soon as possible because it will affect duration of the SLA', 
-						'link' => route('hrbp.approval.hiring')
-					])
-		@endcomponent
-	@endif
-@endsection
 @section('content')
 <div class="panel">
 	<div class="panel-body">
-
 		<h3 class="title-hero">Approval List</h3>
 		<div class="example-box-wrapper">
-			<!-- Notification Alert -->
+			<!-- notif -->
 	        @if(session('success'))
 	        	<div class="alert alert-success" role="alert">
 	        		<button type="button" class="close" data-dismiss="alert">×</button>
@@ -67,10 +60,10 @@
 				<thead>
 					<tr>
 					    <th class="text-center col-md-1">No.</th>
-					    <th>Position Name</th>
+					    <th class="text-center">Position Name</th>
 					    <th class="text-center">Created Date</th>
 					    <th class="text-center">Created By</th>
-					    <th class="text-center">Status</th>
+					    <th class="text-center">Option</th>
 					</tr>
 				</thead>
 
@@ -79,18 +72,25 @@
 				    @forelse($ticket as $ticket)
 				    <tr>
 					    <td class="text-center">{{ $no++ }}</td>
-					    <td><a href="{{ route('hrbp.detail',$ticket->id) }}">{{ $ticket->position_name }}</a></td>
+					    <td><a href="{{ route('gh.detail.ticket',$ticket->id) }}">{{ $ticket->position_name }}</a></td>
 					    <td class="text-center">{{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y') }}</td>
 					    <td class="text-center">{{ $ticket->user->name }}</td>
 					    <td class="text-center">
-					    	@if($ticket->approval_hrbp > 0)
-					    		@if ( $ticket->approval_hrbp == 1 )
+					    	@if($ticket->approval_GH > 0)
+					    		@if ( $ticket->approval_GH == 1 )
 					    			<span class="bs-label label-success"><strong>Approved</strong></span>
-					    		@elseif ( $ticket->approval_hrbp == 2 )
+					    		@elseif ( $ticket->approval_GH == 2 )
 					    			<span class="bs-label label-danger"><strong>Rejected</strong></span>
 					    		@endif
 					    	@else
-					    		<a href="{{ route('hrbp.detail',$ticket->id) }}" type="button" class="bs-label label-yellow"><span><strong>need approval</strong></span></a>
+					    		<a href="{{ route('gh.detail.ticket',$ticket->id) }}" type="button" class="bs-label label-yellow"><span><strong>need approval</strong></span></a>
+					    		 {{-- <a href="#modal_approval" type="button" data-url="{{ route('gh.approved.ticket',$ticket->id) }}" data-toggle="modal" class="btn btn-round btn-success btn_modal_approved" title="Approved">
+                                <span class="glyph-icon icon-check"></span>
+	                            </a>
+	                            &nbsp;
+	                            <a href="#modal_reject" type="button" data-url="{{ route('gh.reject.ticket',$ticket->id) }}" data-toggle="modal" class="btn btn-round btn-danger btn_modal_reject" title="Reject">
+	                                <span class="glyph-icon icon-remove"></span>
+	                            </a> --}}
 					    	@endif
 					    </td>
 				    </tr>
@@ -100,9 +100,8 @@
 				    	<td id="hidden"></td>
 				    	<td id="hidden"></td>
 				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
 				    @endforelse
+				    
 				</tbody>
 
 			</table>
@@ -121,13 +120,13 @@
             <form role="form" method="post" class="form-horizontal" id="form_modal_approved">
             @csrf
             @method('PATCH')
-            	<div class="modal-body">
-                	<p class="text-center"><strong>Are you sure to Approve this position ?</strong></p>
-	            </div>
-	            <div class="modal-footer">
-	                <button type="submit" class="btn btn-success">Yes, i approve it</button>
-	                <button type="button" class="btn btn-danger" data-dismiss="modal">No, cancel</button>
-	            </div>
+                <div class="modal-body">
+                    <p class="text-center"><strong>Are you sure to Approve this position ?</strong></p>
+                </div>
+                <div class="modal-footer">
+                	<button type="submit" class="btn btn-success">Yes, i approve it</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No, cancel</button>
+                </div>
             </form>
         </div>
     </div>
@@ -144,18 +143,18 @@
             <form role="form" method="post" class="form-horizontal" id="form_modal_reject">
             @csrf
             @method('PATCH')
-            	<div class="modal-body">
-                	<div class="form-group">
+                <div class="modal-body">
+                    <div class="form-group">
                         <label for="position_name" class="col-sm-2 control-label">Reason</label>
                         <div class="col-sm-9">
                             <textarea class="form-control" cols="51" rows="12" name="reason_for_rejection" required></textarea>
                         </div>
                     </div>
-	            </div>
-	            <div class="modal-footer">
-	                <button type="submit" class="btn btn-success">Yes, i reject it</button>
-	                <button type="button" class="btn btn-danger" data-dismiss="modal">No, cancel</button>
-	            </div>
+                </div>
+                <div class="modal-footer">
+                	<button type="submit" class="btn btn-success">Yes, i reject it</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No, cancel</button>
+                </div>
             </form>
         </div>
     </div>

@@ -62,7 +62,7 @@
 
 			        			<div class="form-group">
 			        				<label class="col-md-3 control-label">Grade</label>
-			        				<div class="col-md-1">
+			        				<div class="col-md-2">
 			        					<input type="text" value="{{ $data->position_grade }}" class="form-control text-center" disabled>
 			        				</div>
 			        			</div>
@@ -70,12 +70,12 @@
 			        			<div class="form-group">
 			        				<label class="col-md-3 control-label">Department</label>
 			        				<div class="col-md-8">
-			        					<input type="text" name="" value="{{ $data->ticket_erf_details->departments->department_name}}" class="form-control" disabled="true">
+			        					<input type="text" name="" value="{{ $data->ticket_erf_details->departments->department_name}}" class="form-control" disabled>
 			        				</div>
 			        			</div>
 
 			        			<div class="form-group">
-			        				<label class="col-md-3 control-label">Date</label>
+			        				<label class="col-md-3 control-label">Schedule</label>
 		                            <div class="col-md-3">
 		                            	<div class="input-group date">
 			                            	<span class="add-on input-group-addon" id="date">
@@ -98,7 +98,7 @@
 		                                	<span class="add-on input-group-addon">
 		                                        <i class="glyph-icon icon-institution"></i>
 		                                    </span>
-		                                    <input class="form-control" type="text" name="place" required>
+		                                    <input class="form-control" type="text" name="place">
 		                                </div>
 		                            </div>
 			        			</div>

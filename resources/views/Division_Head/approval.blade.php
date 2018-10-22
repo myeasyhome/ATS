@@ -52,10 +52,11 @@
             <table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap" cellspacing="0" width="100%">
                 <thead>
                     <tr>
-                        <th>No.</th>
-                        <th>Position Name</th>
-                        <th>Create Date</th>
-                        <th>Status</th>
+                        <th class="text-center col-md-1">No.</th>
+                        <th class="text-center">Position Name</th>
+                        <th class="text-center col-md-1">Created Date</th>
+                        <th class="text-center col-md-1">Created By</th>
+                        <th class="text-center">Status</th>
                     </tr>
                 </thead>
 
@@ -64,8 +65,9 @@
                     @forelse($ticket as $ticket)
                     <tr>
                         <td class="text-center">{{ $no++ }}</td>
-                        <td><a href="{{ route('lm2.detail.ticket',$ticket->id) }}">{{ $ticket->position_name }}</a></td>
+                        <td><a href="{{ route('dh.detail.ticket',$ticket->id) }}">{{ $ticket->position_name }}</a></td>
                         <td>{{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y') }}</td>
+                        <td>{{ $ticket->user->name }}</td>
                         <td>
                             <a href="#modal_approval" type="button" data-url="{{ route('approved.ticket',$ticket->id) }}" data-toggle="modal" class="btn btn-round btn-success btn_modal_approved" title="Approved">
                                 <span class="glyph-icon icon-check"></span>
@@ -77,11 +79,11 @@
                         </td>
                     </tr>
                     @empty
-                        <td valign="top" colspan="4" class="dataTables_empty">No data available in table</td>
+                        <td valign="top" colspan="5" class="dataTables_empty">No data available in table</td>
                         <td id="hidden"></td>
                         <td id="hidden"></td>
                         <td id="hidden"></td>
-                        {{-- <td id="hidden"></td> --}}
+                        <td id="hidden"></td>
                     @endforelse
                     
                 </tbody>
@@ -126,7 +128,6 @@
             @csrf
             @method('PATCH')
                 <div class="modal-body">
-                    {{-- <p class="text-center"><strong>Are you sure to Reject this position ?</strong></p> --}}
                     <div class="form-group">
                         <label for="position_name" class="col-sm-2 control-label">Reason</label>
                         <div class="col-sm-9">

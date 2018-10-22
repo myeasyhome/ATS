@@ -49,61 +49,6 @@
 	});
 </script>
 
-{{-- <script>
-	/* Modal Detail */
-	$("a[id='detail']").click( function() {
-		var	id = $(this).attr('data-id');
-		var url = '{{ env('APP_URL') }}';
-
-		$.ajax({
-			method : 'get',
-			url : url+'/ticket/lm2/detail/'+id,
-			datatype : 'json',
-			success:function(data) {
-				var data = JSON.parse(data);
-				console.log(data);
-				/* ERF */
-				$('label[id="position_name"]').text(data[0]['position_name']);
-				$('label[id="position_grade"]').text(data[0]['position_grade']);
-				$('label[id="reason"]').text(data[0]['reason']);
-				$('label[id="location"]').text(data[0]['location']);
-				$('label[id="reporting_to"]').text(data[0]['ticket_erf_details']['reporting_to']);
-				$('label[id="directorate"]').text(data[0]['ticket_erf_details']['directorate']);
-				$('label[id="group"]').text(data[0]['ticket_erf_details']['groups']['group_name']);
-				$('label[id="division"]').text(data[0]['ticket_erf_details']['divisions']['division_name']);
-				$('label[id="department"]').text(data[0]['ticket_erf_details']['departments']['department_name']);
-				$('label[id="employee_status"]').text(data[0]['ticket_erf_details']['employee_status']);
-				if ( data[0]['ticket_erf_details']['employee_status'] == 'Contract' ) {
-					$('label[id="contract"]').text(data[0]['ticket_erf_details']['contract_from'] +" - "+ data[0]['ticket_erf_details']['contract_to'] );
-				} else {
-					$('label[id="contract"]').text(' - ');
-				}
-
-				if ( data[0]['ticket_erf_details']['type_hiring'] == "IJO" ) {
-					$('label[id="type_hiring"]').text("Internal Job Offering");	
-				} else {
-					$('label[id="type_hiring"]').text("External Job Offering");
-				}
-				
-				$('label[id="bsn"]').text(data[0]['ticket_erf_details']['bussiness_impact']);
-				$('label[id="req"]').text(data[0]['ticket_erf_details']['request_background']);
-
-				/* JD */
-
-				// $('label[id="adv"]').text(data[0]['ticket_erf_details']['advertisement']);
-				// $('label[id="adv"]').text(data[0]['ticket_erf_details']['advertisement']);
-				// $('label[id="adv"]').text(data[0]['ticket_erf_details']['advertisement']);
-				// $('label[id="adv"]').text(data[0]['ticket_erf_details']['advertisement']);
-				// $('label[id="adv"]').text(data[0]['ticket_erf_details']['advertisement']);
-				// $('label[id="adv"]').text(data[0]['ticket_erf_details']['advertisement']);
-				// $('label[id="adv"]').text(data[0]['ticket_erf_details']['advertisement']);
-			}
-		});
-
-	});
-	
-</script> --}}
-
 @stop
 
 @section('content')
@@ -138,7 +83,7 @@
 				    @forelse($ticket as $ticket)
 				    <tr>
 					    <td class="text-center">{{ $no++ }}</td>
-					    <td><a href="{{ route('lm2.detail.ticket',$ticket->id) }}">{{ $ticket->position_name }}</a></td>
+					    <td><a href="{{ route('dh.detail.ticket',$ticket->id) }}">{{ $ticket->position_name }}</a></td>
 					    <td class="text-center">{{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y') }}</td>
 					    <td class="text-center">
 					    	@if($ticket->approval_lm2 > 0)
@@ -188,8 +133,8 @@
                     <p class="text-center"><strong>Are you sure to Approve this position ?</strong></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">Approved</button>
+                	<button type="submit" class="btn btn-success">Yes, i approve it</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No, cancel</button>
                 </div>
             </form>
         </div>
@@ -208,7 +153,6 @@
             @csrf
             @method('PATCH')
                 <div class="modal-body">
-                    {{-- <p class="text-center"><strong>Are you sure to Reject this position ?</strong></p> --}}
                     <div class="form-group">
                         <label for="position_name" class="col-sm-2 control-label">Reason</label>
                         <div class="col-sm-9">
@@ -217,8 +161,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger">Reject</button>
+                	<button type="submit" class="btn btn-success">Yes, i reject it</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No, cancel</button>
                 </div>
             </form>
         </div>

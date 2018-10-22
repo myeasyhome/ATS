@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nama', 'email', 'password',
+        'name', 'email', 'password','grade','nik','position_name','job_title','directorate','chief','group','division','gender'
     ];
 
     /**
@@ -27,11 +27,7 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function roles() {
-        return $this->belongsTo('App\Models\Role', 'role_id');
-    }
-
     public function tickets() {
-        return $this->belongsTo('App\Models\Ticket', 'user_id');
+        return $this->hasOne('App\Models\Ticket', 'created_by');
     }
 }

@@ -14,59 +14,52 @@ class UsersTableSeeder extends Seeder
         \App\User::insert([
         	[
         		'id' => 1,
-        		'nama' => 'denny',
-        		'username' => 'denny',
-        		'email' => 'denny@gmail.com',
+        		'name' => 'user',
+        		'nik' => 'user',
+        		'email' => 'user@gmail.com',
         		'password' => bcrypt('hrdev'),
-        		'role_id' => 1
         	],
             [
                 'id' => 2,
-                'nama' => 'line manager 2',
-                'username' => 'lm2',
-                'email' => 'lm2@gmail.com',
+                'name' => 'dh',
+                'nik' => 'dh',
+                'email' => 'dh@gmail.com',
                 'password' => bcrypt('hrdev'),
-                'role_id' => 2
             ],
             [
                 'id' => 3,
-                'nama' => 'HR Bussiness Process',
-                'username' => 'hrbp',
-                'email' => 'hrbp@gmail.com',
+                'name' => 'gh',
+                'nik' => 'gh',
+                'email' => 'gh@gmail.com',
                 'password' => bcrypt('hrdev'),
-                'role_id' => 3
             ],
             [
                 'id' => 4,
-                'nama' => 'HR Talent',
-                'username' => 'hrt',
-                'email' => 'hrt@gmail.com',
+                'name' => 'chief',
+                'nik' => 'chief',
+                'email' => 'chief@gmail.com',
                 'password' => bcrypt('hrdev'),
-                'role_id' => 4
             ],
             [
                 'id' => 5,
-                'nama' => 'HR Operation',
-                'username' => 'hro',
-                'email' => 'hro@gmail.com',
+                'name' => 'hrbp',
+                'nik' => 'hrbp',
+                'email' => 'hrbp@gmail.com',
                 'password' => bcrypt('hrdev'),
-                'role_id' => 5
             ],
             [
                 'id' => 6,
-                'nama' => 'candidate',
-                'username' => 'candidate',
-                'email' => 'candidate@gmail.com',
+                'name' => 'hrta',
+                'nik' => 'hrta',
+                'email' => 'hrta@gmail.com',
                 'password' => bcrypt('hrdev'),
-                'role_id' => 6
             ],
             [
                 'id' => 7,
-                'nama' => 'Line Manager 1',
-                'username' => 'lm1',
-                'email' => 'lm1@gmail.com',
+                'name' => 'hro',
+                'nik' => 'hro',
+                'email' => 'hro@gmail.com',
                 'password' => bcrypt('hrdev'),
-                'role_id' => 1
             ]
         ]);
     }

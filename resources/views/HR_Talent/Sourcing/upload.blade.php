@@ -69,42 +69,6 @@ function validateExtension(input) {
     return true;
 }
 </script>
-
-<!-- BUAT DATA DINAMIS -->
-<script>
-	// $('#upload').on('click', function() {
-	// 	$.ajax({
-	// 		headers: {
- //                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
- //            },
-	// 		url : '{{ route('doUpload') }}',
-	// 		type : 'POST',
-	// 		data : {
-	// 			'hiring_brief_id' : $('input[name="hiring_brief_id"]').val(),
-	// 			'gender' : $('input[name="gender"]').val(),
-	// 			'place_birth' : $('input[name="place"]').val(),
-	// 			'date_birth' : $('input[name="birth_date"]').val(),
-	// 			'name_candidate' : $('input[name="name_candidate"]').val(),
-	// 			'education' : $('select[name="education"]').val(),
-	// 			'CV_candidate' : $('input[name="cv"]').val(),
-	// 		},
-	// 		success:function(data) {
-	// 			alert(data);
-	// 			$.each(data, function(index,val) {
-	// 				alert(val);
-	// 				if ((val.errors)) {
-	// 					$('.form-control').addClass('parsley-error');
-	// 				} else {
-	// 					$('#data_candidate').append('<tr class="data'+data.id+'"><td class="text-center">no</td><td>'+data.name_candidate+'</td><td class="text-center"><a href="#" target="_blank">'+data.CV_candidate+'</a></td><td class="text-center">option</td></tr>');
-	// 				}
-	// 			});
-	// 		}
-	// 	});
-	// 	// $('#name_candidate').val('');
-	// 	// $('#education').val('');
-	// 	// $('#cv').val('');
-	// });
-</script>
 @stop
 
 @section('content')
@@ -154,10 +118,11 @@ function validateExtension(input) {
 	                    </div>
 	        		</div>
 	        		<div class="form-group">
-	        			<label class="col-sm-3 control-label">Education Candidate</label>
+	        			<label class="col-sm-3 control-label">Education</label>
 	                    <div class="col-sm-6">
 	                        <select class="form-control" name="education" id="education" required title="Select Education">
 	                        	<option value="" disabled selected>Select Education</option>
+	                        	<option value="D3">Diploma's degree graduate</option>
 	                        	<option value="S1">Bachelor's degree graduate</option>
 	                        	<option value="S2">Master's degree graduate</option>
 	                        	<option value="S3">Doctoral degree graduate</option>
@@ -176,7 +141,7 @@ function validateExtension(input) {
 	        		<div class="row">
 	        			<div class="col-md-5">
 	        				<div class="form-group">
-			        			<label class="col-sm-7 control-label">Place Birth</label>
+			        			<label class="col-sm-7 control-label">Birth Place</label>
 			                    <div class="col-sm-5">
 			                        <input type="text" class="form-control" id="place" name="place" placeholder="Input Place Birth" title="Input Place Birth" required>
 			                    </div>
@@ -205,7 +170,7 @@ function validateExtension(input) {
 		                    	<li class="parsley-required">Document Format Must PDF or Doc !!</li>
 		                    </ul>
 		                    <ul class="parsley-errors-list" id="size">
-		                    	<li class="parsley-required">File Size Must 2MB !!</li>
+		                    	<li class="parsley-required">Max File Size Must 2MB !!</li>
 		                    </ul>
 	                    </div>
 	                </div>

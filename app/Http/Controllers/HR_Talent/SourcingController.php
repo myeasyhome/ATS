@@ -23,6 +23,10 @@ class SourcingController extends Controller
 	public function index()
 	{
 		$data = Hiring_brief::where('approval_hiring_by_hrbp','1')->get();
+
+		/* untuk kandidat yg sudah di pilih oleh LM1 */
+		$candidate = CV::get();
+
 		return view('HR_Talent.Sourcing.index',compact('data','candidate'));
 	}
 
@@ -31,6 +35,13 @@ class SourcingController extends Controller
 	{
 		$candidate = CV::where('hiring_brief_id',$id)->get();
 		return view('HR_Talent.Sourcing.upload',compact('candidate','id'));
+	}
+
+	/* tampilkan kandidate yg di approve,reject */
+	public function showCandidate($id)
+	{
+		$candidate = CV::where('hiring_brief_id',$id)->get();
+		return view('HR_Talent.Sourcing.show',compact('candidate'));
 	}
 
 	/* save to database */
@@ -65,7 +76,7 @@ class SourcingController extends Controller
 		     //    return response()->json(['berhasil'=> 'oke']);
 		    }
 		    // return response()->json(['pesan' => 'gagal']);
-		 return back()->with('error','Format file must pdf,docx,doc and file size 2MB !');
+		 return back()->with('error','Format file must pdf,docx,doc and max file size 2MB !');
 	}
 
 	/* get document CV */
@@ -93,6 +104,16 @@ class SourcingController extends Controller
 		File::delete($file_path);
 
 		$filename->delete();
+
+		return back();
+	}
+
+	/* fungsi utk button next proses setelah Line Manager1 sudah memilih kandidat */
+	public function nextProcess($id)
+	{
+		CV::findOrFail($id)->update([
+			'date_nextProcess_hrta' => Carbon::now()
+		]);
 
 		return back();
 	}
