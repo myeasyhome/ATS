@@ -29,7 +29,8 @@ class Ticket extends Model
         'approval_chro',
         'reason_reject_chro',
         'freeze',
-        'reason_freeze'
+        'reason_freeze',
+        'recruiter',
     ];
 
     public function user()

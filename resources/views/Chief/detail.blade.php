@@ -24,7 +24,7 @@
 @section('content')
 <ol class="breadcrumb bc-3" >
     <li>
-        <a href="{{ route('chief.list') }}">Approval Ticket</a>
+        <a href="{{ route('chief.list') }}">Approval List</a>
     </li>
     <li class="active">
     	<a>Detail Ticket</a>
@@ -63,7 +63,7 @@
 			                    			<p class="col-md-12">{{ ucwords($detail->location) }}</p>
 		                    			</div>
 		                    			<div class="form-group">
-			                    			<label class="col-md-12" style="margin-bottom: 0px">Reporting TO</label>
+			                    			<label class="col-md-12" style="margin-bottom: 0px">Reporting To</label>
 			                    			{{-- <label class="col-md-1">:</label> --}}
 			                    			<p class="col-md-12">{{ ucwords($detail->ticket_erf_details->reporting_to) }}</p>
 		                    			</div>

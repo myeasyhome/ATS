@@ -62,7 +62,7 @@
 		});
 
 		$( ".select2-department" ).select2( {
-			placeholder: "Select Deparment",
+			placeholder: "Select Department",
 			theme: "bootstrap",
 		});
 

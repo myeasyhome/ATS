@@ -29,7 +29,6 @@
 
 
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
 <title> @yield('title','Applicant Tracking System') </title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -81,7 +80,7 @@
 
 
 <!-- ICONS -->
-
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/icons/iconic/iconic.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/icons/fontawesome/fontawesome.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/icons/linecons/linecons.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/icons/spinnericon/spinnericon.css') }}">
@@ -97,7 +96,6 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/charts/xcharts/xcharts.css') }}">
 
 {{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/chosen/chosen.css') }}"> --}}
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/colorpicker/colorpicker.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/datatable/datatable.css') }}">
 
 <!-- bootstrap datepicker -->
@@ -126,9 +124,9 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/range-slider/rangeslider.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/slidebars/slidebars.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/slider-ui/slider.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/summernote-wysiwyg/summernote-wysiwyg.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/tabs-ui/tabs.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/theme-switcher/themeswitcher.css') }}">
+{{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/summernote-wysiwyg/summernote-wysiwyg.css') }}"> --}}
+{{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/tabs-ui/tabs.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/theme-switcher/themeswitcher.css') }}"> --}}
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/timepicker/timepicker.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/tocify/tocify.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/tooltip/tooltip.css') }}">
@@ -162,12 +160,15 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/helpers/responsive-elements.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/helpers/admin-responsive.css') }}">
 
-<!-- STEP -->
+<!-- jquery STEP -->
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/steps/jquery.steps.css') }}">
 
 <!-- Select 2 -->
 <link rel="stylesheet" href="{{ asset('assets/select2/select2.min.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/select2/select2-bootstrap.css') }}">
+
+<!-- bootstrap tags -->
+<link rel="stylesheet" href="{{ asset('assets/bootstrap-tagsinput/dist/bootstrap-tagsinput.css') }}">
 
 <!-- JS Core -->
 <script type="text/javascript" src="{{ asset('assets/js-core/jquery-core.js') }}"></script>
@@ -180,11 +181,14 @@
 <script type="text/javascript" src="{{ asset('assets/js-init/chartjs/dist/Chart.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js-init/chartjs/samples/utils.js') }}"></script>
 
+<!-- bootstrap tags JS -->
+<script type="text/javascript" src="{{ asset('assets/bootstrap-tagsinput/dist/bootstrap-tagsinput.js') }}"></script>
+
 <script type="text/javascript">
     $(window).load(function(){
         setTimeout(function() {
-            $('#loading').fadeOut( 400, "linear" );
-        }, 300);
+            $('#loading').fadeOut( 300, "linear" );
+        }, 200);
     });
 
     /* set timout close alert */
@@ -316,25 +320,11 @@
 <script type="text/javascript" src="{{ asset('assets/steps/jquery.validate.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/steps/jquery.steps.js') }}"></script>
 
-<!-- Bootstrap Dropdown -->
-<!-- <script type="text/javascript" src="widgets/dropdown/dropdown.js"></script> -->
-
-<!-- Bootstrap Tooltip -->
-<!-- <script type="text/javascript" src="widgets/tooltip/tooltip.js"></script> -->
-
 <!-- Bootstrap Popover -->
 <script type="text/javascript" src="{{ asset('assets/widgets/popover/popover.js') }}"></script>
 
 <!-- Bootstrap Progress Bar -->
 <script type="text/javascript" src="{{ asset('assets/widgets/progressbar/progressbar.js') }}"></script>
-
-<!-- Bootstrap Buttons -->
-
-{{-- <script type="text/javascript" src="widgets/button/button.js"></script> --}}
-
-<!-- Bootstrap Collapse -->
-
-{{-- <script type="text/javascript" src="widgets/collapse/collapse.js"></script> --}}
 
 <!-- Superclick -->
 

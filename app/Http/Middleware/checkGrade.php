@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
 
 class checkGrade
 {
@@ -20,7 +21,8 @@ class checkGrade
         if ( Auth::user()->grade > 6 ) {
             return $next($request);
         }
-
-        return response('Permission Denied!!' , 401);
+        
+        // return response('Permission Denied!!' , 401);
+        return new Response(view('Other_pages.permission_denied'));
     }
 }

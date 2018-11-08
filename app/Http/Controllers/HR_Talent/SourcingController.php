@@ -61,21 +61,20 @@ class SourcingController extends Controller
 		        $input['date_birth'] = Carbon::parse($request->birth_date)->toDateString();
 		        $input['education'] = $request->education;
 		        $input['CV_candidate'] = $request->cv->getClientOriginalName();
+		        $input['current_position'] = $request->current_position;
+		        $input['current_company'] = $request->current_company;
+		        $input['current_industry'] = $request->current_industry;
+		        $input['work_exp'] = $request->work_exp;
+		        $input['source'] = $request->source;
+		        $input['skill'] = $request->skill;
+		        $input['salary_range'] = $request->salary_range;
+		        $input['tags'] = $request->tags;
+		        $input['other'] = $request->other;
 		        $request->cv->move(public_path('CV_Candidate'), $input['CV_candidate']);
 
 		        CV::create($input);
 		        return back()->with('success','Successfully Upload Candidate !');
-		    	// $data = new CV;
-		    	// $data->hiring_brief_id = $request->hiring_brief_id;
-		    	// $data->name_candidate = ucwords($request->name_candidate);
-		    	// $data->education = $request->education;
-		    	// $data->CV_candidate = $request->cv->getClientOriginalName();
-		    	// $request->cv->move(public_path('CV_Candidate'), $data->CV_candidate);
-		    	// $data->save();
-
-		     //    return response()->json(['berhasil'=> 'oke']);
 		    }
-		    // return response()->json(['pesan' => 'gagal']);
 		 return back()->with('error','Format file must pdf,docx,doc and max file size 2MB !');
 	}
 

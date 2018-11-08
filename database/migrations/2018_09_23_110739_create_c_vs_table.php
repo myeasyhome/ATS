@@ -20,13 +20,21 @@ class CreateCVsTable extends Migration
             $table->string('approval_candidate')->nullable();
             $table->date('approval_date_candidate')->nullable();
             $table->date('date_nextProcess_hrta')->nullable();
-            $table->text('reason_reject');
+            $table->text('reason_reject')->nullable();
             $table->enum('gender',['M','F']);
             $table->string('place_birth');
             $table->date('date_birth');
             $table->string('name_candidate');
             $table->string('education');
             $table->string('CV_candidate');
+            $table->string('current_position');
+            $table->string('current_company');
+            $table->string('current_industry');
+            $table->string('work_exp');
+            $table->string('source');
+            $table->string('skill');
+            $table->text('tags');
+            $table->string('other')->nullable();
             $table->timestamps();
         });
     }

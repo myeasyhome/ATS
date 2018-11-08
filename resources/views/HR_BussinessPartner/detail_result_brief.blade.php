@@ -24,13 +24,13 @@
 
 <!-- ALERT akan muncul jika HRT sudah input hasil briefing, status waiting => 0 -->
 @section('alert_for_HRBP')
-    @if($notif->contains('approval_hiring_by_hrbp','0') == true)
+    {{-- @if($notif->contains('approval_hiring_by_hrbp','0') == true)
         @component('notice_message.notice', [ 
                         'msg'=> 'There is an approval that must be completed as soon as possible because it will affect duration of the SLA', 
                         'link' => route('hrbp.approval.hiring')
                     ])
         @endcomponent
-    @endif
+    @endif --}}
 @endsection
 @section('content')
 <ol class="breadcrumb bc-3" >

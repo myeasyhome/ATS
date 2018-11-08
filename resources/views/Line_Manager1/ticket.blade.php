@@ -199,7 +199,7 @@
 <div class="panel">
 	<div class="panel-body">
 		<h3 class="title-hero">
-		    HIRING DASHBOARD
+		    <strong>HIRING DASHBOARD</strong>
 		</h3>
 		<div style="padding-bottom: 20px">
 			<a href="{{ route('create.ticket') }}" type="button" class="btn btn-success">
@@ -229,93 +229,99 @@
 				    <th class="text-center col-md-1">Date Created</th>
 				    <th class="text-center col-md-1">HRBP Approval</th>
 				    <th class="text-center col-md-2">Line Manager Approval</th>
-				    <th class="text-center">Option</th>
+				    <th class="text-center">Status</th>
 				</tr>
 				</thead>
 
 				<tbody>
 				@php $no =1; @endphp
 				    @forelse($ticket as $ticket)
-				    <tr>
-					    <td class="text-center">{{ $no++ }}</td>
-					    <td><a href="{{ route('detail.ticket',$ticket->id) }}">{{ $ticket->position_name }}</a></td>
-					    <td>{{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y') }}</td>
-					    <td class="text-center">
-                            <!-- HRBP APPROVAL -->
-					    	@if($ticket->approval_hrbp == 0)
-					    		<span class="bs-label label-yellow"><strong>Waiting</strong></span>
-					    	@elseif($ticket->approval_hrbp == 1)
-					    		<span class="bs-label label-success"><strong>Approved</strong></span>
-					    	@elseif($ticket->approval_hrbp == 2)
-					    		<span class="bs-label label-danger"><strong>Rejected</strong></span>
-					    	@endif
-					    </td>
-                        <!-- LINE MANAGER APPROVAL -->
-					    @if ( Auth::user()->grade == 7 )
-					    	<td class="text-center col-md-2">
-                                @if ( $ticket->approval_hrbp == 0 )
-                                    <span class="bs-label label-yellow"><strong>Waiting</strong></span>
-					    		@elseif ( $ticket->approval_hrbp == 1 )
-					    			<span class="bs-label label-info"><strong><a href="#modal_progress" data-toggle="modal" type="button" data-url="{{ route('progress',$ticket->id) }}" class="btn-info btn_progress">Progress</a></strong></span>
-					    		@elseif( $ticket->approval_hrbp == 2 )
-					    			<span class="bs-label label-warning"><strong>Stop</strong></span>
-					    		@endif
-					    	</td>
-                        @elseif ( Auth::user()->grade == 8 )
-                            <td class="text-center col-md-2">
-                                @if ( $ticket->approval_hrbp == 0 )
-                                    <span class="bs-label label-yellow"><strong>Waiting</strong></span>
-                                @elseif ( $ticket->approval_hrbp == 1 )
-                                    <span class="bs-label label-info"><strong><a href="#modal_progress" data-toggle="modal" type="button" data-url="{{ route('progress',$ticket->id) }}" class="btn-info btn_progress">Progress</a></strong></span>
-                                @elseif( $ticket->approval_hrbp == 2 )
-                                    <span class="bs-label label-warning"><strong>Stop</strong></span>
-                                @endif
-                            </td>
-					    @endif
+                        <!-- ticket tdk freeze -->
+    				    <tr>
+    					    <td class="text-center">{{ $no++ }}</td>
+    					    <td><a href="{{ route('detail.ticket',$ticket->id) }}">{{ $ticket->position_name }}</a></td>
+    					    <td class="text-center">{{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y') }}</td>
+    					    <td class="text-center">
+                                <!-- HRBP APPROVAL -->
+    					    	@if($ticket->approval_hrbp == 0)
+    					    		<span class="bs-label label-yellow"><strong>Waiting</strong></span>
+    					    	@elseif($ticket->approval_hrbp == 1)
+    					    		<span class="bs-label label-success"><strong>Approved</strong></span>
+    					    	@elseif($ticket->approval_hrbp == 2)
+    					    		<span class="bs-label label-danger"><strong>Rejected</strong></span>
+    					    	@endif
+    					    </td>
+                            <!-- LINE MANAGER APPROVAL -->
+    					    @if ( Auth::user()->grade == 7 )
+    					    	<td class="text-center col-md-2">
+                                    @if ( $ticket->approval_hrbp == 0 )
+                                        <span class="bs-label label-yellow"><strong>Waiting</strong></span>
+    					    		@elseif ( $ticket->approval_hrbp == 1 )
+    					    			<span class="bs-label label-info"><strong><a href="#modal_progress" data-toggle="modal" type="button" data-url="{{ route('progress',$ticket->id) }}" class="btn-info btn_progress">Progress</a></strong></span>
+    					    		@elseif( $ticket->approval_hrbp == 2 )
+    					    			<span class="bs-label label-warning"><strong>Stop</strong></span>
+    					    		@endif
+    					    	</td>
+                            @elseif ( Auth::user()->grade == 8 )
+                                <td class="text-center col-md-2">
+                                    @if ( $ticket->approval_hrbp == 0 )
+                                        <span class="bs-label label-yellow"><strong>Waiting</strong></span>
+                                    @elseif ( $ticket->approval_hrbp == 1 )
+                                        <span class="bs-label label-info"><strong><a href="#modal_progress" data-toggle="modal" type="button" data-url="{{ route('progress',$ticket->id) }}" class="btn-info btn_progress">Progress</a></strong></span>
+                                    @elseif( $ticket->approval_hrbp == 2 )
+                                        <span class="bs-label label-warning"><strong>Stop</strong></span>
+                                    @endif
+                                </td>
+    					    @endif
 
-                        <!-- OPTION -->
-					    <td class="text-center">
-					    	@if ($ticket->approval_hrbp == 0)
-							    <a href="{{ route('edit.ticket',$ticket->id) }}" type="button" class="btn btn-round btn-info" title="Edit">
-						            <span class="glyph-icon icon-pencil"></span>
-						        </a>
-						        <a href="#modal_delete" type="button" data-url="{{ route('delete.ticket',$ticket->id) }}" data-toggle="modal" class="btn btn-round btn-danger btn_modal_delete" title="Delete">
-						            <span class="glyph-icon icon-trash"></span>
-						        </a>
-						    @elseif ($ticket->approval_hrbp == 2)
-						    	<a href="{{ route('edit_rejected.ticket',$ticket->id) }}" type="button" class="btn btn-round btn-purple" title="Request Re-approval">
-						            <span class="glyph-icon icon-external-link-square"></span>
-						        </a>
-						        <a href="#modal_delete" type="button" data-url="{{ route('delete.ticket',$ticket->id) }}" data-toggle="modal" class="btn btn-round btn-danger btn_modal_delete" title="Delete">
-						            <span class="glyph-icon icon-trash"></span>
-						        </a>
-						        <a href="#modal_reject" type="button" data-toggle="modal" data-url="{{ route('reason.ticket',$ticket->id) }}" class="btn btn-round btn-info btn_modal_reject_hrbp" title="Rejected Reason">
-						            <span class="glyph-icon icon-eye"></span>
-						        </a>
-						    @elseif ($ticket->approval_GH == 2)
-						    	<a href="#modal_reject" type="button" data-toggle="modal" data-url="{{ route('reason.ticket',$ticket->id) }}" class="btn btn-round btn-info btn_modal_reject_groupHead" title="Rejected Reason">
-						            <span class="glyph-icon icon-eye"></span>
-						        </a>
-						    @elseif ($ticket->approval_chief == 2)
-						    	<a href="#modal_reject" type="button" data-toggle="modal" data-url="{{ route('reason.ticket',$ticket->id) }}" class="btn btn-round btn-info btn_modal_reject_chief" title="Rejected Reason">
-						            <span class="glyph-icon icon-eye"></span>
-						        </a>
-                            @elseif ($ticket->approval_chro == 2)
-                                <a href="#modal_reject" type="button" data-toggle="modal" data-url="{{ route('reason.ticket',$ticket->id) }}" class="btn btn-round btn-info btn_modal_reject_chro" title="Rejected Reason">
-                                    <span class="glyph-icon icon-eye"></span>
-                                </a>
-						    @elseif ($ticket->approval_hrbp == 1 )
-						    	<span class="bs-label label-success" id="ket" data-popover="true" data-content="Your request on progress" title="Information"><strong>On Progress</strong></span>
-					        @endif
-					    </td>
-				    </tr>
+                            <!-- STATUS -->
+    					    <td class="text-center">
+                                @if ( $ticket->freeze == 99 )
+                                    <!-- jika freeze oleh TA -->
+                                    <span class="bs-label label-danger" id="ket" data-popover="true" data-content="{{ $ticket->reason_freeze }}" title="Information"><strong>freeze</strong></span>
+    					    	@elseif ($ticket->approval_hrbp == 0)
+    							    <a href="{{ route('edit.ticket',$ticket->id) }}" type="button" class="btn btn-round btn-info" title="Edit">
+    						            <span class="glyph-icon icon-pencil"></span>
+    						        </a>
+    						        <a href="#modal_delete" type="button" data-url="{{ route('delete.ticket',$ticket->id) }}" data-toggle="modal" class="btn btn-round btn-danger btn_modal_delete" title="Delete">
+    						            <span class="glyph-icon icon-trash"></span>
+    						        </a>
+    						    @elseif ($ticket->approval_hrbp == 2)
+    						    	<a href="{{ route('edit_rejected.ticket',$ticket->id) }}" type="button" class="btn btn-round btn-purple" title="Request Re-approval">
+    						            <span class="glyph-icon icon-external-link-square"></span>
+    						        </a>
+    						        <a href="#modal_delete" type="button" data-url="{{ route('delete.ticket',$ticket->id) }}" data-toggle="modal" class="btn btn-round btn-danger btn_modal_delete" title="Delete">
+    						            <span class="glyph-icon icon-trash"></span>
+    						        </a>
+    						        <a href="#modal_reject" type="button" data-toggle="modal" data-url="{{ route('reason.ticket',$ticket->id) }}" class="btn btn-round btn-info btn_modal_reject_hrbp" title="Rejected Reason">
+    						            <span class="glyph-icon icon-eye"></span>
+    						        </a>
+    						    @elseif ($ticket->approval_GH == 2)
+    						    	<a href="#modal_reject" type="button" data-toggle="modal" data-url="{{ route('reason.ticket',$ticket->id) }}" class="btn btn-round btn-info btn_modal_reject_groupHead" title="Rejected Reason">
+    						            <span class="glyph-icon icon-eye"></span>
+    						        </a>
+    						    @elseif ($ticket->approval_chief == 2)
+    						    	<a href="#modal_reject" type="button" data-toggle="modal" data-url="{{ route('reason.ticket',$ticket->id) }}" class="btn btn-round btn-info btn_modal_reject_chief" title="Rejected Reason">
+    						            <span class="glyph-icon icon-eye"></span>
+    						        </a>
+                                @elseif ($ticket->approval_chro == 2)
+                                    <a href="#modal_reject" type="button" data-toggle="modal" data-url="{{ route('reason.ticket',$ticket->id) }}" class="btn btn-round btn-info btn_modal_reject_chro" title="Rejected Reason">
+                                        <span class="glyph-icon icon-eye"></span>
+                                    </a>
+    						    @elseif ($ticket->approval_hrbp == 1 )
+    						    	<span class="bs-label label-success" id="ket" data-popover="true" data-content="Your request on progress" title="Information"><strong>On Progress</strong></span>
+    					        @endif
+    					    </td>
+    				    </tr>
 				    @empty
-				    	<td valign="top" colspan="6" class="dataTables_empty">No data available in table</td>
-				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
+                        <tr>
+    				    	<td valign="top" colspan="6" class="dataTables_empty">No data available in table</td>
+    				    	<td id="hidden"></td>
+    				    	<td id="hidden"></td>
+    				    	<td id="hidden"></td>
+    				    	<td id="hidden"></td>
+    				    	<td id="hidden"></td>
+                        </tr>
 				    @endforelse
 				    
 				</tbody>

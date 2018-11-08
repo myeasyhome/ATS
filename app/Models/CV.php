@@ -14,12 +14,22 @@ class CV extends Model
         'approval_candidate',
         'approval_date_candidate',
         'date_nextProcess_hrta',
+        'comment',
         'reason_reject',
     	'gender',
     	'place_birth',
     	'date_birth',
     	'education',
-    	'CV_candidate'
+    	'CV_candidate',
+        'current_position',
+        'current_company',
+        'current_industry',
+        'work_exp',
+        'salary_range',
+        'source',
+        'skill',
+        'tags',
+        'other',
     ];
 
     public function hiring_briefs()

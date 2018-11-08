@@ -106,12 +106,12 @@
 
                                   <label for="employee_status" class="col-md-5 control-label">Employee Status<span style="color: red;"> *</span></label>
                                   <div class="col-md-7" style="padding-bottom: 10px;">
-                                <select class="form-control" id="employee_status" name="employee_status" onchange="contract_form()" required title="Select Employee Status">
-                                  <option value="" disabled selected>Select Employee Status</option>
-                              <option value="Permanent" id="Permanent">Permanent</option>
-                              <option value="Contract" id="Contract">Contract</option>
-                          </select>
-                              </div>
+                                    <select class="form-control" id="employee_status" name="employee_status" onchange="contract_form()" required title="Select Employee Status">
+                                        <option value="" disabled selected>Select Employee Status</option>
+                                        <option value="Permanent" id="Permanent">Permanent</option>
+                                        <option value="Contract" id="Contract">Contract</option>
+                                    </select>
+                                  </div>
 
                               <div id="contract_form">
                                 <label class="col-md-5 control-label">Contract Duration<span style="color: red;">*</span></label>

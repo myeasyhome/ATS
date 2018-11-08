@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\CV;
 use App\Models\Hiring_brief;
 use Carbon\Carbon;
+use App\Models\Ticket;
+use Auth;
 
 class CandidateController extends Controller
 {
@@ -18,16 +20,28 @@ class CandidateController extends Controller
     /* index di candidate */
     public function index()
     {
-    	$candidate = Hiring_brief::where('approval_hiring_by_hrbp','1')->get();
+    	// $candidate = Hiring_brief::where('approval_hiring_by_hrbp','1')->get();
+        $candidate = Hiring_brief::where('approval_hiring_by_hrbp','1')
+                                ->whereHas('tickets', function($query) {
+                                    $query->where('created_by',Auth::user()->id);
+                                })->get();
+
+        /* untuk ambil foreach di javascipt coundown */
+        // $time  = Hiring_brief::where('approval_hiring_by_hrbp','1')->get();
+        $time = Hiring_brief::where('approval_hiring_by_hrbp','1')
+                                ->whereHas('tickets', function($query) {
+                                    $query->where('created_by',Auth::user()->id);
+                                })->get();
         
-    	return view('Line_Manager1.Candidate.index',compact('candidate'));
+    	return view('Line_Manager1.Candidate.index',compact('candidate','time'));
     }
 
     /* daftar data candidate */
     public function sourcing($id)
     {
         $candidate = CV::where('hiring_brief_id',$id)->get();
-        return view('Line_Manager1.Candidate.candidate',compact('candidate','posisi'));
+    
+        return view('Line_Manager1.Candidate.candidate',compact('candidate'));
     }
 
     /* buat liat CV */
@@ -42,30 +56,34 @@ class CandidateController extends Controller
             'Content-Type: application/pdf',
         );
 
-        return Response()->download($file_path , $document->CV_canddate, $headers);
+        return Response()->download($file_path , $document->CV_candidate, $headers);
     }
 
     /* kandidat yang sesuai di approve */
-    public function approve_candidate($id)
+    public function approve_candidate($id, Request $request)
     {
         $name = CV::findOrFail($id);
 
         $name->update([
-            'approval_candidate' => '1'
+            'approval_candidate' => '1',
+            'comment' => $request->comment
         ]);
 
         /* Jika kandidata sudah di pilih == 3 */
-        $candidate = CV::where('hiring_brief_id',$name->hiring_brief_id)->get();
+        // $candidate = CV::where('hiring_brief_id',$name->hiring_brief_id)->get();
 
-        if ( $candidate->where('approval_candidate',1)->count() == 3 ) {
+        // if ( $candidate->where('approval_candidate',1)->count() == 3 ) {
 
-            $name->update([
-                'approval_date_candidate' => Carbon::now()->toDateString()
-            ]);
-            return redirect()->route('candidate');
-        } else {
-            return back()->with('success','Successfully Approve '.$name->name_candidate.' For This Position!');
-        }
+        //     $name->update([
+        //         'approval_date_candidate' => Carbon::now()->toDateString()
+        //     ]);
+
+        //     return redirect()->route('candidate');
+        // } else {
+        //     return back()->with('success','Successfully Proceed '.$name->name_candidate.' For This Position!');
+        // }
+
+        return back()->with('success','Successfully Proceed '.$name->name_candidate.' For This Position!');
 
     }
 
@@ -79,7 +97,17 @@ class CandidateController extends Controller
             'reason_reject' => $request->reason
         ]);
 
-        return back()->with('success','Successfully Reject '.$reject->name_candidate.' For This Position!');
+        return back()->with('success','Successfully Drop '.$reject->name_candidate.' For This Position!');
     }
 
+    /* otomatis execute ketika waktu SLA habis */
+    public function SLA_CVFeedback($id)
+    {
+        Ticket::findOrFail($id)->update([
+            'freeze' => '99',
+            'reason_freeze' => 'SLA CV Feedback is over!',
+        ]);
+
+        return redirect()->route('candidate');
+    }
 }

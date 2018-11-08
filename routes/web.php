@@ -35,6 +35,15 @@ Route::group(['middleware'=>'checkGrade'], function() {
 
 	/*liat progress approval*/
 	Route::get('/prog/{id}','Line_Manager1\TicketController@progress')->name('progress');
+
+	/* Menu Candidate */
+	Route::get('/candidate','Line_Manager1\CandidateController@index')->name('candidate');
+	Route::get('/candidate/{id}','Line_Manager1\CandidateController@sourcing')->name('lm1.sourcing');
+	Route::get('/candidate/document/{id}','Line_Manager1\CandidateController@getCV')->name('getCV');
+	Route::patch('/candidate/approve/{id}','Line_Manager1\CandidateController@approve_candidate')->name('candidate.approve');
+	Route::patch('/candidate/reject/{id}','Line_Manager1\CandidateController@reject_candidate')->name('candidate.reject');
+
+	Route::patch('candidate/SLA_CVFeedback/{id}','Line_Manager1\CandidateController@SLA_CVFeedback')->name('SLA_CVFeedback');
 });
 
 
@@ -47,13 +56,6 @@ Route::get('/department/{id}','Line_Manager1\TicketController@department_dropdow
 
 Route::get('/ticket/re-approval/request/{id}', 'Line_Manager1\TicketController@edit')->name('edit_rejected.ticket');
 Route::patch('/ticket/re-approval/{id}', 'Line_Manager1\TicketController@re_approval')->name('re_approval.ticket');
-
-/* buat Candidate */
-Route::get('/candidate','Line_Manager1\CandidateController@index')->name('candidate');
-Route::get('/candidate/{id}','Line_Manager1\CandidateController@sourcing')->name('lm1.sourcing');
-Route::get('/candidate/document/{id}','Line_Manager1\CandidateController@getCV')->name('getCV');
-Route::patch('/candidate/approve/{id}','Line_Manager1\CandidateController@approve_candidate')->name('candidate.approve');
-Route::patch('/candidate/reject/{id}','Line_Manager1\CandidateController@reject_candidate')->name('candidate.reject');
 
 
 Route::post('importExcel','Line_Manager1\TicketController@import')->name('import');
@@ -100,11 +102,16 @@ Route::patch('/ticket/hrbp/result_brief/reject/{id}', 'HR_BussinessPartner\Appro
 
 
 /* Access HR Talent Acquistion */
+
+
 Route::get('/dashboard/hr_talent', 'HR_Talent\DashboardController@index')->name('hrt.dashboard');
 Route::patch('/freezeTicket/{id}','HR_Talent\DashboardController@freeze')->name('freeze');
 Route::patch('/unfreezeTicket/{id}','HR_Talent\DashboardController@unfreeze')->name('unfreeze');
 Route::get('/dashboard/detailTicket/{id}','HR_Talent\DashboardController@detailTicket')->name('dashboard.detailTicket');
+/* kolom recruiter */
+Route::patch('/updateRecruiter/{id}','HR_Talent\DashboardController@updateRecruiter')->name('updateRecruiter');
 
+/* HIRING BRIEF */
 Route::get('/hiring', 'HR_Talent\HiringBriefController@index')->name('hiring_brief');
 Route::get('/hiring/create/{id}', 'HR_Talent\HiringBriefController@create')->name('create.brief');
 Route::patch('/hiring/schedule/{id}', 'HR_Talent\HiringBriefController@schedule')->name('schedule.brief');
@@ -113,7 +120,7 @@ Route::patch('/hiring/store_input/{id}', 'HR_Talent\HiringBriefController@store_
 Route::get('/hiring/rejected_reason/{id}', 'HR_Talent\HiringBriefController@rejected_reason')->name('reject.reason.brief');
 Route::get('hiring/detail/{id}','HR_Talent\HiringBriefController@detail')->name('hiring.detail');
 
-/* CV & Sourcing */
+/* CV & SOURCING */
 Route::get('/sourcing','HR_Talent\SourcingController@index')->name('sourcing');
 Route::get('/sourcing/{id}','HR_Talent\SourcingController@upload')->name('upload');
 Route::post('/sourcing/store','HR_Talent\SourcingController@doUpload')->name('doUpload');
@@ -121,6 +128,11 @@ Route::get('/getDocument/{id}','HR_Talent\SourcingController@getDocument')->name
 Route::delete('sourcing/delete/{id}','HR_Talent\SourcingController@delete')->name('delete.sourcing');
 Route::patch('/sourcing/nextProcess/{id}','HR_Talent\SourcingController@nextProcess')->name('nextProcess.sourcing');
 Route::get('/sourcing/candidate/{id}','HR_Talent\SourcingController@showCandidate')->name('showCandidate');
+
+/* INTERVIEW PROCESS */
+Route::group(['prefix'=>'interview'], function() {
+	Route::get('/','HR_Talent\InterviewController@index')->name('index.interview');
+});
 
 
 /* Access HR Operation */

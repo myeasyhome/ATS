@@ -37,19 +37,21 @@
 
 <!-- ALERT akan muncul jika HRT sudah input hasil briefing, status waiting => 0 -->
 @section('alert_for_HRBP')
-	@if($hiring->contains('approval_hiring_by_hrbp','0') == true)
+	{{-- @if($hiring->contains('approval_hiring_by_hrbp','0') == true)
 		@component('notice_message.notice', [ 
 						'msg'=> 'There is an approval that must be completed as soon as possible because it will affect duration of the SLA', 
 						'link' => route('hrbp.approval.hiring')
 					])
 		@endcomponent
-	@endif
+	@endif --}}
 @endsection
 @section('content')
 <div class="panel">
 	<div class="panel-body">
 
-		<h3 class="title-hero">Approval List</h3>
+		<div class="title-hero">
+			<h4><strong>Approval List</strong></h4>
+		</div>
 		<div class="example-box-wrapper">
 			<!-- Notification Alert -->
 	        @if(session('success'))
@@ -84,7 +86,10 @@
 					    <td class="text-center">{{ $ticket->user->name }}</td>
 					    <td class="text-center">
 					    	@if($ticket->approval_hrbp > 0)
-					    		@if ( $ticket->approval_hrbp == 1 )
+					    		@if ( $ticket->freeze == 99 )
+					    			<!-- jika FREEZE oleh HRTA -->
+					    			<span class="bs-label label-danger"><strong>freeze</strong></span>
+					    		@elseif ( $ticket->approval_hrbp == 1 )
 					    			<span class="bs-label label-success"><strong>Approved</strong></span>
 					    		@elseif ( $ticket->approval_hrbp == 2 )
 					    			<span class="bs-label label-danger"><strong>Rejected</strong></span>

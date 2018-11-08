@@ -41,19 +41,19 @@
 
 <!-- ALERT akan muncul jika HRT sudah input hasil briefing, status waiting => 0 -->
 @section('alert_for_HRBP')
-	@if($hiring->contains('approval_hiring_by_hrbp','0') == true)
+	{{-- @if($hiring->contains('approval_hiring_by_hrbp','0') == true)
 		@component('notice_message.notice', [ 
 						'msg'=> 'There is an approval that must be completed as soon as possible because it will affect duration of the SLA', 
 						'link' => route('hrbp.approval.hiring')
 					])
 		@endcomponent
-	@endif
+	@endif --}}
 @endsection
 @section('content')
 <div class="panel">
 	<div class="panel-body">
 		
-		<h3 class="title-hero">approval result of the brief list</h3>
+		<h3 class="title-hero"><strong>approval result of the brief list</strong></h3>
 		<div class="example-box-wrapper">
 
 			<table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap" cellspacing="0" width="100%">
@@ -70,9 +70,8 @@
 				    @php $no=1; @endphp
 				    @forelse($hiring as $hiring)
 				    <tr>
-				    	@if ($hiring->tickets->user_hrbp == Auth::user()->id )
 					    <td class="text-center">{{ $no++ }}</td>
-					    <td><a href="">{{ $hiring->tickets->position_name }}</a></td>
+					    <td>{{ $hiring->tickets->position_name }}</td>
 					    <td class="text-center">
 					    	{{ $hiring->date_result_hiring == NULL ? '-' : \Carbon\Carbon::parse($hiring->date_result_hiring)->format('d/m/Y') }}
 					    </td>
@@ -82,23 +81,16 @@
 					    	@else
 					    		<!-- status: 0=>sudah input hasil brief; 1=> di approve HRBP; 2=> di reject HRBP -->
 					    		@if ( $hiring->approval_hiring_by_hrbp == 0 )
-					    			<a class="btn btn-round btn-blue-alt" href="{{ route('hrbp.detail.result',$hiring->id) }}">
-				                        <i class="glyph-icon icon-eye"></i>
+					    			<a class="bs-label label-yellow" type="button" href="{{ route('hrbp.detail.result',$hiring->id) }}">
+				                        <span><strong>need approval</strong></span>
 				                    </a>
 					    		@elseif ( $hiring->approval_hiring_by_hrbp == 1 )
-					    			<span class="bs-label label-success"><strong>You Have Been Approved</strong></span>
+					    			<span class="bs-label label-success"><strong>Approved</strong></span>
 					    		@elseif ( $hiring->approval_hiring_by_hrbp == 2 )
-					    			<span class="bs-label label-danger"><strong>You Have Been Rejected</strong></span>
+					    			<span class="bs-label label-danger"><strong>Rejected</strong></span>
 					    		@endif
 					    	@endif
 					    </td>
-					    @else
-					    	<td valign="top" colspan="5" class="dataTables_empty">No data available in table</td>
-					    	<td id="hidden"></td>
-					    	<td id="hidden"></td>
-					    	<td id="hidden"></td>
-					    	<td id="hidden"></td>
-					    @endif
 				    </tr>
 				    @empty
 				    	<td valign="top" colspan="5" class="dataTables_empty">No data available in table</td>

@@ -21,7 +21,12 @@ class ApprovalResultBriefController extends Controller
 
     public function index()
     {
-    	$hiring = Hiring_brief::get();
+        /* data hiring brief berdasar HRBP yg ada di table tickets */
+    	// $hiring = Hiring_brief::whereHas('tickets', function($query) {
+     //                                $query->where('user_hrbp',Auth::user()->id);
+     //                            })->get();
+        $hiring = Hiring_brief::where('interviewer_hrbp',Auth::user()->name)->get();
+
         return view('HR_BussinessPartner.approval_result_brief',compact('hiring'));
     }
 

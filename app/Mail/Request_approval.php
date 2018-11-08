@@ -8,7 +8,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\Ticket;
 
-class Request_approval extends Mailable
+class Request_approval extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 

@@ -22,17 +22,20 @@
 
 @section('content')
 
-<h2>CV & Sourcing</h2>
-<br />
-<div style="color: tomato;">
-	<p></p>
-</div>
-
 <div class="row">
     <div class="col-md-12">
 	    <div class="panel panel-default">
 
 	        <div class="panel-body">
+	        <!-- title -->
+	        <div class="title-hero">
+				<div class="row">
+					<div class="col-md-6" style="padding-top: 10px;">
+						<h4><strong>CV & Sourcing</strong></h4>	
+					</div>
+				</div>
+			</div>
+
 	        	<table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap" cellspacing="0" width="100%">
 					<thead>
 						<tr>
@@ -95,10 +98,14 @@
 							    					<form action="{{ route('nextProcess.sourcing',$data->CV->id) }}" method="POST">
 											    		@csrf
 											    		@method('PATCH')
-											    		<a href="{{ route('showCandidate',$data->id) }}" type="button" class="btn btn-info">{{ $total->where('approval_candidate',1)->count() }} Approved, {{ $total->where('approval_candidate',2)->count() }} Rejected, {{ $total->where('approval_candidate',0)->count() }} No Action
+											    		<a href="{{ route('showCandidate',$data->id) }}" type="button" class="btn btn-info">
+											    		{{ $total->where('approval_candidate',1)->count() }} Approved, 
+											    		{{ $total->where('approval_candidate',2)->count() }} Rejected, 
+											    		{{ $total->where('approval_candidate',0)->count() }} No Action
 											    		</a>
 											    		<br>
-											    		<button class="btn btn-success" type="submit" style="margin-top: 10px;">Done !
+											    		<button class="btn btn-success" type="submit">
+											    			<strong>Finish</strong>
 											    		</button>
 											    	</form>
 											    @elseif ( $SLA < $tglNextProcess->date_nextProcess_hrta )
@@ -124,14 +131,14 @@
 							    				<form action="{{ route('nextProcess.sourcing',$data->CV->id) }}" method="POST">
 										    		@csrf
 										    		@method('PATCH')
-										    		<button class="btn btn-round btn-success" type="submit">
-										    			Done !
+										    		<button class="btn btn-success" type="submit">
+										    			<strong>Finish</strong>
 										    		</button>
 										    	</form>
 							    			@endif
 							    		@else
 							    			<span class="bs-label label-success">
-								    			<strong>You Have Been Uploaded {{ $data->CV->where('hiring_brief_id',$data->id)->count() }} Candidate</strong>
+								    			<strong>Uploaded {{ $data->CV->where('hiring_brief_id',$data->id)->count() }} Candidate</strong>
 								    		</span>
 							    		@endif
 							    	@else

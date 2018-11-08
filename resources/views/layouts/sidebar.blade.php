@@ -5,7 +5,7 @@
         <li class="header"><span>New Request</span></li>
 
         <li>
-            <a href="{{ route('ticket') }}" title="You Ticket List">
+            <a href="{{ route('ticket') }}" title="Create New Request">
                 <i class="glyph-icon icon-linecons-doc"></i>
                 <span>Ticket</span>
             </a>
@@ -16,6 +16,19 @@
             <a href="{{ route('candidate') }}" title="Candidate">
                 <i class="glyph-icon icon-group"></i>
                 <span>Candidate</span>
+                @php
+                    /* ada kandidat yg belum di proses */
+                    $candidate = App\Models\CV::whereIn('approval_candidate',['0'])->count();
+                    $ambil_tgl = App\Models\CV::whereIn('approval_candidate',['0'])->pluck('created_at')->first();
+                    $SLA_CVFeedback = \Carbon\Carbon::parse($ambil_tgl)->addDays(2);
+                @endphp
+                <!-- jika udah lewat waktu sla feedback, badge 'new' hilang -->
+                @if ( \Carbon\Carbon::now() > $SLA_CVFeedback )
+
+                <!-- kandidat belum di proses -->
+                @elseif ( $candidate > 0 )
+                    <span class="bs-label label-success">new</span>
+                @endif
             </a>
         </li>
         <li class="divider"></li>
@@ -90,7 +103,7 @@
     <li class="header"><span>New Request</span></li>
 
     <li>
-        <a href="{{ route('ticket') }}" title="You Ticket List">
+        <a href="{{ route('ticket') }}" title="Create New Request">
             <i class="glyph-icon icon-linecons-doc"></i>
             <span>Ticket</span>
         </a>
@@ -101,6 +114,28 @@
         <a href="{{ route('candidate') }}" title="Candidate">
             <i class="glyph-icon icon-group"></i>
             <span>Candidate</span>
+            @php
+                /* ada kandidat yg belum di proses */
+                $candidate = App\Models\CV::whereIn('approval_candidate',['0'])->count();
+                $ambil_tgl = App\Models\CV::whereIn('approval_candidate',['0'])->pluck('created_at')->first();
+                // $a = App\Models\CV::all();
+                // foreach ($a as $a) {
+                //     dd($a->hiring_brief_id);
+                // };
+
+                $SLA_CVFeedback = \Carbon\Carbon::parse($ambil_tgl)->addDays(2);
+
+                /* cek yg tiket dibuat oleh siapa, utk menghindari munculnya badge di halaman LM! yg lain */
+                // $ticket_id = App\Models\Ticket::
+            @endphp
+
+            <!-- jika udah lewat waktu sla feedback, badge 'new' hilang -->
+            @if ( \Carbon\Carbon::now() > $SLA_CVFeedback )
+
+            <!-- kandidat belum di proses -->
+            @elseif ( $candidate > 0 )
+                <span class="bs-label label-success">new</span>
+            @endif
         </a>
     </li>
     <li class="divider"></li>
@@ -131,7 +166,7 @@
 @if ( Auth::user()->grade == 9 )
     <li class="header"><span>New Request</span></li>
     <li>
-        <a href="{{ route('ticket') }}" title="You Ticket List">
+        <a href="{{ route('ticket') }}" title="Create New Request">
             <i class="glyph-icon icon-linecons-doc"></i>
             <span>Ticket</span>
         </a>
@@ -142,6 +177,19 @@
         <a href="{{ route('candidate') }}" title="Candidate">
             <i class="glyph-icon icon-group"></i>
             <span>Candidate</span>
+            @php
+                /* ada kandidat yg belum di proses */
+                $candidate = App\Models\CV::whereIn('approval_candidate',['0'])->count();
+                $ambil_tgl = App\Models\CV::whereIn('approval_candidate',['0'])->pluck('created_at')->first();
+                $SLA_CVFeedback = \Carbon\Carbon::parse($ambil_tgl)->addDays(2);
+            @endphp
+            <!-- jika udah lewat waktu sla feedback, badge 'new' hilang -->
+            @if ( \Carbon\Carbon::now() > $SLA_CVFeedback )
+
+            <!-- kandidat belum di proses -->
+            @elseif ( $candidate > 0 )
+                <span class="bs-label label-success">new</span>
+            @endif
         </a>
     </li>
     <li class="divider"></li>
@@ -203,7 +251,7 @@
     </li>
     <li class="divider"></li>
     <li class="no-menu">
-        <a href="" title="Frontend template">
+        <a href="{{ route('index.interview') }}" title="Interview Process">
             <i class="glyph-icon icon-slideshare"></i>
             <span>Interview Process</span>
         </a>

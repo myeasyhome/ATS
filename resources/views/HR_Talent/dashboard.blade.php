@@ -26,12 +26,10 @@
         $('#datatable-responsive').DataTable( {
             "responsive" : true,
         } );
-    } );
 
-    $(function() {
         $('.dataTables_filter input').attr("placeholder", "Search...");
-    });
 
+    } );
 </script>
 
 <script type="text/javascript">
@@ -48,23 +46,25 @@
             		$('#content_reason').html('<p>'+data.reason_reject+'</p>')
             	}
             })
-        });
+        }); 
 
-
-        /* modal freeze */
-        $('#btn_freeze').click( function() {
+         /* modal freeze */
+        $(document).on('click','#btn_freeze', function() {
         	var url = $(this).attr('data-url');
+        	console.log(url);
         	$('#form_modal_freeze').attr('action',url);
         });
 
 		/* modal unfreeze */
-        $('#btn_unfreeze').click( function() {
+        $(document).on('click','#btn_unfreeze', function() {
         	var url = $(this).attr('data-url');
         	$('#form_modal_unfreeze').attr('action',url);
-        });        
-    });
+        });       
+
+    });   
 </script>
 
+<!-- kolom recruiter -->
 <script src="{{ asset('assets/select2/select2.js') }}"></script>
 <script>
 	/* dropdown recruiter */
@@ -72,15 +72,25 @@
 	    $('.recruiter').select2({
 	    	placeholder : 'Select Recruiter',
 	    	theme: 'bootstrap',
-	    }).on('select2:select', function (e) {
-	    	/* simpen ke database value yg dipilih */
-	    	var data = e.params.data;
-
 	    });
 
+	    $('.btn_recruiter').click( function() {
+	    	/* Data recruiter di table ticket */
+	    	var recruiter = $(this).data('recruiter');
+    		var id = $(this).data('id');
+
+		    $('.recruiter').select2().val(recruiter).trigger('change');
+		    // })
+	    	// .on('hide.bs.modal', function(){
+	    	// 	$('#recruiter'+id).select2({ placeholder: 'Select Recruiter' }).val([]).trigger('change');
+	    	// });
+
+	   		/* jalankan action form di modal */
+        	// var url = $(this).attr('data-url');
+        	// $('#form_modal_recruiter').attr('action',url);
+        }); 
 	});
 </script>
-
 @stop
 
 @section('content')
@@ -99,6 +109,11 @@
         	<div class="alert alert-success" role="alert">
         		<button type="button" class="close" data-dismiss="alert">×</button>
                 <strong>{{ session('success') }}</strong>
+            </div>
+        @elseif(session('error'))
+        	<div class="alert alert-danger" role="alert">
+        		<button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>{{ session('error') }}</strong>
             </div>
         @endif
         {{-- <div class="row form-group" id="filter">
@@ -126,7 +141,7 @@
 				@php $no =1; @endphp
 				    @forelse($data as $data)
 					    <tr>
-					    {{-- jika di freeze --}}
+					    <!-- jika di freeze -->
 					    @if ( $data->freeze == 99 )
 					    	<td class="text-center col-md-1">{{ $no++ }}</td>
 					    	<td><a href="{{ route('dashboard.detailTicket',$data->id) }}"><em style="color: red;">{{ $data->position_name }}</em></a></td>
@@ -138,7 +153,8 @@
 					    	<td class="text-center">-</td>
 					    	<td class="text-center">-</td>
 					    	<td class="text-center">
-					    		<a href="#modal_unfreeze" data-toggle="modal" data-url="{{ route('unfreeze',$data->id) }}" id="btn_unfreeze" type="btn" class="btn btn-round" title="Unfreeze">a</a>
+					    		<!-- KOLOM ACTION -->
+					    		<a href="#modal_unfreeze" data-toggle="modal" data-url="{{ route('unfreeze',$data->id) }}" id="btn_unfreeze" type="btn" class="btn btn-round btn-success" title="Unfreeze"><span class="glyph-icon icon-iconic-sun"></span></a>
 					    	</td>
 					    @else
 					    	<td class="text-center col-sm-1">{{ $no++ }}</td>
@@ -147,7 +163,7 @@
 					    			<a href="{{ route('dashboard.detailTicket',$data->id) }}">{{ $data->position_name }}</a>
 					    		</td>
 					    		<td class="text-center"> 
-					    		{{-- KOLOM STATUS --}}
+					    		<!-- KOLOM STATUS -->
 					    			@if ( $data->user->grade == 7 )
 					    			{{-- Jika yang buat Grade 7 / Div. Head --}}
 					    				@if ( $data->approval_hrbp == 2 || $data->approval_GH == 2 || $data->approval_chief == 2)
@@ -169,7 +185,7 @@
 					    			@endif
 					    		</td>
 					    		<td class="text-center">
-					    		{{-- KOLOM PROGRESS --}}
+					    		<!-- KOLOM PROGRESS -->
 					    			@if ( $data->user->grade == 7 )
 					    			{{-- Jika yang buat Grade 7 / Div. Head --}}
 						    			@if ( $data->approval_hrbp == 0 )
@@ -185,7 +201,7 @@
 						    			@elseif ( $data->approval_chief == 2 )
 						    				<span class="bs-label label-info"><strong>Approval Chief</strong></span>
 						    			@elseif ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 )
-						    				<a href="{{ route('hiring_brief') }}" type="button"><span class="bs-label label-info"><strong>Hiring Brief</strong></span></a>
+						    				<a href="{{ route('hiring_brief') }}" type="button" class="bs-label label-info"><span><strong>Hiring Brief</strong></span></a>
 						    			@endif
 					    			@elseif ( $data->user->grade == 8 )
 					    			{{-- Jika yang buat Grade 8 / Group Head --}}
@@ -202,26 +218,43 @@
 						    			@elseif ( $data->approval_chro == 2 )
 						    				<span class="bs-label label-info"><strong>Approval CHRO</strong></span>
 						    			@elseif ( $data->approval_hrbp == 1 && $data->approval_chief == 1 && $data->approval_chro == 1 )
-						    				<span class="bs-label label-info"><strong>Hiring Brief</strong></span>
+						    				<a href="{{ route('hiring_brief') }}" type="button" class="bs-label label-info"><span><strong>Hiring Brief</strong></span></a>
 						    			@endif
 					    			@endif
 					    		</td>
 					    		<td class="text-center">{{ $data->ticket_erf_details->directorates->directorate_name }}</td>
-					    		<td class="text-center">{{ $data->position_grade }}</td>
-					    		<td class="text-center">{{ $data->user->name }}</td>
 					    		<td class="text-center">
+					    			<!-- KOLOM GRADE -->
+					    			{{ $data->position_grade }}
+					    		</td>
+					    		<td class="text-center">
+					    			<!-- KOLOM CREATED_BY -->
+					    			{{ $data->user->name }}
+					    		</td>
+					    		<td class="text-center">
+					    			<!-- KOLOM RECRUITER -->
 					    			@if ( $data->user->grade == 7 )
 					    				@if ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 )
-						    				<select id="recruiter" class="form-control recruiter" multiple="multiple" style="width: 100%">
+						    				{{-- <select id="recruiter" class="form-control recruiter" multiple="multiple" name="recruiter[]" style="width: 100%" ticket-id="{{ $data->id }}">
 							    				<option>Mona Biniling</option>
 							    				<option>Genny</option>
-							    			</select>
+							    				<option>dwa</option>
+							    				<option>dwaaw</option>
+							    				<option>dw'a.daw</option>
+							    				<option>adawkmdwa</option>
+							    				<option>dawl;adaw</option>
+							    			</select> --}}
+							    			<a href="#modal_recruiter{{ $data->id }}" data-toggle="modal" type="button" class="bs-label label-primary btn_recruiter"
+						    				data-recruiter="{{ $data->recruiter ==  '' ? 'NULL' : $data->recruiter }}"
+						    				data-id="{{ $data->id }}">
+						    					<span><strong>Select Recruiter</strong></span>
+						    				</a>
 					    				@else
 					    				-
 					    				@endif
 					    			@elseif ( $data->user->grade == 8 )
 					    				@if ( $data->approval_hrbp == 1 && $data->approval_chief == 1 && $data->approval_chro == 1 )
-						    				<select class="form-control recruiter" multiple="multiple" style="width: 100%">
+						    				<select class="form-control recruiter" multiple="multiple" name="recruiter[]" style="width: 100%">
 							    				<option>Mona Biniling</option>
 							    				<option>Genny</option>
 							    			</select>
@@ -243,11 +276,12 @@
 					    			@endisset
 					    		</td>
 					    		<td class="text-center">
+					    			<!-- KOLOM ACTION -->
 					    			@if ( $data->user->grade == 7 )
 					    				@if ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 )
 					    					<a href="#" type="btn" class="btn btn-round btn-warning" title="Cancel"><span class="glyph-icon icon-ban"></span></a>
 							    			&nbsp;
-							    			<a href="#modal_freeze" data-toggle="modal" type="btn" class="btn btn-round btn-danger" title="Freeze" data-url="{{ route('freeze',$data->id) }}" id="btn_freeze"><span class="glyph-icon icon-warning"></span></a>
+							    			<a href="#modal_freeze" id="btn_freeze" data-toggle="modal" type="btn" class="btn btn-round btn-danger" title="Freeze" data-url="{{ route('freeze',$data->id) }}"><span class="glyph-icon icon-iconic-sun-inv"></span></a>
 					    				@else
 					    				-
 					    				@endif
@@ -255,7 +289,7 @@
 					    				@if ( $data->approval_hrbp == 1 && $data->approval_chief == 1 && $data->approval_chro == 1 )
 						    				<a href="#" type="btn" class="btn btn-round btn-warning" title="Cancel"><span class="glyph-icon icon-ban"></span></a>
 							    			&nbsp;
-							    			<a href="#" type="btn" class="btn btn-round btn-danger" title="Freeze"><span class="glyph-icon icon-warning"></span></a>
+							    			<a href="#modal_freeze" id="btn_freeze" data-toggle="modal" type="btn" class="btn btn-round btn-danger" title="Freeze" data-url="{{ route('freeze',$data->id) }}"><span class="glyph-icon icon-iconic-sun-inv"></span></a>
 						    			@else
 						    			-
 						    			@endif
@@ -310,12 +344,12 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title">Freeze Ticket</h4>
             </div>
-            <form role="form" method="post" class="form-horizontal" id="form_modal_freeze">
+            <form role="form" method="post" class="form-horizontal" id="form_modal_freeze" autocomplete="off">
             @csrf
             @method('PATCH')
             	<div class="modal-body">
                 	<div class="form-group">
-                        <label for="position_name" class="col-sm-2 control-label">Reason</label>
+                        <label for="position_name" class="col-sm-2 control-label">Reason <span style="color: red"> *</span></label>
                         <div class="col-sm-9">
                             <textarea class="form-control" cols="51" rows="12" name="reason_freeze" required></textarea>
                         </div>
@@ -352,4 +386,38 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Reecruiter -->
+@foreach ($modal as $modal)
+<div class="modal fade" tabindex="1" id="modal_recruiter{{ $modal->id }}" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Choose Recruiter</h4>
+            </div>
+            <form action="{{ route('updateRecruiter',$modal->id) }}" role="form" method="post" class="form-horizontal" id="form_modal_recruiter">
+            @csrf
+            @method('PATCH')
+            	<div class="modal-body" style="padding-left: 20%; padding-right: 20%; ">
+            		<div class="form-group">
+            			<div class="col-md-12">
+            				<select id="recruiter" class="form-control recruiter" multiple="multiple" name="recruiter[]" style="width: 100%" placeholder="Select Recruiter" >
+			    				<option value="MONA BINILING">MONA BINILING</option>
+			    				<option value="GENNY">GENNY</option>
+			    				<option value="DENNY">DENNY</option>
+			    			</select>	
+            			</div>
+            		</div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="submit" class="btn btn-success">Yes, select it</button>
+	                <button type="button" class="btn btn-danger" data-dismiss="modal">No, cancel</button>
+	            </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
+
 @endsection
