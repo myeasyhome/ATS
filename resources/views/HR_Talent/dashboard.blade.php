@@ -77,29 +77,24 @@
 	    $('.btn_recruiter').click( function() {
 	    	/* Data recruiter di table ticket */
 	    	var recruiter = $(this).data('recruiter');
-    		var id = $(this).data('id');
 
 		    $('.recruiter').select2().val(recruiter).trigger('change');
-		    // })
-	    	// .on('hide.bs.modal', function(){
-	    	// 	$('#recruiter'+id).select2({ placeholder: 'Select Recruiter' }).val([]).trigger('change');
-	    	// });
 
-	   		/* jalankan action form di modal */
-        	// var url = $(this).attr('data-url');
-        	// $('#form_modal_recruiter').attr('action',url);
         }); 
 	});
 </script>
 @stop
 
 @section('content')
+<div id="page-title">
+	<h2>Dashboard</h2>
+</div>
 <div class="panel">
 	<div class="panel-body">
 		<div class="title-hero">
 			<div class="row">
 				<div class="col-md-6" style="padding-top: 10px;">
-					<h4><strong>NEW REQUEST LIST</strong></h4>	
+					<h5><strong>NEW REQUEST LIST</strong></h5>	
 				</div>
 			</div>
 		</div>
@@ -123,193 +118,293 @@
         </div> --}}
 			<table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap dataTable collapsed dtr-inline" cellspacing="0" width="100%">
 				<thead>
-				<tr>
-				    <th class="text-center col-md-1">No.</th>
-				    <th class="text-center col-md-2">Position Name</th>
-				    <th class="text-center col-md-1">Status</th>
-				    <th class="text-center col-md-1">Progress</th>
-				    <th class="text-center col-md-1">Directorate</th>
-				    <th class="text-center col-md-1">Grade</th>
-				    <th class="text-center col-md-1">Created By</th>
-				    <th class="text-center col-md-2">Recruiter</th>
-				    <th class="text-center col-md-1">SLA</th>
-				    <th class="text-center col-md-2">Action</th>
-				</tr>
+					<tr>
+					    <th class="text-center col-md-2">Position Name</th>
+					    <th class="text-center col-md-1">Status</th>
+					    <th class="text-center col-md-1">Progress</th>
+					    <th class="text-center col-md-1">Directorate</th>
+					    <th class="text-center col-md-1">Grade</th>
+					    <th class="text-center col-md-1">Created By</th>
+					    <th class="text-center col-md-1">Recruiter</th>
+					    <th class="text-center col-md-1">SLA</th>
+					    {{-- <th class="text-center col-md-1">Action</th> --}}
+					</tr>
 				</thead>
 
 				<tbody>
 				@php $no =1; @endphp
-				    @forelse($data as $data)
-					    <tr>
-					    <!-- jika di freeze -->
-					    @if ( $data->freeze == 99 )
-					    	<td class="text-center col-md-1">{{ $no++ }}</td>
-					    	<td><a href="{{ route('dashboard.detailTicket',$data->id) }}"><em style="color: red;">{{ $data->position_name }}</em></a></td>
-					    	<td class="text-center"><span class="bs-label label-danger"><strong>freeze</strong></span></td>
-					    	<td class="text-center">-</td>
-					    	<td class="text-center">-</td>
-					    	<td class="text-center">-</td>
-					    	<td class="text-center">-</td>
-					    	<td class="text-center">-</td>
-					    	<td class="text-center">-</td>
-					    	<td class="text-center">
-					    		<!-- KOLOM ACTION -->
-					    		<a href="#modal_unfreeze" data-toggle="modal" data-url="{{ route('unfreeze',$data->id) }}" id="btn_unfreeze" type="btn" class="btn btn-round btn-success" title="Unfreeze"><span class="glyph-icon icon-iconic-sun"></span></a>
-					    	</td>
-					    @else
-					    	<td class="text-center col-sm-1">{{ $no++ }}</td>
-					    		<td>
-					    		{{-- KOLOM NAMA POSISI --}}
-					    			<a href="{{ route('dashboard.detailTicket',$data->id) }}">{{ $data->position_name }}</a>
-					    		</td>
-					    		<td class="text-center"> 
-					    		<!-- KOLOM STATUS -->
-					    			@if ( $data->user->grade == 7 )
-					    			{{-- Jika yang buat Grade 7 / Div. Head --}}
-					    				@if ( $data->approval_hrbp == 2 || $data->approval_GH == 2 || $data->approval_chief == 2)
-						    				<span class="bs-label label-danger"><strong>Reject</strong></span>
-						    			@elseif ( $data->approval_hrbp == 0 || $data->approval_GH == 0 || $data->approval_chief == 0 )
-						    				<span class="bs-label label-yellow"><strong>Waiting</strong></span>
-						    			@elseif ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 )
-						    				<span class="bs-label label-success"><strong>open</strong></span>
-						    			@endif
-					    			@elseif ( $data->user->grade == 8 )
-					    			{{-- Jika yang buat Grade 8 / Group Head --}}
-					    				@if ( $data->approval_hrbp == 2 )
-						    				<span class="bs-label label-danger"><strong>Reject</strong></span>
-					    				@elseif ( $data->approval_hrbp == 0 || $data->approval_chief == 0 || $data->approval_chro == 0 )
-						    				<span class="bs-label label-yellow"><strong>Waiting</strong></span>
-						    			@elseif ( $data->approval_hrbp == 1 && $data->approval_chief == 1 && $data->approval_chro == 1 )
-						    				<span class="bs-label label-success"><strong>open</strong></span>
-						    			@endif
-					    			@endif
-					    		</td>
-					    		<td class="text-center">
-					    		<!-- KOLOM PROGRESS -->
-					    			@if ( $data->user->grade == 7 )
-					    			{{-- Jika yang buat Grade 7 / Div. Head --}}
-						    			@if ( $data->approval_hrbp == 0 )
-						    				<span class="bs-label label-info"><strong>Approval HRBP</strong></span>
-						    			@elseif ( $data->approval_hrbp == 2 )
-						    				<span class="bs-label label-info"><strong>Approval HRBP</strong></span>
-						    			@elseif ( $data->approval_GH == 0 )
-						    				<span class="bs-label label-info"><strong>Approval GH</strong></span>
-						    			@elseif ( $data->approval_GH == 2 )
-						    				<span class="bs-label label-info"><strong>Approval GH</strong></span>
-						    			@elseif ( $data->approval_chief == 0 )
-						    				<span class="bs-label label-info"><strong>Approval Chief</strong></span>
-						    			@elseif ( $data->approval_chief == 2 )
-						    				<span class="bs-label label-info"><strong>Approval Chief</strong></span>
-						    			@elseif ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 )
-						    				<a href="{{ route('hiring_brief') }}" type="button" class="bs-label label-info"><span><strong>Hiring Brief</strong></span></a>
-						    			@endif
-					    			@elseif ( $data->user->grade == 8 )
-					    			{{-- Jika yang buat Grade 8 / Group Head --}}
-					    				@if ( $data->approval_hrbp == 0 )
-						    				<span class="bs-label label-info"><strong>Approval HRBP</strong></span>
-						    			@elseif ( $data->approval_hrbp == 2 )
-						    				<span class="bs-label label-info"><strong>Approval HRBP</strong></span>
-						    			@elseif ( $data->approval_chief == 0 )
-						    				<span class="bs-label label-info"><strong>Approval CxO</strong></span>
-						    			@elseif ( $data->approval_chief == 2 )
-						    				<span class="bs-label label-info"><strong>Approval CxO</strong></span>
-						    			@elseif ( $data->approval_chro == 0 )
-						    				<span class="bs-label label-info"><strong>Approval CHRO</strong></span>
-						    			@elseif ( $data->approval_chro == 2 )
-						    				<span class="bs-label label-info"><strong>Approval CHRO</strong></span>
-						    			@elseif ( $data->approval_hrbp == 1 && $data->approval_chief == 1 && $data->approval_chro == 1 )
-						    				<a href="{{ route('hiring_brief') }}" type="button" class="bs-label label-info"><span><strong>Hiring Brief</strong></span></a>
-						    			@endif
-					    			@endif
-					    		</td>
-					    		<td class="text-center">{{ $data->ticket_erf_details->directorates->directorate_name }}</td>
-					    		<td class="text-center">
-					    			<!-- KOLOM GRADE -->
-					    			{{ $data->position_grade }}
-					    		</td>
-					    		<td class="text-center">
-					    			<!-- KOLOM CREATED_BY -->
-					    			{{ $data->user->name }}
-					    		</td>
-					    		<td class="text-center">
-					    			<!-- KOLOM RECRUITER -->
-					    			@if ( $data->user->grade == 7 )
-					    				@if ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 )
-						    				{{-- <select id="recruiter" class="form-control recruiter" multiple="multiple" name="recruiter[]" style="width: 100%" ticket-id="{{ $data->id }}">
-							    				<option>Mona Biniling</option>
-							    				<option>Genny</option>
-							    				<option>dwa</option>
-							    				<option>dwaaw</option>
-							    				<option>dw'a.daw</option>
-							    				<option>adawkmdwa</option>
-							    				<option>dawl;adaw</option>
-							    			</select> --}}
-							    			<a href="#modal_recruiter{{ $data->id }}" data-toggle="modal" type="button" class="bs-label label-primary btn_recruiter"
-						    				data-recruiter="{{ $data->recruiter ==  '' ? 'NULL' : $data->recruiter }}"
-						    				data-id="{{ $data->id }}">
-						    					<span><strong>Select Recruiter</strong></span>
-						    				</a>
-					    				@else
-					    				-
-					    				@endif
-					    			@elseif ( $data->user->grade == 8 )
-					    				@if ( $data->approval_hrbp == 1 && $data->approval_chief == 1 && $data->approval_chro == 1 )
-						    				<select class="form-control recruiter" multiple="multiple" name="recruiter[]" style="width: 100%">
-							    				<option>Mona Biniling</option>
-							    				<option>Genny</option>
-							    			</select>
-					    				@else
-					    				-
-					    				@endif
-					    			@endif
-					    		</td>
-					    		<td class="text-center">
-					    			@isset ( $data->hiring_briefs )
-					    				@php
-					    					$buat = $data->hiring_briefs->created_at;
-					    					$now = Carbon\Carbon::now();
-					    					$total = $now->diffInDays($buat)
-					    				@endphp
-					    			    <span class="bs-label label-success"><strong>{{ $total }} Days</strong></span>
-					    			@else
-					    				-
-					    			@endisset
-					    		</td>
-					    		<td class="text-center">
-					    			<!-- KOLOM ACTION -->
-					    			@if ( $data->user->grade == 7 )
-					    				@if ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 )
-					    					<a href="#" type="btn" class="btn btn-round btn-warning" title="Cancel"><span class="glyph-icon icon-ban"></span></a>
-							    			&nbsp;
-							    			<a href="#modal_freeze" id="btn_freeze" data-toggle="modal" type="btn" class="btn btn-round btn-danger" title="Freeze" data-url="{{ route('freeze',$data->id) }}"><span class="glyph-icon icon-iconic-sun-inv"></span></a>
-					    				@else
-					    				-
-					    				@endif
-					    			@elseif ( $data->user->grade == 8 )
-					    				@if ( $data->approval_hrbp == 1 && $data->approval_chief == 1 && $data->approval_chro == 1 )
-						    				<a href="#" type="btn" class="btn btn-round btn-warning" title="Cancel"><span class="glyph-icon icon-ban"></span></a>
-							    			&nbsp;
-							    			<a href="#modal_freeze" id="btn_freeze" data-toggle="modal" type="btn" class="btn btn-round btn-danger" title="Freeze" data-url="{{ route('freeze',$data->id) }}"><span class="glyph-icon icon-iconic-sun-inv"></span></a>
-						    			@else
-						    			-
-						    			@endif
-					    			@endif
-					    		</td>
-					    @endif
-						</tr>
-				    @empty
-				    	<td valign="top" colspan="10" class="dataTables_empty">No data available in table</td>
-				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
-				    	<td id="hidden"></td>
-				    @endforelse
-				    
+			    @forelse($data as $data)
+				    <tr>
+				    @if ( $data->freeze == 99 )
+				    <!-- POSISI DI FREEZE OLEH TA-->
+				    	<td><a href="{{ route('dashboard.detailTicket',$data->id) }}"><em style="color: red;">{{ $data->position_name }}</em></a></td>
+				    	<td class="text-center">
+				    		{{-- <span class="bs-label label-danger"><strong>freeze</strong></span> --}}
+				    		<span class="bs-label btn-border border-red font-red"><strong>freeze</strong></span>
+				    	</td>
+				    	<td class="text-center">-</td>
+				    	<td class="text-center">-</td>
+				    	<td class="text-center">-</td>
+				    	<td class="text-center">-</td>
+				    	<td class="text-center">-</td>
+				    	{{-- <td class="text-center">-</td> --}}
+				    	<td class="text-center">
+				    		<!-- KOLOM ACTION -->
+				    		<a href="#modal_unfreeze" data-toggle="modal" data-url="{{ route('unfreeze',$data->id) }}" id="btn_unfreeze" type="btn" class="btn btn-round btn-success" title="Unfreeze"><span class="glyph-icon icon-iconic-sun"></span></a>
+				    	</td>
+
+				    @else
+			    		<td>
+			    		<!-- KOLOM NAMA POSISI -->
+			    			<a href="{{ route('dashboard.detailTicket',$data->id) }}">{{ $data->position_name }}</a><br><br>
+			    			<!-- btn action -->
+			    			@if ( $data->user->grade == 7 )
+			    				@if ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 )
+			    					<a href="#" type="btn" class="btn btn-xs btn-round btn-warning" title="Cancel">
+			    						<span class="glyph-icon icon-ban"></span>
+			    					</a>
+					    			<a href="#modal_freeze" id="btn_freeze" data-toggle="modal" type="btn" class="btn btn-xs btn-round btn-danger" title="Freeze" data-url="{{ route('freeze',$data->id) }}">
+					    				<span class="glyph-icon icon-iconic-sun-inv"></span>
+					    			</a>
+			    				@endif
+			    			@elseif ( $data->user->grade == 8 )
+			    				@if ( $data->approval_hrbp == 1 && $data->approval_chief == 1 && $data->approval_chro == 1 )
+				    				<a href="#" type="btn" class="btn btn-xs btn-round btn-warning" title="Cancel"><span class="glyph-icon icon-ban"></span></a>
+					    			<a href="#modal_freeze" id="btn_freeze" data-toggle="modal" type="btn" class="btn btn-xs btn-round btn-danger" title="Freeze" data-url="{{ route('freeze',$data->id) }}"><span class="glyph-icon icon-iconic-sun-inv"></span></a>
+				    			@endif
+			    			@endif
+			    		</td>
+			    		<td class="text-center"> 
+			    		<!-- KOLOM STATUS -->
+			    			@if ( $data->user->grade == 7 )
+			    			{{-- Jika yang buat Grade 7 / Div. Head --}}
+			    				@if ( $data->approval_hrbp == 2 || $data->approval_GH == 2 || $data->approval_chief == 2)
+				    				<span class="bs-label btn-border border-red font-red"><strong>reject</strong></span>
+				    			@elseif ( $data->approval_hrbp == 0 || $data->approval_GH == 0 || $data->approval_chief == 0 )
+				    				<span class="bs-label btn-border border-yellow font-yellow"><strong>waiting</strong></span>
+				    			@elseif ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 && $data->hiring_briefs->date_schedule == NULL )
+				    				<span class="bs-label btn-border border-green font-green"><strong>open</strong></span>
+				    			@elseif ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 && $data->hiring_briefs->approval_hiring_by_hrbp == 0 )
+				    				<span class="bs-label btn-border border-yellow font-yellow"><strong>waiting</strong></span>
+				    			@elseif ( $data->approval_hrbp == 1 && 
+				    					$data->approval_GH == 1 && 
+					    				$data->approval_chief == 1 && 
+					    				$data->hiring_briefs->approval_hiring_by_hrbp == 1 )
+					    			{{-- @if ( $data->hiring_briefs->CV->created_at->addDays(2) ==Carbon\Carbon::now() )
+					    				<span class="bs-label label-success"><strong>open</strong></span>
+					    			@else --}}
+				    					<span class="bs-label btn-border border-green font-green"><strong>open</strong></span>
+				    				{{-- @endif --}}
+				    			@elseif ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 && $data->hiring_briefs->date_schedule == Carbon\Carbon::now()->toDateString() || Carbon\Carbon::now()->toDateString() > $data->hiring_briefs->date_schedule )
+				    				<span class="bs-label btn-border border-green font-green"><strong>open</strong></span>
+				    			@elseif ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 && $data->hiring_briefs->date_schedule != Carbon\Carbon::now()->toDateString() )
+				    				<span class="bs-label btn-border border-yellow font-yellow"><strong>waiting</strong></span>
+				    			@endif
+			    			@elseif ( $data->user->grade == 8 )
+			    			{{-- Jika yang buat Grade 8 / Group Head --}}
+			    				@if ( $data->approval_hrbp == 2 )
+				    				<span class="bs-label btn-border border-red font-red"><strong>reject</strong></span>
+			    				@elseif ( $data->approval_hrbp == 0 || $data->approval_chief == 0 || $data->approval_chro == 0 )
+				    				<span class="bs-label btn-border border-yellow font-yellow"><strong>waiting</strong></span>
+				    			@elseif ( $data->approval_hrbp == 1 && $data->approval_chief == 1 && $data->approval_chro == 1 )
+				    				<span class="bs-label btn-border border-green font-green"><strong>open</strong></span>
+				    			@endif
+			    			@endif
+			    		</td>
+			    		<td class="text-center">
+			    		<!-- KOLOM PROGRESS -->
+			    			@if ( $data->user->grade == 7 )
+			    			{{-- Jika yang buat Grade 7 / Div. Head --}}
+				    			@if ( $data->approval_hrbp == 0 )
+				    				<span class="bs-label label-default">
+				    					<strong><em>Approval HRBP</em></strong>
+				    				</span>
+				    			@elseif ( $data->approval_hrbp == 2 )
+				    				<span class="bs-label label-default">
+				    					<strong><em>Approval HRBP</em></strong>
+				    				</span>
+				    			@elseif ( $data->approval_GH == 0 )
+				    				<span class="bs-label label-default">
+				    					<strong><em>Approval GH</em></strong>
+				    				</span>
+				    			@elseif ( $data->approval_GH == 2 )
+				    				<span class="bs-label label-default">
+				    					<strong><em>Approval GH</em></strong>
+				    				</span>
+				    			@elseif ( $data->approval_chief == 0 )
+				    				<span class="bs-label label-default">
+				    					<strong><em>Approval Chief</em></strong>
+				    				</span>
+				    			@elseif ( $data->approval_chief == 2 )
+				    				<span class="bs-label label-default">
+				    					<strong><em>Approval Chief</em></strong>
+				    				</span>
+				    			@elseif ( $data->approval_hrbp == 1 && 
+				    					$data->approval_GH == 1 && 
+				    					$data->approval_chief == 1 && 
+				    					$data->hiring_briefs->date_schedule == NULL  )
+				    				<a href="{{ route('create.brief',$data->id) }}" type="button" class="bs-label label-info">
+				    					<span><strong>Schedule hiring brief</strong></span>
+				    				</a>
+				    			@elseif ( $data->approval_hrbp == 1 && 
+				    					$data->approval_GH == 1 && 
+				    					$data->approval_chief == 1 &&
+				    					$data->hiring_briefs->approval_hiring_by_hrbp == 0 )
+				    				<span class="bs-label label-default">
+										<strong><em>approval hiring brief</em></strong>
+									</span>
+								@elseif ( $data->approval_hrbp == 1 && 
+				    					$data->approval_GH == 1 && 
+				    					$data->approval_chief == 1 &&
+				    					$data->hiring_briefs->approval_hiring_by_hrbp == 1 )
+
+				    				<!-- jika sudah selesai wktu SLA feedback progress langsung ke interview -->
+				    				@if ( $data->hiring_briefs->CV->created_at->addDays(2) ==Carbon\Carbon::now() )
+				    					<a href="#" type="button" class="bs-label label-info">
+					    					<span><strong>interview process</strong></span>
+					    				</a>
+				    				@else
+				    				<!-- sourcing candadate -->
+					    				<a href="{{ route('upload',$data->hiring_briefs->id) }}" class="btn btn-xs bs-label label-info">
+					    					<strong>sourcing candidate</strong>
+					                        <span class="bs-badge badge-absolute float-right badge-danger">
+			                        	    	@php
+					                        		/* cek kandidat yang belum di feedback */
+					                        		$cv = \App\Models\CV::where([
+					                        				['hiring_brief_id',$data->hiring_briefs->id],
+					                        				['approval_candidate','!=','0']
+					                        			])
+					                        			->count();
+					                        	@endphp
+					                        	@if ( $cv > 0 )
+					                        		{{ $cv }}
+					                        	@endif
+			                        	    </span>
+					    				</a>
+				    				@endif
+				    			@elseif ( $data->approval_hrbp == 1 && 
+										$data->approval_GH == 1 && 
+										$data->approval_chief == 1 && 
+										$data->hiring_briefs->date_schedule == Carbon\Carbon::now()->toDateString() || 
+										Carbon\Carbon::now()->toDateString() > $data->hiring_briefs->date_schedule )
+				    				<a href="{{ route('input.brief',$data->id) }}" type="button" class="bs-label label-info">
+				    					<span><strong>input hiring brief</strong></span>
+				    				</a>
+				    			@elseif ( $data->approval_hrbp == 1 && 
+				    					$data->approval_GH == 1 && 
+				    					$data->approval_chief == 1 && 
+				    					$data->hiring_briefs->date_schedule != Carbon\Carbon::now()->toDateString() )
+									<span class="bs-label label-default">
+										<strong><em>brief schedule</em></strong>
+									</span>
+				    			@endif
+			    			@elseif ( $data->user->grade == 8 )
+			    			{{-- Jika yang buat Grade 8 / Group Head --}}
+			    				@if ( $data->approval_hrbp == 0 )
+				    				<span class="bs-label label-default">
+				    					<strong><em>Approval HRBP</em></strong>
+				    				</span>
+				    			@elseif ( $data->approval_hrbp == 2 )
+				    				<span class="bs-label label-default">
+				    					<strong><em>Approval HRBP</em></strong>
+				    				</span>
+				    			@elseif ( $data->approval_chief == 0 )
+				    				<span class="bs-label label-default">
+				    					<strong><em>Approval CxO</em></strong>
+				    				</span>
+				    			@elseif ( $data->approval_chief == 2 )
+				    				<span class="bs-label label-default">
+				    					<strong><em>Approval CxO</em></strong>
+				    				</span>
+				    			@elseif ( $data->approval_chro == 0 )
+				    				<span class="bs-label label-default">
+				    					<strong>A<em>pproval CHRO</em></strong>
+				    				</span>
+				    			@elseif ( $data->approval_chro == 2 )
+				    				<span class="bs-label label-default">
+				    					<strong>A<em>pproval CHRO</em></strong>
+				    				</span>
+				    			@elseif ( $data->approval_hrbp == 1 && $data->approval_chief == 1 && $data->approval_chro == 1 )
+				    				<a href="{{ route('hiring_brief') }}" type="button" class="bs-label label-info"><span><strong>Hiring Brief</strong></span></a>
+				    			@endif
+			    			@endif
+			    		</td>
+			    		<td class="text-center">{{ $data->ticket_erf_details->directorates->directorate_name }}</td>
+			    		<td class="text-center">
+			    			<!-- KOLOM GRADE -->
+			    			{{ $data->position_grade }}
+			    		</td>
+			    		<td class="text-center">
+			    			<!-- KOLOM CREATED_BY -->
+			    			{{ $data->user->name }}
+			    		</td>
+			    		<td class="text-center">
+			    			<!-- KOLOM RECRUITER -->
+			    			@if ( $data->user->grade == 7 )
+			    				@if ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 )
+					    			<a href="#modal_recruiter{{ $data->id }}" data-toggle="modal" type="button" class="bs-label label-primary btn_recruiter"
+				    				data-recruiter="{{ $data->recruiter ==  '' ? 'NULL' : $data->recruiter }}">
+				    					<span><strong>Select Recruiter</strong></span>
+				    				</a>
+			    				@else
+			    				-
+			    				@endif
+			    			@elseif ( $data->user->grade == 8 )
+			    				@if ( $data->approval_hrbp == 1 && $data->approval_chief == 1 && $data->approval_chro == 1 )
+				    				<a href="#modal_recruiter{{ $data->id }}" data-toggle="modal" type="button" class="bs-label label-primary btn_recruiter"
+				    				data-recruiter="{{ $data->recruiter ==  '' ? 'NULL' : $data->recruiter }}">
+				    					<span><strong>Select Recruiter</strong></span>
+				    				</a>
+			    				@else
+			    				-
+			    				@endif
+			    			@endif
+			    		</td>
+			    		<td class="text-center">
+			    			@isset ( $data->hiring_briefs )
+			    				@php
+			    					$buat = $data->hiring_briefs->created_at;
+			    					$now = Carbon\Carbon::now();
+			    					$total = $now->diffInDays($buat)
+			    				@endphp
+			    			    <span class="bs-label label-success"><strong>{{ $total }} Days</strong></span>
+			    			@else
+			    				-
+			    			@endisset
+			    		</td>
+			    		{{-- <td class="text-center">
+			    			<!-- KOLOM ACTION -->
+			    			@if ( $data->user->grade == 7 )
+			    				@if ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 )
+			    					<a href="#" type="btn" class="btn btn-round btn-warning" title="Cancel"><span class="glyph-icon icon-ban"></span></a>
+					    			&nbsp;
+					    			<a href="#modal_freeze" id="btn_freeze" data-toggle="modal" type="btn" class="btn btn-round btn-danger" title="Freeze" data-url="{{ route('freeze',$data->id) }}"><span class="glyph-icon icon-iconic-sun-inv"></span></a>
+			    				@else
+			    				-
+			    				@endif
+			    			@elseif ( $data->user->grade == 8 )
+			    				@if ( $data->approval_hrbp == 1 && $data->approval_chief == 1 && $data->approval_chro == 1 )
+				    				<a href="#" type="btn" class="btn btn-round btn-warning" title="Cancel"><span class="glyph-icon icon-ban"></span></a>
+					    			&nbsp;
+					    			<a href="#modal_freeze" id="btn_freeze" data-toggle="modal" type="btn" class="btn btn-round btn-danger" title="Freeze" data-url="{{ route('freeze',$data->id) }}"><span class="glyph-icon icon-iconic-sun-inv"></span></a>
+				    			@else
+				    			-
+				    			@endif
+			    			@endif
+			    		</td> --}}
+				    @endif
+					</tr>
+			    @empty
+			    	<td valign="top" colspan="9" class="dataTables_empty">No data available in table</td>
+			    	<td id="hidden"></td>
+			    	<td id="hidden"></td>
+			    	<td id="hidden"></td>
+			    	<td id="hidden"></td>
+			    	<td id="hidden"></td>
+			    	<td id="hidden"></td>
+			    	<td id="hidden"></td>
+			    	<td id="hidden"></td>
+			    @endforelse
 				</tbody>
 
 			</table>

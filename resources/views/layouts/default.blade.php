@@ -200,6 +200,7 @@
 </script>
 
 <style type="text/css">
+    /* custom */
     textarea {
        resize:none;
     }
@@ -211,7 +212,6 @@
 </head>
 
 <body class="fixed fixed-sidebar fixed-header">
-<div id="">
 
 <!-- loading -->
 <div id="loading">
@@ -389,6 +389,5 @@
     });
 </script>
 
-</div>
 </body>
 </html>

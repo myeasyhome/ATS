@@ -2,6 +2,14 @@
 @if ( Auth::user()->grade <= 7 && Auth::user()->group != 'Group HR Development')
     @if ( Auth::user()->grade == 6 && Auth::user()->group == 'Group HR Business Partner' )
     @else
+        <li class="header"><span>Overview</span></li>
+    <li>
+        <a href="{{ route('lm1.dashboard') }}" title="Dashboard">
+            <i class="glyph-icon icon-linecons-tv"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+    <li class="divider"></li>
         <li class="header"><span>New Request</span></li>
 
         <li>
@@ -12,7 +20,7 @@
         </li>
         <li class="divider"></li>
 
-        <li>
+        <li class="activeSide">
             <a href="{{ route('candidate') }}" title="Candidate">
                 <i class="glyph-icon icon-group"></i>
                 <span>Candidate</span>

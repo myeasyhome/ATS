@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Auth;
 use App\Models\Ticket;
 use App\Models\Hiring_brief;
+use App\Models\CV;
 use Validator;
 
 class DashboardController extends Controller

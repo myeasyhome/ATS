@@ -24,6 +24,8 @@ Route::post('/login', 'Auth\LoginController@login')->name('login');
 
 /* Akses Line Manager 1, bisa buat tiket */
 Route::group(['middleware'=>'checkGrade'], function() {
+	Route::get('/dashboard/LM1', 'Line_Manager1\DashboardController@index')->name('lm1.dashboard');
+
 	Route::get('/ticket', 'Line_Manager1\TicketController@index')->name('ticket');
 	Route::get('/ticket/create', 'Line_Manager1\TicketController@create')->name('create.ticket');
 	Route::post('/ticket/store', 'Line_Manager1\TicketController@store')->name('store.ticket');
@@ -42,6 +44,7 @@ Route::group(['middleware'=>'checkGrade'], function() {
 	Route::get('/candidate/document/{id}','Line_Manager1\CandidateController@getCV')->name('getCV');
 	Route::patch('/candidate/approve/{id}','Line_Manager1\CandidateController@approve_candidate')->name('candidate.approve');
 	Route::patch('/candidate/reject/{id}','Line_Manager1\CandidateController@reject_candidate')->name('candidate.reject');
+	Route::get('/candidate_detail/{id}','Line_Manager1\CandidateController@candidate_detail')->name('candidate_detail');
 
 	Route::patch('candidate/SLA_CVFeedback/{id}','Line_Manager1\CandidateController@SLA_CVFeedback')->name('SLA_CVFeedback');
 });
@@ -104,7 +107,7 @@ Route::patch('/ticket/hrbp/result_brief/reject/{id}', 'HR_BussinessPartner\Appro
 /* Access HR Talent Acquistion */
 
 
-Route::get('/dashboard/hr_talent', 'HR_Talent\DashboardController@index')->name('hrt.dashboard');
+Route::get('/dashboard/HRTA', 'HR_Talent\DashboardController@index')->name('hrt.dashboard');
 Route::patch('/freezeTicket/{id}','HR_Talent\DashboardController@freeze')->name('freeze');
 Route::patch('/unfreezeTicket/{id}','HR_Talent\DashboardController@unfreeze')->name('unfreeze');
 Route::get('/dashboard/detailTicket/{id}','HR_Talent\DashboardController@detailTicket')->name('dashboard.detailTicket');

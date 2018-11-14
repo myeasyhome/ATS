@@ -28,7 +28,9 @@ class HiringBriefController extends Controller
 						['approval_hrbp','1'],
 						['approval_GH','1'],
 						['approval_chief','1']
-					])->get();
+					])
+					->orderBy('created_at','dsc')
+					->get();
 		
 		return view('HR_Talent.Hiring_brief.index',compact('data'));
 	}
@@ -64,8 +66,10 @@ class HiringBriefController extends Controller
 			'date_schedule' => Carbon::parse($request->date)->toDateString(),
 			'time_schedule' => Carbon::parse($request->time)->toTimeString(),
 			'place_schedule' => ucwords($request->place),
-			'interviewer_user' => User::findOrFail($request->interview_user)->name,
-			'interviewer_hrbp' => User::findOrFail($request->interview_hrbp)->name
+			'interviewer_user' => $request->interview_user,
+			'interviewer_hrbp' => $request->interview_hrbp
+			// 'interviewer_user' => User::findOrFail($request->interview_user)->id,
+			// 'interviewer_hrbp' => User::findOrFail($request->interview_hrbp)->id
 		]);
 
 		return redirect()->route('hiring_brief')->with('success','Successfully Created Schedule!');

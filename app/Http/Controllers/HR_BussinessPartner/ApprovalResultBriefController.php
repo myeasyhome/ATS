@@ -25,7 +25,7 @@ class ApprovalResultBriefController extends Controller
     	// $hiring = Hiring_brief::whereHas('tickets', function($query) {
      //                                $query->where('user_hrbp',Auth::user()->id);
      //                            })->get();
-        $hiring = Hiring_brief::where('interviewer_hrbp',Auth::user()->name)->get();
+        $hiring = Hiring_brief::where('interviewer_hrbp',Auth::user()->id)->get();
 
         return view('HR_BussinessPartner.approval_result_brief',compact('hiring'));
     }

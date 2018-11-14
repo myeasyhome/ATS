@@ -36,12 +36,25 @@ class CandidateController extends Controller
     	return view('Line_Manager1.Candidate.index',compact('candidate','time'));
     }
 
+    /* detail kandidat */
+    public function candidate_detail($id)
+    {
+        $cv = CV::findOrFail($id);
+
+        return response()->json($cv);
+    }
+
     /* daftar data candidate */
     public function sourcing($id)
     {
         $candidate = CV::where('hiring_brief_id',$id)->get();
-    
-        return view('Line_Manager1.Candidate.candidate',compact('candidate'));
+
+        /* ambil ticket id  */
+        // $ticket_id = Hiring_brief::findOrFail($id)->ticket_id;
+
+        // $freeze = Ticket::findOrFail($ticket_id)->freeze;
+
+        return view('Line_Manager1.Candidate.candidate',compact('candidate','id','freeze'));
     }
 
     /* buat liat CV */

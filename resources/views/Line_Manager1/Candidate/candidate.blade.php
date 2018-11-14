@@ -29,6 +29,50 @@
         var url = $(this).attr('data-url');
         $('#form_modal_reject').attr('action',url);
     });
+
+    /*modal candidate detail*/
+    $(document).on("click",".candidate", function () {
+    	var url = $(this).attr('data-url');
+    	$.ajax({
+    		type: 'GET',
+    		url : url,
+    		cache : true,
+    		success:function(data) {
+    			console.log(data,data.tags);
+    			$('#name_candidate').val(data.name_candidate);
+    			if ( data.education == 'S1' ) {
+    				$('#education').val("Bachelor's degree graduate");
+    			} else if ( data.education == 'S2' ) {
+    				$('#education').val("Master's degree graduate");
+    			} else if ( data.education == 'S3' ) {
+    				$('#education').val("Doctoral degree graduate");
+    			} else if ( data.education == 'D3' ) {
+    				$('#education').val("Diploma's degree graduate");
+    			}
+    			if ( data.gender == 'F' ){
+    				$('#gender').val('Female');
+    			} else if ( data.gender == 'M' ){
+    				$('#gender').val('Male');
+    			}
+    			$('#birth_place').val(data.place_birth);
+    			$('#birth_date').val(data.date_birth);
+    			$('#current_position').val(data.current_position);
+    			$('#current_company').val(data.current_company);
+    			$('#current_industry').val(data.current_industry);
+    			$('#work_exp').val(data.work_exp);
+    			$('#salary_range').val(data.salary_range);
+    			$('#skill').val(data.skill);
+
+    			$('#source').val(data.source);
+    			$('#other').hide();
+    			if ( data.source == 'Other' ) {
+    				$('#other').show();
+    				$('#other').val(data.other);
+    			} 
+    		}
+    	})
+    });
+
 </script>
 
 <!-- Jquery Countdown -->
@@ -59,6 +103,7 @@
 
 		 	/* setelah selesai waktu SLA, balik index candidate */
 		 	window.location.href = '{{ route('candidate') }}';
+		 	
 	});
 </script>
 @stop
@@ -85,7 +130,7 @@
 	    <div class="panel panel-default">
 
 	        <div class="panel-body">
-	        <!-- waktu untuk SLA CV Feedback LM1 -->
+	        <!-- table CV , waktu untuk SLA CV Feedback LM1 -->
 	        @php
 	        	$waktuSLA = $candidate->firstWhere('created_at','!=',NULL);
 	        @endphp
@@ -154,7 +199,11 @@
 					    <input type="hidden" id="data-candidate" data-id="{{ $ticket->id }}">
 					    <tr>
 						    <td class="text-center">{{ $no++ }}</td>
-						    <td>{{ $candidate->name_candidate }}</td>
+						    <td>
+							    <a href="#candidate_detail" data-toggle="modal" class="candidate" data-url="{{ route('candidate_detail',$candidate->id) }}">
+							    	{{ $candidate->name_candidate }}
+							    </a>
+						    </td>
 						    <td class="text-center">{{ $candidate->work_exp }}</td>
 						    <td class="text-center">{{ $candidate->current_position }}</td>
 						    <td class="text-center">{{ $candidate->current_company }}</td>
@@ -249,6 +298,136 @@
 	                <button type="button" class="btn btn-danger" data-dismiss="modal">No, cancel</button>
 	            </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Candidate Detail -->
+<div class="modal fade" id="candidate_detail">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Candidate Detail</h4>
+            </div>
+
+        	<div class="modal-body">
+
+        		<form class="form-horizontal">
+
+	        		<div class="form-group">
+	        			<label class="col-md-3 control-label">Name Candidate</label>
+	                    <div class="col-md-6">
+	                        <input type="text" class="form-control" id="name_candidate" disabled="true">
+	                    </div>
+	        		</div>
+	        		<div class="form-group">
+	        			<label class="col-md-3 control-label">Education Background</label>
+	                    <div class="col-md-6">
+	                        <input type="text" class="form-control" id="education" disabled="true">
+	                    </div>
+	        		</div>
+	        		<div class="form-group">
+	        			<label class="col-md-3 control-label">Gender</label>
+	                    <div class="col-md-2">
+	                    	<input type="text" class="form-control" id="gender" disabled="true">
+	                    </div>
+	        		</div>
+	        		<div class="form-group">
+	        			<label class="col-md-3 control-label">Birth Place</label>
+	                    <div class="col-md-3">
+	                    	<input type="text" class="form-control" id="birth_place" disabled="true">
+	                    </div>
+	        		</div>
+	        		<div class="form-group">
+	        			<label class="col-md-3 control-label">Birth Date</label>
+	                    <div class="col-md-3">
+	                    	<input type="text" class="form-control" id="birth_date" disabled="true">
+	                    </div>
+	        		</div>
+	        		<div class="form-group">
+	        			<label class="col-md-3 control-label">Current Position</label>
+	                    <div class="col-md-6">
+	                        <input type="text" class="form-control" id="current_position" disabled="true">
+	                    </div>
+	        		</div>
+	        		<div class="form-group">
+	        			<label class="col-md-3 control-label">Current Company</label>
+	                    <div class="col-md-6">
+	                        <input type="text" class="form-control" id="current_company" disabled="true">
+	                    </div>
+	        		</div>
+	        		<div class="form-group">
+	        			<label class="col-md-3 control-label">Current Industry</label>
+	                    <div class="col-md-6">
+	                        <input type="text" class="form-control" id="current_industry" disabled="true">
+	                    </div>
+	        		</div>
+	        		<div class="row">
+	        			<div class="col-md-6">
+		        			<div class="form-group">
+			        			<label class="col-md-6 control-label">Work Experience</label>
+			                    <div class="col-md-3">
+			                        <input type="text" class="form-control" id="work_exp" disabled="true">
+			                    </div>
+			                    <label class="control-label">Years</label>
+			        		</div>
+			        	</div>
+			        	<div class="col-md-6">
+			        		
+			        	</div>
+	        		</div>
+	        		<div class="form-group">
+	        			<label class="col-md-3 control-label">Salary Range</label>
+	                    <div class="col-md-4">
+	                        <input type="text" class="form-control" id="salary_range" disabled="true">
+	                    </div>
+	        		</div>
+	        		<div class="form-group">
+	        			<label class="col-md-3 control-label">Skill</label>
+	                    <div class="col-md-6">
+	                        <textarea class="form-control" id="skill" rows="6" name="skill" disabled="true"></textarea>
+	                    </div>
+	        		</div>
+	        		<div class="form-group">
+	        			<label class="col-md-3 control-label">Tags</label>
+	                    <div class="col-md-6">
+				            <input type="text" class="form-control" id="tags" data-role="tagsinput" >
+	                    </div>
+	        		</div>
+	        		<div class="form-group">
+	        			<label class="col-md-3 control-label">Soruce</label>
+	                    <div class="col-md-5">
+				            <input type="text" class="form-control" id="source" disabled="true">
+	                    </div>
+	        		</div>
+	        		<div class="form-group">
+	        			<label class="col-md-3 control-label"></label>
+	                    <div class="col-md-5">
+				            <input type="text" class="form-control" id="other" disabled="true">
+	                    </div>
+	        		</div>
+	        		
+	        		<div class="form-group">
+	                    <label class="col-md-3 control-label">CV Candidate <i style="color: #7C7C7C; font-size: 11px"><em> (Max 2MB) </em></i></label>
+	                    <div class="col-md-6">
+	                        <input type="file" class="form-control" id="cv" name="cv" title="File CV (PDF,DOC). Max Size 2MB" onchange="validateExtension(this)" required>
+	                        <!-- error -->
+	                       	<ul class="parsley-errors-list" id="format">
+		                    	<li class="parsley-required">Document Format Must PDF or Doc !!</li>
+		                    </ul>
+		                    <ul class="parsley-errors-list" id="size">
+		                    	<li class="parsley-required">Max File Size Must 2MB !!</li>
+		                    </ul>
+	                    </div>
+	                </div>
+	        	</form>
+        	
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+            {{-- </form> --}}
         </div>
     </div>
 </div>

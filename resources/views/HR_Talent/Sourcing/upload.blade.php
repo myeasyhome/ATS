@@ -107,8 +107,11 @@ function change_source() {
     	<span><em>Upload CV Candidate</em></span>
     </li>
 </ol>
-
-<h2>Upload CV Candidate</h2>
+@php
+	/*ticket id di hiring brief table*/
+	$ticket_id = \App\Models\Hiring_brief::findOrFail($id)->ticket_id;
+@endphp
+<h2>Upload CV <code><em>{{ \App\Models\Ticket::findOrFail($ticket_id)->position_name }}</em></code> Candidate</h2>
 <br>
 <div style="color: tomato;">
 	<p></p>
@@ -133,7 +136,7 @@ function change_source() {
                 </div>
         	@endif
 
-	        	<form class="form-horizontal" action="{{ route('doUpload') }}" enctype="multipart/form-data" method="POST">
+	        	<form class="form-horizontal" action="{{ route('doUpload') }}" enctype="multipart/form-data" method="POST" data-parsley-validate="">
 	        	@csrf
 	        	<!-- hiring id -->
 	        	<input type="hidden" name="hiring_brief_id" value="{{ $id }}">
@@ -246,13 +249,6 @@ function change_source() {
 	        		<div class="form-group">
 	        			<label class="col-md-3 control-label">Tags</label>
 	                    <div class="col-md-6">
-				            {{-- <select multiple data-role="tagsinput" class="tags">
-				              <option value="Amsterdam">Amsterdam</option>
-				              <option value="Washington">Washington</option>
-				              <option value="Sydney">Sydney</option>
-				              <option value="Beijing">Beijing</option>
-				              <option value="Cairo">Cairo</option>
-				            </select> --}}
 				            <input type="text" class="form-control" id="tags" data-role="tagsinput" name="tags">
 	                    </div>
 	        		</div>
@@ -315,7 +311,7 @@ function change_source() {
 
 	        <div class="panel-body">
 	        	<h2 class="title-hero">
-				    <strong>Data Candidate</strong>
+				    <strong>Candidate Data</strong>
 				</h2>
 	        	<table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap" cellspacing="0" width="100%">
 					<thead>

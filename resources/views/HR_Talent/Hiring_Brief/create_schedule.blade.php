@@ -122,7 +122,6 @@
 			        			<div class="form-group">
 			        				<label class="col-md-3 control-label">Interviewer User</label>
 			        				<div class="col-md-6">
-			        					{{-- <input type="text" name="interview_user" class="form-control"> --}}
 			        					<select class="form-control int-user" name="interview_user" required title="Select Interviewer User" style="width: 100%">
 			                                <option></option>
 			                                @foreach( $user as $user)
@@ -135,7 +134,6 @@
 			        			<div class="form-group">
 			        				<label class="col-md-3 control-label">Interviewer HR Business Partner</label>
 			        				<div class="col-md-6">
-			        					{{-- <input type="text" name="interview_hrbp" class="form-control"> --}}
 			        					<select class="form-control int-hrbp" name="interview_hrbp" required title="Select Interviewer HR Business Partner" style="width: 100%">
 			                                <option></option>
 			                                @foreach( $HRBP as $HRBP)

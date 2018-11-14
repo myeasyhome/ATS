@@ -72,7 +72,7 @@
 			<table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap dataTable collapsed dtr-inline" cellspacing="0" width="100%">
 				<thead>
 					<tr>
-					    <th class="text-center col-md-1">No.</th>
+					    {{-- <th class="text-center col-md-1">No.</th> --}}
 					    <th class="text-center">Position Name</th>
 					    <th class="text-center">Brief Schedule</th>
 					    <th class="text-center">Time Schedule</th>
@@ -82,12 +82,12 @@
 				</thead>
 
 				<tbody>
-				@php $no =1; @endphp
+				{{-- @php $no =1; @endphp --}}
 				    @forelse($data as $data)
 				    	{{-- jika di freeze --}}
 				    	@if ( $data->freeze == 99 )
 				    		<tr>
-					    		<td class="text-center">{{ $no++ }}</td>
+					    		{{-- <td class="text-center">{{ $no++ }}</td> --}}
 					    		<td>
 					    			<em><a href="{{ route('hiring.detail',$data->id) }}" style="color: red">{{ $data->position_name }}</a></em>
 					    		</td>
@@ -106,10 +106,10 @@
 						    	<td id="hidden"></td>
 						    	<td id="hidden"></td>
 						    	<td id="hidden"></td>
-						    	<td id="hidden"></td>
+						    	{{-- <td id="hidden"></td> --}}
 					    	@else
 							    <tr>
-								    <td class="text-center">{{ $no++ }}</td>
+								    {{-- <td class="text-center">{{ $no++ }}</td> --}}
 								    <td>
 								    	<a href="{{ route('hiring.detail',$data->id) }}">{{ $data->position_name }}</a>
 								    </td>
@@ -267,7 +267,6 @@
 						@endif
 				    @empty
 				    	<td valign="top" colspan="7" class="dataTables_empty">No data available in table</td>
-				    	<td id="hidden"></td>
 				    	<td id="hidden"></td>
 				    	<td id="hidden"></td>
 				    	<td id="hidden"></td>
