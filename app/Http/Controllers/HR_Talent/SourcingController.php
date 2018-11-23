@@ -60,6 +60,7 @@ class SourcingController extends Controller
 		        $input['place_birth'] = ucwords($request->place);
 		        $input['date_birth'] = Carbon::parse($request->birth_date)->toDateString();
 		        $input['education'] = $request->education;
+		        $input['email'] = $request->email;
 		        $input['CV_candidate'] = $request->cv->getClientOriginalName();
 		        $input['current_position'] = $request->current_position;
 		        $input['current_company'] = $request->current_company;

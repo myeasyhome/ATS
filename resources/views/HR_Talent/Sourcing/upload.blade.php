@@ -20,7 +20,6 @@
 </script>
 
 <!-- Datepicker bootstrap -->
-<script src="{{ asset('assets/widgets/datepicker/bootstrap-datepicker.js') }}"></script>
 <script>
     $(function() { 
         $('.date').datepicker({
@@ -190,6 +189,12 @@ function change_source() {
 			                    </div>
 			        		</div>	
 	        			</div>
+	        		</div>
+	        		<div class="form-group">
+	        			<label class="col-md-3 control-label">Email</label>
+	                    <div class="col-md-6">
+	                        <input type="email" class="form-control" id="email" name="email" placeholder="Input Email" title="Input Email" required>
+	                    </div>
 	        		</div>
 	        		<div class="form-group">
 	        			<label class="col-md-3 control-label">Current Position</label>

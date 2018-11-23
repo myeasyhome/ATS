@@ -44,9 +44,15 @@ Route::group(['middleware'=>'checkGrade'], function() {
 	Route::get('/candidate/document/{id}','Line_Manager1\CandidateController@getCV')->name('getCV');
 	Route::patch('/candidate/approve/{id}','Line_Manager1\CandidateController@approve_candidate')->name('candidate.approve');
 	Route::patch('/candidate/reject/{id}','Line_Manager1\CandidateController@reject_candidate')->name('candidate.reject');
-	Route::get('/candidate_detail/{id}','Line_Manager1\CandidateController@candidate_detail')->name('candidate_detail');
 
 	Route::patch('candidate/SLA_CVFeedback/{id}','Line_Manager1\CandidateController@SLA_CVFeedback')->name('SLA_CVFeedback');
+
+	/* Menu Interview Process */
+	Route::group(['prefix'=>'interview_process'], function() {
+		Route::get('/','Line_Manager1\InterviewController@index')->name('lm1_index.interview');
+		Route::get('/feedback_list/{id}','Line_Manager1\InterviewController@feedback_list')->name('lm1_feedback_list.interview');
+		Route::patch('/interview_finish/{id}','Line_Manager1\InterviewController@interview_finish')->name('lm1_interview_finish');
+	});
 });
 
 
@@ -135,9 +141,15 @@ Route::get('/sourcing/candidate/{id}','HR_Talent\SourcingController@showCandidat
 /* INTERVIEW PROCESS */
 Route::group(['prefix'=>'interview'], function() {
 	Route::get('/','HR_Talent\InterviewController@index')->name('index.interview');
+	Route::get('candidate_list/{id}','HR_Talent\InterviewController@candidate_list')->name('candidate_list.interview');
+	Route::post('invitation','HR_Talent\InterviewController@invitation')->name('invitation.interview');
 });
 
 
 /* Access HR Operation */
 
+
+
+/* ACCESS PUBLIC */
+Route::get('/candidate_detail/{id}','Line_Manager1\CandidateController@candidate_detail')->name('candidate_detail');
 

@@ -195,6 +195,11 @@
 					    			@else --}}
 				    					<span class="bs-label btn-border border-green font-green"><strong>open</strong></span>
 				    				{{-- @endif --}}
+				    			@elseif ( $data->approval_hrbp == 1 && 
+				    					$data->approval_GH == 1 && 
+					    				$data->approval_chief == 1 && 
+					    				$data->hiring_briefs->approval_hiring_by_hrbp == 2 )
+					    				<span class="bs-label btn-border border-red font-red"><strong>reject</strong></span>
 				    			@elseif ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 && $data->hiring_briefs->date_schedule == Carbon\Carbon::now()->toDateString() || Carbon\Carbon::now()->toDateString() > $data->hiring_briefs->date_schedule )
 				    				<span class="bs-label btn-border border-green font-green"><strong>open</strong></span>
 				    			@elseif ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 && $data->hiring_briefs->date_schedule != Carbon\Carbon::now()->toDateString() )
@@ -258,30 +263,47 @@
 				    					$data->approval_chief == 1 &&
 				    					$data->hiring_briefs->approval_hiring_by_hrbp == 1 )
 
-				    				<!-- jika sudah selesai wktu SLA feedback progress langsung ke interview -->
-				    				@if ( $data->hiring_briefs->CV->created_at->addDays(2) ==Carbon\Carbon::now() )
-				    					<a href="#" type="button" class="bs-label label-info">
-					    					<span><strong>interview process</strong></span>
-					    				</a>
+				    				<!-- cek HRTA udah upload kandidat atau blm -->
+				    				@isset ( $data->hiring_briefs->CV->created_at )
+				    					<!-- jika sudah selesai wktu SLA feedback progress langsung ke interview -->
+					    				@if ( $data->hiring_briefs->CV->created_at->addDays(2) == \Carbon\Carbon::now() )
+					    					<a href="#" type="button" class="bs-label label-info">
+						    					<span><strong>interview process</strong></span>
+						    				</a>
+					    				@else
+					    				<!-- sourcing candadate -->
+						    				<a href="{{ route('upload',$data->hiring_briefs->id) }}" class="btn btn-xs bs-label label-info">
+						    					<strong>sourcing candidate</strong>
+						                        <span class="bs-badge badge-absolute float-right badge-danger">
+				                        	    	@php
+						                        		/* cek kandidat yang belum di feedback */
+						                        		$cv = \App\Models\CV::where([
+						                        				['hiring_brief_id',$data->hiring_briefs->id],
+						                        				['approval_candidate','!=','0']
+						                        			])
+						                        			->count();
+						                        	@endphp
+						                        	@if ( $cv > 0 )
+						                        		{{ $cv }}
+						                        	@endif
+				                        	    </span>
+						    				</a>
+					    				@endif
 				    				@else
-				    				<!-- sourcing candadate -->
-					    				<a href="{{ route('upload',$data->hiring_briefs->id) }}" class="btn btn-xs bs-label label-info">
-					    					<strong>sourcing candidate</strong>
-					                        <span class="bs-badge badge-absolute float-right badge-danger">
-			                        	    	@php
-					                        		/* cek kandidat yang belum di feedback */
-					                        		$cv = \App\Models\CV::where([
-					                        				['hiring_brief_id',$data->hiring_briefs->id],
-					                        				['approval_candidate','!=','0']
-					                        			])
-					                        			->count();
-					                        	@endphp
-					                        	@if ( $cv > 0 )
-					                        		{{ $cv }}
-					                        	@endif
-			                        	    </span>
+				    					<!-- harus upload kandidat -->
+				    					<a href="{{ route('upload',$data->hiring_briefs->id) }}" class="btn btn-xs bs-label label-info">
+				    						<strong>sourcing candidate</strong>
+				    					</a>
+				    				@endisset
+				    			@elseif ( $data->approval_hrbp == 1 && 
+				    					$data->approval_GH == 1 && 
+					    				$data->approval_chief == 1 && 
+					    				$data->hiring_briefs->approval_hiring_by_hrbp == 2 )
+					    				
+					    				<!-- action ketika approval hiring brief by HRBP reject -->
+					    				<a href="#" class="btn btn-xs bs-label label-danger">
+					    					<strong>Reason (coding)</strong>
 					    				</a>
-				    				@endif
 				    			@elseif ( $data->approval_hrbp == 1 && 
 										$data->approval_GH == 1 && 
 										$data->approval_chief == 1 && 

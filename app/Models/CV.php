@@ -30,10 +30,16 @@ class CV extends Model
         'skill',
         'tags',
         'other',
+        'email',
     ];
 
     public function hiring_briefs()
     {
         return $this->belongsTo('App\Models\Hiring_brief','hiring_brief_id');
+    }
+
+    public function interview()
+    {
+        return $this->hasOne('App\Models\Interview','cv_id');
     }
 }

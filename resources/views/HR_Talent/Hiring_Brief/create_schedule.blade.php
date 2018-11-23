@@ -3,8 +3,6 @@
 
 @section('js')
 <!-- Datepicker bootstrap -->
-<script src="{{ asset('assets/widgets/datepicker/bootstrap-datepicker.js') }}"></script>">
-</script>
 <script>
     $(function() { 
         $('.date').datepicker({

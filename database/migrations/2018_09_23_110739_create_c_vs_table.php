@@ -34,6 +34,7 @@ class CreateCVsTable extends Migration
             $table->string('source');
             $table->string('skill');
             $table->text('tags');
+            $table->string('email');
             $table->string('other')->nullable();
             $table->timestamps();
         });

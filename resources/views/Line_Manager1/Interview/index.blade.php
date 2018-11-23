@@ -37,7 +37,7 @@
                     <thead>
                         <tr>
                             <th class="text-center col-md-2">Position Name</th>
-                            <th class="text-center col-md-1">Candidate List</th>
+                            <th class="text-center col-md-1">Feedback List</th>
                         </tr>
                     </thead>
 
@@ -46,18 +46,21 @@
                             <tr>
                                 <td>{{ $cv->hiring_briefs->tickets->position_name }}</td>
                                 <td class="text-center">
-                                    <a href="{{ route('candidate_list.interview',$cv->hiring_brief_id) }}" type="button" class="btn btn-hover btn-xs bs-label label-info">
-                                        <span>
-                                            @php
-                                                $total_kandidat = $cv->where([
-                                                                        ['hiring_brief_id',$cv->hiring_briefs->id],
-                                                                        ['approval_candidate','1']
-                                                                    ])->count();
-                                            @endphp
-                                            <strong>{{ $total_kandidat }} {{ $total_kandidat == 1 ? 'Candidate' : 'Candidates' }}</strong>
-                                        </span>
-                                        <i class="glyph-icon icon-arrow-right"></i>
-                                    </a>
+                                    @php
+                                        $feedback = \App\Models\Interview::whereHas('cv', function($query) use ($cv) {
+                                            $query->where('hiring_brief_id',$cv->hiring_brief_id);
+                                        })->count()
+                                    @endphp
+                                    <!-- jika blm arrange interview by HRTA -->
+                                    @if( $feedback == 0 )
+                                        <span class="bs-label btn-border border-yellow font-yellow"><strong>haven't arranged an interview</strong></span>
+                                    @else
+                                        <a href="{{ route('lm1_feedback_list.interview',$cv->hiring_briefs->id) }}" type="button" class="btn btn-xs bs-label label-info">
+                                            <span>
+                                                <strong>{{ $feedback }} {{ $feedback == 1 ? 'Candidate' : 'Candidates' }}</strong>
+                                            </span>
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

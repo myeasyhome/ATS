@@ -20,7 +20,7 @@
 </script>
 
 <!-- Tampilan di kolom SLA -->
-<script>
+{{-- <script>
 	var countdowns = [
 	@foreach ($time as $time)
 		{
@@ -72,7 +72,7 @@
 			clearInterval(timer);
 		}
 	}, 1000);
-</script>
+</script> --}}
 
 @stop
 

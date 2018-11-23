@@ -128,7 +128,7 @@
             @method('PATCH')
             	<div class="modal-body">
                 	<div class="form-group">
-                        <label for="position_name" class="col-sm-2 control-label">Reason</label>
+                        <label for="position_name" class="col-sm-2 control-label">Reason<i style="color: red"> *</i></label>
                         <div class="col-sm-9">
                             <textarea class="form-control" cols="51" rows="12" name="reason_for_rejection" required></textarea>
                         </div>

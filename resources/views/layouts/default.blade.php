@@ -87,10 +87,8 @@
 
 
 <!-- WIDGETS -->
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/accordion-ui/accordion.css') }}">
+{{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/accordion-ui/accordion.css') }}"> --}}
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/carousel/carousel.css') }}">
-
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/charts/justgage/justgage.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/charts/morris/morris.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/charts/piegage/piegage.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/charts/xcharts/xcharts.css') }}">
@@ -116,10 +114,10 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/modal/modal.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/multi-select/multiselect.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/multi-upload/fileupload.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/nestable/nestable.css') }}">
+{{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/nestable/nestable.css') }}"> --}}
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/noty-notifications/noty.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/popover/popover.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/pretty-photo/prettyphoto.css') }}">
+{{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/pretty-photo/prettyphoto.css') }}"> --}}
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/progressbar/progressbar.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/range-slider/rangeslider.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/slidebars/slidebars.css') }}">
@@ -128,10 +126,10 @@
 {{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/tabs-ui/tabs.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/theme-switcher/themeswitcher.css') }}"> --}}
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/timepicker/timepicker.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/tocify/tocify.css') }}">
+{{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/tocify/tocify.css') }}"> --}}
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/tooltip/tooltip.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/touchspin/touchspin.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/uniform/uniform.css') }}">
+{{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/uniform/uniform.css') }}"> --}}
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/wizard/wizard.css') }}">
 {{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/xeditable/xeditable.css') }}"> --}}
 
@@ -183,6 +181,8 @@
 
 <!-- bootstrap tags JS -->
 <script type="text/javascript" src="{{ asset('assets/bootstrap-tagsinput/dist/bootstrap-tagsinput.js') }}"></script>
+
+@yield('css')
 
 <script type="text/javascript">
     $(window).load(function(){
@@ -304,10 +304,10 @@
     <div id="page-content-wrapper">
         <div id="page-content">
             <div class="container">
-                <div id="page-title" style="font-family: 'ooredoo';">
+                {{-- <div id="page-title" style="font-family: 'ooredoo';">
                     <div id="theme-options" class="admin-options">
                     </div>
-                </div>
+                </div> --}}
                 @yield('content')
             </div>
         </div>
@@ -319,6 +319,9 @@
 <script type="text/javascript" src="{{ asset('assets/bootstrap/js/bootstrap.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/steps/jquery.validate.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/steps/jquery.steps.js') }}"></script>
+
+<!-- bootstrap datepicker -->
+<script src="{{ asset('assets/widgets/datepicker/bootstrap-datepicker.js') }}"></script>
 
 <!-- Bootstrap Popover -->
 <script type="text/javascript" src="{{ asset('assets/widgets/popover/popover.js') }}"></script>

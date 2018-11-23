@@ -38,7 +38,6 @@
     		url : url,
     		cache : true,
     		success:function(data) {
-    			console.log(data,data.tags);
     			$('#name_candidate').val(data.name_candidate);
     			if ( data.education == 'S1' ) {
     				$('#education').val("Bachelor's degree graduate");
@@ -69,10 +68,15 @@
     				$('#other').show();
     				$('#other').val(data.other);
     			} 
+
+    			$('#tags').val(data.tags);
+    			var url_cv = "{{ route('getCV',":id") }}";
+    			var url_cv = url_cv.replace(':id',data.id); /* replace id via javascript  */
+
+    			$('#download_cv').attr('href',url_cv);
     		}
     	})
     });
-
 </script>
 
 <!-- Jquery Countdown -->
@@ -178,7 +182,7 @@
 					    @php 
 						    $no=1;
 					    @endphp
-					    @if ( $candidate->where('approval_candidate',1)->count() == 3 )
+					    {{-- @if ( $candidate->where('approval_candidate',1)->count() == 3 )
 					    	<tr>
 					    		<td valign="top" colspan="7" class="dataTables_empty">udah 3 kandidat</td>
 					    		<td id="hidden"></td>
@@ -188,55 +192,58 @@
 						    	<td id="hidden"></td>
 						    	<td id="hidden"></td>
 					    	</tr>
-					    @else
-					    @forelse($candidate as $candidate)
-					    <!-- buat countdown di javascript -->
-					    @php
-					    	/* ambil tiket ID */
-					    	$ticket_id = $candidate->hiring_briefs->ticket_id;
-					    	$ticket = App\Models\Ticket::findOrFail($ticket_id);
-					    @endphp
-					    <input type="hidden" id="data-candidate" data-id="{{ $ticket->id }}">
-					    <tr>
-						    <td class="text-center">{{ $no++ }}</td>
-						    <td>
-							    <a href="#candidate_detail" data-toggle="modal" class="candidate" data-url="{{ route('candidate_detail',$candidate->id) }}">
-							    	{{ $candidate->name_candidate }}
-							    </a>
-						    </td>
-						    <td class="text-center">{{ $candidate->work_exp }}</td>
-						    <td class="text-center">{{ $candidate->current_position }}</td>
-						    <td class="text-center">{{ $candidate->current_company }}</td>
-						    <td class="text-center col-md-2">
-						    	<a href="{{ route('getCV',$candidate->id) }}" target="_blank" type="button" class="btn btn-round btn-info"><span class="glyph-icon icon-download"></span>
-						    	</a>
-						    </td>
-						    <td class="text-center col-md-2">
-						    	@if($candidate->approval_candidate == 1)
-						    		<span class="bs-label label-success"><strong>proceed</strong></span>
-						    	@elseif($candidate->approval_candidate == 2)
-						    		<span class="bs-label label-danger"><strong>drop</strong></span>
-						    	@else
-						    		<a href="#modal_approve" data-url="{{ route('candidate.approve',$candidate->id) }}" type="button" data-toggle="modal" class="btn btn-round btn-success btn_modal_approve" title="Choose Candidate">
-							            <span class="glyph-icon icon-hand-o-right"></span>
-							        </a>
-							        &nbsp;
-							        <a href="#modal_reject" data-url="{{ route('candidate.reject',$candidate->id) }}" type="button" data-toggle="modal" class="btn btn-round btn-danger btn_modal_reject" title="Reject">
-							        	<span class="glyph-icon icon-close"></span>
-							        </a>
-						    	@endif
-						    </td>
-					    </tr>
-					    @empty
-					    	<td valign="top" colspan="7" class="dataTables_empty">No data available in table</td>
-					    	<td id="hidden"></td>
-					    	<td id="hidden"></td>
-					    	<td id="hidden"></td>
-					    	<td id="hidden"></td>
-					    	<td id="hidden"></td>
-					    	<td id="hidden"></td>
-					    @endforelse
-					    @endif
+					    @else --}}
+						    @forelse($candidate as $candidate)
+						    <!-- buat countdown di javascript -->
+						    @php
+						    	/* ambil tiket ID */
+						    	$ticket_id = $candidate->hiring_briefs->ticket_id;
+						    	$ticket = App\Models\Ticket::findOrFail($ticket_id);
+						    @endphp
+						    <input type="hidden" id="data-candidate" data-id="{{ $ticket->id }}">
+						    <tr>
+							    <td class="text-center">{{ $no++ }}</td>
+							    <td>
+								    <a href="#candidate_detail" data-toggle="modal" class="candidate" data-url="{{ route('candidate_detail',$candidate->id) }}">
+								    	{{ $candidate->name_candidate }}
+								    </a>
+							    </td>
+							    <td class="text-center">{{ $candidate->work_exp }} {{ $candidate->work_exp == '1' ? 'year' : 'years' }}</td>
+							    <td class="text-center">{{ $candidate->current_position }}</td>
+							    <td class="text-center">{{ $candidate->current_company }}</td>
+
+							    <!-- BTN DOWNLOAD CV -->
+							    <td class="text-center col-md-2">
+							    	<a href="{{ route('getCV',$candidate->id) }}" target="_blank" type="button" class="btn btn-round btn-info btn_download_cv"><span class="glyph-icon icon-download"></span>
+							    	</a>
+							    </td>
+
+							    <td class="text-center col-md-2">
+							    	@if($candidate->approval_candidate == 1)
+							    		<span class="bs-label label-success"><strong>proceed</strong></span>
+							    	@elseif($candidate->approval_candidate == 2)
+							    		<span class="bs-label label-danger"><strong>drop</strong></span>
+							    	@else
+							    		<a href="#modal_approve" data-url="{{ route('candidate.approve',$candidate->id) }}" type="button" data-toggle="modal" class="btn btn-round btn-success btn_modal_approve" title="Choose Candidate">
+								            <span class="glyph-icon icon-hand-o-right"></span>
+								        </a>
+								        &nbsp;
+								        <a href="#modal_reject" data-url="{{ route('candidate.reject',$candidate->id) }}" type="button" data-toggle="modal" class="btn btn-round btn-danger btn_modal_reject" title="Reject">
+								        	<span class="glyph-icon icon-close"></span>
+								        </a>
+							    	@endif
+							    </td>
+						    </tr>
+						    @empty
+						    	<td valign="top" colspan="7" class="dataTables_empty">No data available in table</td>
+						    	<td id="hidden"></td>
+						    	<td id="hidden"></td>
+						    	<td id="hidden"></td>
+						    	<td id="hidden"></td>
+						    	<td id="hidden"></td>
+						    	<td id="hidden"></td>
+						    @endforelse
+					    {{-- @endif --}}
 					</tbody>
 				</table>
 	        </div>
@@ -285,7 +292,6 @@
             @csrf
             @method('PATCH')
             	<div class="modal-body">
-                	{{-- <p class="text-center"><strong>Are you sure you want to reject this candidate ?</strong></p> --}}
                 	<div class="form-group">
                         <label class="col-sm-2 control-label">Reason<span style="color: red;"> *</span></label>
                         <div class="col-sm-9">
@@ -303,132 +309,6 @@
 </div>
 
 <!-- Modal Candidate Detail -->
-<div class="modal fade" id="candidate_detail">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Candidate Detail</h4>
-            </div>
-
-        	<div class="modal-body">
-
-        		<form class="form-horizontal">
-
-	        		<div class="form-group">
-	        			<label class="col-md-3 control-label">Name Candidate</label>
-	                    <div class="col-md-6">
-	                        <input type="text" class="form-control" id="name_candidate" disabled="true">
-	                    </div>
-	        		</div>
-	        		<div class="form-group">
-	        			<label class="col-md-3 control-label">Education Background</label>
-	                    <div class="col-md-6">
-	                        <input type="text" class="form-control" id="education" disabled="true">
-	                    </div>
-	        		</div>
-	        		<div class="form-group">
-	        			<label class="col-md-3 control-label">Gender</label>
-	                    <div class="col-md-2">
-	                    	<input type="text" class="form-control" id="gender" disabled="true">
-	                    </div>
-	        		</div>
-	        		<div class="form-group">
-	        			<label class="col-md-3 control-label">Birth Place</label>
-	                    <div class="col-md-3">
-	                    	<input type="text" class="form-control" id="birth_place" disabled="true">
-	                    </div>
-	        		</div>
-	        		<div class="form-group">
-	        			<label class="col-md-3 control-label">Birth Date</label>
-	                    <div class="col-md-3">
-	                    	<input type="text" class="form-control" id="birth_date" disabled="true">
-	                    </div>
-	        		</div>
-	        		<div class="form-group">
-	        			<label class="col-md-3 control-label">Current Position</label>
-	                    <div class="col-md-6">
-	                        <input type="text" class="form-control" id="current_position" disabled="true">
-	                    </div>
-	        		</div>
-	        		<div class="form-group">
-	        			<label class="col-md-3 control-label">Current Company</label>
-	                    <div class="col-md-6">
-	                        <input type="text" class="form-control" id="current_company" disabled="true">
-	                    </div>
-	        		</div>
-	        		<div class="form-group">
-	        			<label class="col-md-3 control-label">Current Industry</label>
-	                    <div class="col-md-6">
-	                        <input type="text" class="form-control" id="current_industry" disabled="true">
-	                    </div>
-	        		</div>
-	        		<div class="row">
-	        			<div class="col-md-6">
-		        			<div class="form-group">
-			        			<label class="col-md-6 control-label">Work Experience</label>
-			                    <div class="col-md-3">
-			                        <input type="text" class="form-control" id="work_exp" disabled="true">
-			                    </div>
-			                    <label class="control-label">Years</label>
-			        		</div>
-			        	</div>
-			        	<div class="col-md-6">
-			        		
-			        	</div>
-	        		</div>
-	        		<div class="form-group">
-	        			<label class="col-md-3 control-label">Salary Range</label>
-	                    <div class="col-md-4">
-	                        <input type="text" class="form-control" id="salary_range" disabled="true">
-	                    </div>
-	        		</div>
-	        		<div class="form-group">
-	        			<label class="col-md-3 control-label">Skill</label>
-	                    <div class="col-md-6">
-	                        <textarea class="form-control" id="skill" rows="6" name="skill" disabled="true"></textarea>
-	                    </div>
-	        		</div>
-	        		<div class="form-group">
-	        			<label class="col-md-3 control-label">Tags</label>
-	                    <div class="col-md-6">
-				            <input type="text" class="form-control" id="tags" data-role="tagsinput" >
-	                    </div>
-	        		</div>
-	        		<div class="form-group">
-	        			<label class="col-md-3 control-label">Soruce</label>
-	                    <div class="col-md-5">
-				            <input type="text" class="form-control" id="source" disabled="true">
-	                    </div>
-	        		</div>
-	        		<div class="form-group">
-	        			<label class="col-md-3 control-label"></label>
-	                    <div class="col-md-5">
-				            <input type="text" class="form-control" id="other" disabled="true">
-	                    </div>
-	        		</div>
-	        		
-	        		<div class="form-group">
-	                    <label class="col-md-3 control-label">CV Candidate <i style="color: #7C7C7C; font-size: 11px"><em> (Max 2MB) </em></i></label>
-	                    <div class="col-md-6">
-	                        <input type="file" class="form-control" id="cv" name="cv" title="File CV (PDF,DOC). Max Size 2MB" onchange="validateExtension(this)" required>
-	                        <!-- error -->
-	                       	<ul class="parsley-errors-list" id="format">
-		                    	<li class="parsley-required">Document Format Must PDF or Doc !!</li>
-		                    </ul>
-		                    <ul class="parsley-errors-list" id="size">
-		                    	<li class="parsley-required">Max File Size Must 2MB !!</li>
-		                    </ul>
-	                    </div>
-	                </div>
-	        	</form>
-        	
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-            {{-- </form> --}}
-        </div>
-    </div>
-</div>
+@component('Component.candidate_detail')
+@endcomponent
 @endsection

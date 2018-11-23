@@ -148,10 +148,10 @@
 						    </td>
 					    </tr>
 					    @empty
-					    	<td valign="top" colspan="4" class="dataTables_empty">No data available in table</td>
+					    	{{-- <td valign="top" colspan="4" class="dataTables_empty">No data available in table</td>
 					    	<td id="hidden"></td>
 					    	<td id="hidden"></td>
-					    	<td id="hidden"></td>
+					    	<td id="hidden"></td> --}}
 					    @endforelse
 					</tbody>
 				</table>

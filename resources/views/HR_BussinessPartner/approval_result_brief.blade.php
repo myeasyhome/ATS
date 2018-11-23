@@ -85,9 +85,9 @@
 				                        <span><strong>need approval</strong></span>
 				                    </a>
 					    		@elseif ( $hiring->approval_hiring_by_hrbp == 1 )
-					    			<span class="bs-label label-success"><strong>Approved</strong></span>
+					    			<span class="bs-label btn-border border-green font-green"><strong>Approved</strong></span>
 					    		@elseif ( $hiring->approval_hiring_by_hrbp == 2 )
-					    			<span class="bs-label label-danger"><strong>Rejected</strong></span>
+					    			<span class="bs-label btn-border border-red font-red"><strong>reject</strong></span>
 					    		@endif
 					    	@endif
 					    </td>
