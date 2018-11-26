@@ -44,9 +44,10 @@ class InterviewController extends Controller
 				      	})
       					->get();
                         
-    	return view('Line_Manager1.Interview.feedback_list',compact('interview'));
+    	return view('Line_Manager1.Interview.feedback_list',compact('interview','id'));
     }
 
+    /* btn done interview */
     public function interview_finish($id)
     {
         Interview::findOrFail($id)->update([
@@ -54,5 +55,11 @@ class InterviewController extends Controller
         ]);
 
         return back()->with('success','Interview Process Finish, Please fill your feedback !!');
+    }
+
+    /* form feedback */
+    public function form_interviewFeedback($id)
+    {
+        return view('Line_Manager1.Interview.form_feedback',compact('id'));
     }
 }

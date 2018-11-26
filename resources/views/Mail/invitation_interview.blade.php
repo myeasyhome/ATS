@@ -9,9 +9,9 @@ Date : {{ $interview['interview_date'] }} <br>
 Time : {{ $interview['time_start'] }} - {{ $interview['time_end'] }} <br>
 Location : {{ $interview['location'] }} <br>
 
-@component('mail::button', ['url' => env("APP_URL").'/login'])
+{{-- @component('mail::button', ['url' => route('getCV',$interview['cv_id']) ])
 	Download CV
-@endcomponent
+@endcomponent --}}
 
 Thank you,<br>
 

@@ -29,10 +29,36 @@ class Invitation_interview extends Mailable
      */
     public function build()
     {
-        return $this->from($this->interview['from'],$this->interview['sender'])
+        $attachments = [
+            $this->interview['filename'] => [
+                'mime' => 'text/calendar',
+            ],
+
+            $this->interview['cv'] => [
+                'as' => $this->interview['candidate_name'],
+                'mime' => 'application/pdf',
+            ]
+        ];
+
+        $email = $this->from($this->interview['from'],$this->interview['sender'])
                     ->subject($this->interview['subject'])
                     ->markdown('Mail.invitation_interview')
-                    ->attach($this->interview['filename'], array('mime' => "text/calendar"))
                     ->with(['interview'=>$this->interview]);
+
+        foreach ($attachments as $filePath => $fileParameters) {
+            $email->attach($filePath, $fileParameters); // attach each file
+        }
+
+        return $email;
+
+        // return $this->from($this->interview['from'],$this->interview['sender'])
+        //             ->subject($this->interview['subject'])
+        //             ->markdown('Mail.invitation_interview')
+        //             // ->attach($this->interview['filename'], array('mime' => "text/calendar"))
+        //             ->attach($this->interview['cv'], [
+        //                 'as' => $this->interview['candidate_name'],
+        //                 // 'mime' => 'application/pdf',
+        //             ])
+        //             ->with(['interview'=>$this->interview]);
     }
 }

@@ -41,7 +41,7 @@ Route::group(['middleware'=>'checkGrade'], function() {
 	/* Menu Candidate */
 	Route::get('/candidate','Line_Manager1\CandidateController@index')->name('candidate');
 	Route::get('/candidate/{id}','Line_Manager1\CandidateController@sourcing')->name('lm1.sourcing');
-	Route::get('/candidate/document/{id}','Line_Manager1\CandidateController@getCV')->name('getCV');
+	// Route::get('/candidate/document/{id}','Line_Manager1\CandidateController@getCV')->name('getCV');
 	Route::patch('/candidate/approve/{id}','Line_Manager1\CandidateController@approve_candidate')->name('candidate.approve');
 	Route::patch('/candidate/reject/{id}','Line_Manager1\CandidateController@reject_candidate')->name('candidate.reject');
 
@@ -50,8 +50,9 @@ Route::group(['middleware'=>'checkGrade'], function() {
 	/* Menu Interview Process */
 	Route::group(['prefix'=>'interview_process'], function() {
 		Route::get('/','Line_Manager1\InterviewController@index')->name('lm1_index.interview');
-		Route::get('/feedback_list/{id}','Line_Manager1\InterviewController@feedback_list')->name('lm1_feedback_list.interview');
+		Route::get('feedback_list/{id}/{position}','Line_Manager1\InterviewController@feedback_list')->name('lm1_feedback_list.interview');
 		Route::patch('/interview_finish/{id}','Line_Manager1\InterviewController@interview_finish')->name('lm1_interview_finish');
+		Route::get('form_feedback/{id}/{position}','Line_Manager1\InterviewController@form_interviewFeedback')->name('form_interviewFeedback');
 	});
 });
 
@@ -111,8 +112,6 @@ Route::patch('/ticket/hrbp/result_brief/reject/{id}', 'HR_BussinessPartner\Appro
 
 
 /* Access HR Talent Acquistion */
-
-
 Route::get('/dashboard/HRTA', 'HR_Talent\DashboardController@index')->name('hrt.dashboard');
 Route::patch('/freezeTicket/{id}','HR_Talent\DashboardController@freeze')->name('freeze');
 Route::patch('/unfreezeTicket/{id}','HR_Talent\DashboardController@unfreeze')->name('unfreeze');
@@ -152,4 +151,4 @@ Route::group(['prefix'=>'interview'], function() {
 
 /* ACCESS PUBLIC */
 Route::get('/candidate_detail/{id}','Line_Manager1\CandidateController@candidate_detail')->name('candidate_detail');
-
+Route::get('/candidate/document/{id}','Line_Manager1\CandidateController@getCV')->name('getCV');

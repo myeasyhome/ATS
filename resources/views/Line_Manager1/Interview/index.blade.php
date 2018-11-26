@@ -55,7 +55,7 @@
                                     @if( $feedback == 0 )
                                         <span class="bs-label btn-border border-yellow font-yellow"><strong>haven't arranged an interview</strong></span>
                                     @else
-                                        <a href="{{ route('lm1_feedback_list.interview',$cv->hiring_briefs->id) }}" type="button" class="btn btn-xs bs-label label-info">
+                                        <a href="{{ route('lm1_feedback_list.interview',['id' => $cv->hiring_briefs->id, 'position' => str_slug($cv->hiring_briefs->tickets->position_name,'-') ]) }}" type="button" class="btn btn-xs bs-label label-info">
                                             <span>
                                                 <strong>{{ $feedback }} {{ $feedback == 1 ? 'Candidate' : 'Candidates' }}</strong>
                                             </span>

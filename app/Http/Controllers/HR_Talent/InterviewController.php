@@ -11,6 +11,7 @@ use App\User;
 use Calendar;
 use Carbon\Carbon;
 use DateTime;
+use Response;
 
 /* package email */
 use Illuminate\Support\Facades\Mail;
@@ -96,30 +97,30 @@ class InterviewController extends Controller
         ]);
 
 
-        $filename = "invite.ics";
-        $meeting_duration = (3600 * 2); // 2 hours
-        // $meetingstamp = strtotime( $interview['time_start'] . " UTC");
-        $meetingstamp = strtotime( Carbon::parse($req->time_start)->format('H:i a') . " UTC");
+        $filename = "interview.ics";
+        // $meeting_duration = (3600 * 2); // 2 hours
+        $meetingstamp = strtotime($req->time_start. " UTC");
+        $meetingstamp2 = strtotime($req->time_end. " UTC");
         $dtstart = gmdate('Ymd\THis\Z', $meetingstamp);
-        $dtend =  gmdate('Ymd\THis\Z', $meetingstamp + $meeting_duration);
+        // $dtend =  gmdate('Ymd\THis\Z', $meetingstamp + $meeting_duration);
+        $dtend =  gmdate('Ymd\THis\Z', $meetingstamp2);
         $todaystamp = gmdate('Ymd\THis\Z');
         $uid = date('Ymd').'T'.date('His').'-'.rand().'@yourdomain.com';
-        // $description = strip_tags($interview['interview_title']);
         $description = strip_tags($req->interview_title);
-        $location = "Telefone ou vídeo conferência";
-        $titulo_invite = "Your meeting title";
-        $organizer = "CN=Organizer name:email@YourOrganizer.com";
+        $location = $req->location;
+        $title = $req->interview_title;
+        $organizer = "Indosat Ooredoo";
         
         // ICS
-        $mail[0]  = "BEGIN:VCALENDAR";
+        $mail[0] = "BEGIN:VCALENDAR";
         $mail[1] = "PRODID:-//Google Inc//Google Calendar 70.9054//EN";
         $mail[2] = "VERSION:2.0";
         $mail[3] = "CALSCALE:GREGORIAN";
         $mail[4] = "METHOD:REQUEST";
         $mail[5] = "BEGIN:VEVENT";
-        $mail[6] = "DTSTART;TZID=America/Sao_Paulo:" . $dtstart;
-        $mail[7] = "DTEND;TZID=America/Sao_Paulo:" . $dtend;
-        $mail[8] = "DTSTAMP;TZID=America/Sao_Paulo:" . $todaystamp;
+        $mail[6] = "DTSTART;TZID=Asia/Jakarta:" . $dtstart;
+        $mail[7] = "DTEND;TZID=Asia/Jakarta:" . $dtend;
+        $mail[8] = "DTSTAMP;TZID=Asia/Jakarta:" . $todaystamp;
         $mail[9] = "UID:" . $uid;
         $mail[10] = "ORGANIZER;" . $organizer;
         $mail[11] = "CREATED:" . $todaystamp;
@@ -128,7 +129,7 @@ class InterviewController extends Controller
         $mail[14] = "LOCATION:" . $location;
         $mail[15] = "SEQUENCE:0";
         $mail[16] = "STATUS:CONFIRMED";
-        $mail[17] = "SUMMARY:" . $titulo_invite;
+        $mail[17] = "SUMMARY:" . $title;
         $mail[18] = "TRANSP:OPAQUE";
         $mail[19] = "END:VEVENT";
         $mail[20] = "END:VCALENDAR";
@@ -137,10 +138,14 @@ class InterviewController extends Controller
         header("text/calendar");
         file_put_contents($filename, $mail);
 
+        /* download CV */
+        // $file = public_path().'/CV_candidate/'.CV::findOrFail($req->cv_id)->CV_candidate;
+        // $headers = array('Content-Type: application/pdf,application/docx');
+        // $res = Response::download($file, CV::findOrFail($req->cv_id)->CV_candidate, $headers);
 
         /* custom mail */
         $interview = [
-                'from' => 'developer@gmail.com', 
+                'from' => 'masdens.developer@gmail.com', 
                 'sender' => Auth::user()->name,
                 'subject' => $req->interview_title,
                 'position' => CV::findOrFail($req->cv_id)->hiring_briefs->tickets->position_name,
@@ -150,12 +155,12 @@ class InterviewController extends Controller
                 'time_start' => Carbon::parse($req->time_start)->format('H:i a'),
                 'time_end' => Carbon::parse($req->time_end)->format('H:i a'),
                 'location' => ucwords($req->location),
-                'filename' => $filename
+                'filename' => $filename,
+                'cv' => route('getCV',$req->cv_id)
             ];
 
-
-        Mail::to('asem@asem.com')
-            ->cc(['1@gmai.com','2@gmail.com','3@gmail.com'])
+        Mail::to('masdens.developer@gmail.com')
+            // ->cc(['1@gmai.com','2@gmail.com','3@gmail.com'])
             // ->cc($name)
             ->send(new Invitation_interview($interview));
 
