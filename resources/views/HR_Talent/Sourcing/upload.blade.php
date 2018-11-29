@@ -246,7 +246,7 @@ function change_source() {
 	                    </div>
 	        		</div>
 	        		<div class="form-group">
-	        			<label class="col-md-3 control-label">Skill</label>
+	        			<label class="col-md-3 control-label">Consultants Comment</label>
 	                    <div class="col-md-6">
 	                        <textarea class="form-control" id="skill" rows="6" name="skill" required title="Input Skill"></textarea>
 	                    </div>

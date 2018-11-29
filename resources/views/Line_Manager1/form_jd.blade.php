@@ -24,7 +24,7 @@
 						<div class="form-group">
 		                    <label for="role_purpose" class="col-md-4 control-label">Role Purpose<span style="color: red;"> *</span></label>
 		                    <div class="col-md-8">
-		                        <textarea class="form-control" rows="5" cols="49" id="role_purpose" name="role_purpose" required></textarea>
+		                        <textarea class="form-control" rows="5" cols="49" id="role_purpose" name="role_purpose" required placeholder="Input Role Purpose"></textarea>
 		                    </div>
 		                </div>
 		            </div>

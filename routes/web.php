@@ -41,7 +41,7 @@ Route::group(['middleware'=>'checkGrade'], function() {
 	/* Menu Candidate */
 	Route::get('/candidate','Line_Manager1\CandidateController@index')->name('candidate');
 	Route::get('/candidate/{id}','Line_Manager1\CandidateController@sourcing')->name('lm1.sourcing');
-	// Route::get('/candidate/document/{id}','Line_Manager1\CandidateController@getCV')->name('getCV');
+	Route::get('/candidate/document/{id}','Line_Manager1\CandidateController@getCV')->name('getCV');
 	Route::patch('/candidate/approve/{id}','Line_Manager1\CandidateController@approve_candidate')->name('candidate.approve');
 	Route::patch('/candidate/reject/{id}','Line_Manager1\CandidateController@reject_candidate')->name('candidate.reject');
 
@@ -66,10 +66,6 @@ Route::get('/department/{id}','Line_Manager1\TicketController@department_dropdow
 
 Route::get('/ticket/re-approval/request/{id}', 'Line_Manager1\TicketController@edit')->name('edit_rejected.ticket');
 Route::patch('/ticket/re-approval/{id}', 'Line_Manager1\TicketController@re_approval')->name('re_approval.ticket');
-
-
-Route::post('importExcel','Line_Manager1\TicketController@import')->name('import');
-
 
 
 /* Access Line Manager 2 */
@@ -151,4 +147,5 @@ Route::group(['prefix'=>'interview'], function() {
 
 /* ACCESS PUBLIC */
 Route::get('/candidate_detail/{id}','Line_Manager1\CandidateController@candidate_detail')->name('candidate_detail');
-Route::get('/candidate/document/{id}','Line_Manager1\CandidateController@getCV')->name('getCV');
+Route::get('/downloadCV/document/{id}','PublicController@downloadCV')->name('downloadCV');
+Route::post('/save/feedback','Line_Manager1\InterviewController@save_feedback')->name('save_feedback');

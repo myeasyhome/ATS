@@ -80,7 +80,7 @@
 </script>
 
 <!-- Jquery Countdown -->
-<script src="{{ asset('assets/jquery.countdown/jquery.countdown.js') }}" ></script>
+{{-- <script src="{{ asset('assets/jquery.countdown/jquery.countdown.js') }}" ></script>
 <script>
 	var ticket = $('#data-candidate').attr('data-id');
 	var waktu_SLA = $('#waktuSLA').attr('waktuSLA');
@@ -109,7 +109,7 @@
 		 	window.location.href = '{{ route('candidate') }}';
 		 	
 	});
-</script>
+</script> --}}
 @stop
 
 @section('content')

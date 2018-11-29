@@ -13,6 +13,8 @@ use Carbon\Carbon;
 use DateTime;
 use Response;
 
+use Illuminate\Support\Facades\Crypt;
+
 /* package email */
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Invitation_interview;
@@ -68,24 +70,25 @@ class InterviewController extends Controller
         }
         $calendar = Calendar::addEvents($events);
 
-        $test = Interview::get();
+        /* taro event di kalender */
+        $event = Interview::get();
 
         /* form invitation */
         $interview_user = User::where([
                             ['id','!=',Auth::user()->id],
-                            ['grade','8']
+                            ['grade','>','5']
                         ])->get();
 
-        return view('HR_Talent.Interview.candidate_list',compact('cv','calendar','id','test','interview_user'));
+        return view('HR_Talent.Interview.candidate_list',compact('cv','calendar','id','event','interview_user'));
     }
 
     /* form invitation */
     public function invitation(Request $req)
     {
         // $email = User::where('id',$req->interview_user)->pluck('email');
-        $name = User::whereIn('id',$req->interview_user)->pluck('name');
-        // dd($req->interview_user,$name);
-
+        $interview_user = User::whereIn('id',$req->interview_user)->pluck('name');
+        // dd($interview_user);
+        
         Interview::create([
             'cv_id' => $req->cv_id,
             'interview_title' => $req->interview_title,
@@ -138,31 +141,26 @@ class InterviewController extends Controller
         header("text/calendar");
         file_put_contents($filename, $mail);
 
-        /* download CV */
-        // $file = public_path().'/CV_candidate/'.CV::findOrFail($req->cv_id)->CV_candidate;
-        // $headers = array('Content-Type: application/pdf,application/docx');
-        // $res = Response::download($file, CV::findOrFail($req->cv_id)->CV_candidate, $headers);
-
         /* custom mail */
         $interview = [
-                'from' => 'masdens.developer@gmail.com', 
-                'sender' => Auth::user()->name,
-                'subject' => $req->interview_title,
-                'position' => CV::findOrFail($req->cv_id)->hiring_briefs->tickets->position_name,
-                'candidate_name' => CV::findOrFail($req->cv_id)->name_candidate,
-                'interview_date' => Carbon::parse($req->interview_date)->format('l, jS F Y'),
-                'interview_title' => $req->interview_title,
-                'time_start' => Carbon::parse($req->time_start)->format('H:i a'),
-                'time_end' => Carbon::parse($req->time_end)->format('H:i a'),
-                'location' => ucwords($req->location),
-                'filename' => $filename,
-                'cv' => route('getCV',$req->cv_id)
-            ];
+            'from' => 'masdens.developer@gmail.com', 
+            'sender' => Auth::user()->name,
+            'subject' => $req->interview_title,
+            'position' => CV::findOrFail($req->cv_id)->hiring_briefs->tickets->position_name,
+            'candidate_name' => CV::findOrFail($req->cv_id)->name_candidate,
+            'interview_date' => Carbon::parse($req->interview_date)->format('l, jS F Y'),
+            'interview_title' => $req->interview_title,
+            'time_start' => Carbon::parse($req->time_start)->format('H:i a'),
+            'time_end' => Carbon::parse($req->time_end)->format('H:i a'),
+            'location' => ucwords($req->location),
+            'filename' => $filename,
+            'cv_id' => Crypt::encrypt($req->cv_id)
+        ];
+        // dd($interview,);
 
-        Mail::to('masdens.developer@gmail.com')
-            // ->cc(['1@gmai.com','2@gmail.com','3@gmail.com'])
-            // ->cc($name)
-            ->send(new Invitation_interview($interview));
+        // Mail::to('dennyariss@gmail.com')
+        //     // ->cc(['1@gmai.com','2@gmail.com','3@gmail.com'])
+        //     ->send(new Invitation_interview($interview));
 
         return back()->with('success','Successfully Arrange Interview For '.CV::findOrFail($req->cv_id)->name_candidate);
     }

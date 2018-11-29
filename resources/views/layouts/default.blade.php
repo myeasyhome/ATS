@@ -25,6 +25,13 @@
             border: 1px solid #e0e0e0;
             padding: 10px;
         }
+
+
+        /* jquery validate error */
+        label.error, select.error {
+            color: red;
+            border-color: red;
+        }
     </style>
 
 
@@ -129,7 +136,7 @@
 {{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/tocify/tocify.css') }}"> --}}
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/tooltip/tooltip.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/touchspin/touchspin.css') }}">
-{{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/uniform/uniform.css') }}"> --}}
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/uniform/uniform.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/wizard/wizard.css') }}">
 {{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/widgets/xeditable/xeditable.css') }}"> --}}
 
@@ -293,7 +300,7 @@
     <!-- Sidebar -->
     <div id="page-sidebar" class="bg-gradient-8 font-inverse">
         <div class="scroll-sidebar">
-            <ul id="sidebar-menu">
+            <ul id="sidebar-menu" class="sf-js-enabled sf-arrows">
                 @include('layouts.sidebar')
             </ul>
         <!-- #sidebar-menu -->    

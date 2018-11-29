@@ -196,7 +196,7 @@
 
                               <label for="reason" class="col-md-4 control-label">Hiring Justification<span style="color: red;"> *</span></label>
                               <div class="col-md-8" style="padding-bottom: 10px;">
-                                  <textarea class="form-control" id="reason" rows="3" name="reason" required title="Input Hiring Justification"></textarea>
+                                  <textarea class="form-control" id="reason" rows="3" name="reason" required title="Input Hiring Justification" placeholder="Input Hiring Justification"></textarea>
                               </div>
                               </fieldset> 
                         </div>

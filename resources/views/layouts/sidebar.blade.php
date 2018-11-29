@@ -242,7 +242,7 @@
 @if ( Auth::user()->group == 'Group HR Development' && Auth::user()->grade <= 8 )
     <li class="header"><span>Overview</span></li>
     <li>
-        <a href="{{ route('hrt.dashboard') }}" title="Dashboard">
+        <a href="{{ route('hrt.dashboard') }}" title="Dashboard" >
             <i class="glyph-icon icon-linecons-tv"></i>
             <span>Dashboard</span>
         </a>
@@ -268,7 +268,7 @@
     <li class="no-menu">
         <a href="{{ route('sourcing') }}" title="CV & Sourcing">
             <i class="glyph-icon icon-leaf"></i>
-            <span>CV & Sourcing</span>
+            <span>Sourcing & Screening</span>
         </a>
     </li>
     <li class="divider"></li>
@@ -286,27 +286,4 @@
         </a>
     </li>
     <li class="divider"></li>
-
-    {{-- <li class="header"><span>Configure</span></li>
-    <li>
-        <a href="" title="Admin Dashboard">
-            <i class="glyph-icon icon-gears"></i>
-            <span>SLA Setting</span>
-        </a>
-    </li>
-    <li class="divider"></li>
-    <li>
-        <a href="" title="Admin Dashboard">
-            <i class="glyph-icon icon-gears"></i>
-            <span>User Management</span>
-        </a>
-    </li>
-    <li class="divider"></li>
-    <li>
-        <a href="" title="Admin Dashboard">
-            <i class="glyph-icon icon-gears"></i>
-            <span>References</span>
-        </a>
-    </li>
-    <li class="divider"></li> --}}
 @endif

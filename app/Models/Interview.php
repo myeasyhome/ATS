@@ -23,4 +23,9 @@ class Interview extends Model
     {
     	return $this->belongsTo('App\Models\CV','cv_id');
     }
+
+    public function Interview_feedback()
+    {
+    	return $this->hasOne('App\Models\Interview_feedback','interview_id');
+    }
 }

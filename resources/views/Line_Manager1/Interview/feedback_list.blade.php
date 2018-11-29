@@ -28,6 +28,7 @@
             url : url,
             cache : true,
             success:function(data) {
+                $("#header").html(data.name_candidate);
                 $('#name_candidate').val(data.name_candidate);
                 if ( data.education == 'S1' ) {
                     $('#education').val("Bachelor's degree graduate");
@@ -76,7 +77,7 @@
         <a href="{{ route('lm1_index.interview') }}">Interview Process</a>
     </li>
     <li>
-        <span><em>Feedback List</em></span>
+        <span><em>Feedback List {{ $interview[0]->CV->hiring_briefs->tickets->position_name }}</em></span>
     </li>
 </ol>
 
@@ -123,10 +124,14 @@
                                 <td class="text-center">
                                     <!-- done interview -->
                                     @isset ($interview->interview_finish)
-                                        <a href="{{ route('form_interviewFeedback',['id' => $interview->id, 'position' => str_slug($interview->CV->hiring_briefs->tickets->position_name,'-')]) }}" class="btn btn-hover btn-xs bs-label label-yellow">
-                                            <span><strong>need interview feedback</strong></span>
-                                            <i class="glyph-icon icon-arrow-right"></i>
-                                        </a>
+                                        @isset($interview->Interview_feedback)
+                                            sudah kasih feedback
+                                        @else
+                                            <a href="{{ route('form_interviewFeedback',['id' => $interview->id, 'position' => str_slug($interview->CV->hiring_briefs->tickets->position_name,'-')]) }}" class="btn btn-hover btn-xs bs-label label-yellow">
+                                                <span><strong>need interview feedback</strong></span>
+                                                <i class="glyph-icon icon-arrow-right"></i>
+                                            </a>
+                                        @endisset
                                     @else
                                         <form action="{{ route('lm1_interview_finish',$interview->id) }}" method="POST">
                                         @csrf

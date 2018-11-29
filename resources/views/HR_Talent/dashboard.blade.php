@@ -363,14 +363,15 @@
 			    		<td class="text-center">
 			    			<!-- KOLOM RECRUITER -->
 			    			@if ( $data->user->grade == 7 )
-			    				@if ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 )
+			    				{{-- @if ( $data->approval_hrbp == 1 && $data->approval_GH == 1 && $data->approval_chief == 1 )
 					    			<a href="#modal_recruiter{{ $data->id }}" data-toggle="modal" type="button" class="bs-label label-primary btn_recruiter"
 				    				data-recruiter="{{ $data->recruiter ==  '' ? 'NULL' : $data->recruiter }}">
 				    					<span><strong>Select Recruiter</strong></span>
 				    				</a>
 			    				@else
 			    				-
-			    				@endif
+			    				@endif --}}
+			    				MONA BINILANG
 			    			@elseif ( $data->user->grade == 8 )
 			    				@if ( $data->approval_hrbp == 1 && $data->approval_chief == 1 && $data->approval_chro == 1 )
 				    				<a href="#modal_recruiter{{ $data->id }}" data-toggle="modal" type="button" class="bs-label label-primary btn_recruiter"

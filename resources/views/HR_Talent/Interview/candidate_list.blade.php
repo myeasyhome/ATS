@@ -28,10 +28,11 @@
 <script>
     /* Dropdown select 2 */
     $(document).ready(function() {
-        $( ".interview_user" ).select2( {
+        $( ".interview_user" ).select2({
             placeholder: "Select Interview User",
             theme: "bootstrap",
         });
+        $('.select2-search__field').css('width', '100%');
     });
 </script>
 <!-- bootstrap datepicker -->
@@ -81,6 +82,8 @@
             url : url,
             cache : true,
             success:function(data) {
+                console.log(data);
+                $("#header").html(data.name_candidate);
                 $('#name_candidate').val(data.name_candidate);
                 if ( data.education == 'S1' ) {
                     $('#education').val("Bachelor's degree graduate");
@@ -112,11 +115,16 @@
                     $('#other').val(data.other);
                 } 
 
-                $('#tags').val(data.tags);
                 var url_cv = "{{ route('getCV',":id") }}";
                 var url_cv = url_cv.replace(':id',data.id); /* replace id via javascript  */
 
                 $('#download_cv').attr('href',url_cv);
+
+                // if ( data.interview == null ) {
+                //     $('#interview').html('This Candidate Has Not Been Interviewed');
+                // } else {
+                    
+                // }
             }
         })
     });
@@ -125,7 +133,6 @@
 
 <script src="{{ asset('assets/moment/moment.min.js') }}"></script>
 <script src="{{ asset('assets/FullCalendar/FullCalendar.min.js') }}"></script>
-{{-- {!! $calendar->script() !!} --}}
 <script>
     /* calendar */
     $(function() {
@@ -145,24 +152,22 @@
             editable: false,
             weekends: false, // will hide Saturdays and Sundays
             eventLimit: true, // allow "more" link when too many events
-            // events: 'https://fullcalendar.io/demo-events.json?overload-day',
             events : [
-                @foreach($test as $cal)
+                @foreach($event as $ev)
                     {
-                        title : '{{ $cal->interview_title }}',
-                        interview_date : '{{ $cal->interview_date }}',
-                        start : '{{ $cal->interview_date.' '.$cal->time_start }}',
-                        end : '{{ $cal->interview_date.' '.$cal->time_end }}',
-                        location : '{{ ucwords($cal->location) }}',
-                        interview_user : '{{ $cal->interview_user }}',
-                        candidate_name : '{{ $cal->CV->name_candidate }}'
+                        title : '{{ $ev->interview_title }}',
+                        interview_date : '{{ $ev->interview_date }}',
+                        start : '{{ $ev->interview_date.' '.$ev->time_start }}',
+                        end : '{{ $ev->interview_date.' '.$ev->time_end }}',
+                        location : '{{ ucwords($ev->location) }}',
+                        interview_user : '{{ $ev->interview_user }}',
+                        candidate_name : '{{ $ev->CV->name_candidate }}'
                     },
                 @endforeach
             ],
             eventClick: function (event, modal) {
                 $('#modal_calendar').modal();
                 $('#modal_title').html(event.title);
-                // \Carbon\Carbon::parse($req->interview_date)->format('l, jS F Y')
                 $('#modal_date').html(moment(event.interview_date).format('dddd, l'));
                 $('#time_start').html(moment(event.start).format('hh:mm a'));
                 $('#time_end').html(moment(event.end).format('hh:mm a'));
@@ -170,113 +175,10 @@
                 $('#candidate_name').html(event.candidate_name);
                 $('#location').html(event.location);
             }
-            // eventRender: function(event,el) {
-            //     /* isi konten di dalam element */
-            //     el.popover({
-            //         title: event.title,
-            //         html : true,
-            //         content: 'Date : '+ new Date(event.interview_date).toDateString() + '<br>Time Start : ' + moment(event.start).format('hh:mm:ss a') + '<br>Time End : ' + moment(event.end).format('hh:mm:ss a') + '<br><br> Interviewer User : '+ event.interview_user +'<br>Candidate Name : '+ event.candidate_name +'<br><br> Location : ' +event.location,
-            //         trigger: 'hover',
-            //         placement: 'top',
-            //         // container: 'body'
-            //     });
-            // }
         });
 
     });
 </script>
-
-<!-- Gmaps -->
-{{-- <script type="text/javascript">
-    function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -33.8688, lng: 151.2195},
-          zoom: 13
-        });
-        var card = document.getElementById('pac-card');
-        var input = document.getElementById('location');
-        var types = document.getElementById('type-selector');
-
-        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
-
-        var autocomplete = new google.maps.places.Autocomplete(input);
-
-        // Bind the map's bounds (viewport) property to the autocomplete object,
-        // so that the autocomplete requests use the current map bounds for the
-        // bounds option in the request.
-        autocomplete.bindTo('bounds', map);
-
-        // Set the data fields to return when the user selects a place.
-        autocomplete.setFields(
-            ['address_components', 'geometry', 'icon', 'name']);
-
-        var infowindow = new google.maps.InfoWindow();
-        var infowindowContent = document.getElementById('infowindow-content');
-        infowindow.setContent(infowindowContent);
-        var marker = new google.maps.Marker({
-          map: map,
-          anchorPoint: new google.maps.Point(0, -29)
-        });
-
-        autocomplete.addListener('place_changed', function() {
-          infowindow.close();
-          marker.setVisible(false);
-          var place = autocomplete.getPlace();
-          if (!place.geometry) {
-            // User entered the name of a Place that was not suggested and
-            // pressed the Enter key, or the Place Details request failed.
-            window.alert("No details available for input: '" + place.name + "'");
-            return;
-          }
-
-          // If the place has a geometry, then present it on a map.
-          if (place.geometry.viewport) {
-            map.fitBounds(place.geometry.viewport);
-          } else {
-            map.setCenter(place.geometry.location);
-            map.setZoom(17);  // Why 17? Because it looks good.
-          }
-          marker.setPosition(place.geometry.location);
-          marker.setVisible(true);
-
-          var address = '';
-          if (place.address_components) {
-            address = [
-              (place.address_components[0] && place.address_components[0].short_name || ''),
-              (place.address_components[1] && place.address_components[1].short_name || ''),
-              (place.address_components[2] && place.address_components[2].short_name || '')
-            ].join(' ');
-          }
-
-          infowindowContent.children['place-icon'].src = place.icon;
-          infowindowContent.children['place-name'].textContent = place.name;
-          infowindowContent.children['place-address'].textContent = address;
-          infowindow.open(map, marker);
-        });
-
-        // Sets a listener on a radio button to change the filter type on Places
-        // Autocomplete.
-        function setupClickListener(id, types) {
-          var radioButton = document.getElementById(id);
-          radioButton.addEventListener('click', function() {
-            autocomplete.setTypes(types);
-          });
-        }
-
-        setupClickListener('changetype-all', []);
-        setupClickListener('changetype-address', ['address']);
-        setupClickListener('changetype-establishment', ['establishment']);
-        setupClickListener('changetype-geocode', ['geocode']);
-
-        // document.getElementById('use-strict-bounds')
-        //     .addEventListener('click', function() {
-        //       console.log('Checkbox clicked! New state=' + this.checked);
-        //       autocomplete.setOptions({strictBounds: this.checked});
-        //     });
-      }
-</script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyChoJGv0RBx3ZbCuQlgAVVGO9Dqak_Iyz0&callback=initMap"
-  type="text/javascript"></script> --}}
 @stop
 
 @section('content')
@@ -362,10 +264,9 @@
 
                     <h2 class="title-hero"><strong><em id="invite_nama"></em></strong></h2>
                     <div class="form-group">
-                        <label class="col-md-4 control-label">Interviewer User <i style="color: red">*</i></label>
+                        <label class="col-md-4 control-label">Interview User <i style="color: red">*</i></label>
                         <div class="col-md-7">
-                            {{-- <input type="text" class="form-control" id="interviewer_user" name="interviewer_user" placeholder="Input Interviewer User" title="Input Interviewer User" required> --}}
-                            <select class="form-control interview_user" multiple="multiple" name="interview_user[]" style="width: 100%" placeholder="Select Interview User" required>
+                            <select class="form-control interview_user" multiple="multiple" name="interview_user[]" style="width: 100%" required>
                                 @foreach ($interview_user as $val)
                                     <option value="{{ $val->id }}">{{ $val->name }}</option>
                                 @endforeach
@@ -408,25 +309,14 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label">Location <i style="color: red">*</i></label>
                         <div class="col-md-7">
-                            <input type="text" class="form-control" name="location" placeholder="Input Interview Location" required id="location">
+                            <input type="text" class="form-control" name="location" placeholder="Input Interview Location" required>
                         </div>
-                        {{-- <div id="type-selector" class="pac-controls">
-                          <input type="radio" name="type" id="changetype-all" checked="checked">
-                          <label for="changetype-all">All</label>
-
-                          <input type="radio" name="type" id="changetype-establishment">
-                          <label for="changetype-establishment">Establishments</label>
-
-                          <input type="radio" name="type" id="changetype-address">
-                          <label for="changetype-address">Addresses</label>
-
-                          <input type="radio" name="type" id="changetype-geocode">
-                          <label for="changetype-geocode">Geocodes</label>
-                        </div>
-                      </div>
                     </div>
-                    <div id="map" style="width: 430; height: 200px">
-                        
+                    {{-- <div id="map" style="width: 430; height: 200px">
+                        <iframe
+                            frameborder="0"
+                            src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJNcpgTCv0aS4RYIGS5LB9i7Q&key=AIzaSyDp0wKlAbZ6RUWwxYrsX6CcDyJ7psMWgp4">
+                        </iframe>
                     </div> --}}
                     <div class="text-center">
                         <button class="btn btn-info mrg10T" type="submit" id="submit_interview">Arrange Interview</button>
